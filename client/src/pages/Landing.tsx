@@ -9,24 +9,32 @@ export default function Landing() {
   const { t } = useLanguage();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <SEO />
       <Header />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary-50 via-white to-gray-50 py-16 lg:py-24">
-        <div className="container max-w-7xl mx-auto">
+      <section className="relative py-20 lg:py-32 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-secondary"></div>
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl"></div>
+        </div>
+        <div className="container max-w-7xl mx-auto relative">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 leading-tight mb-6" data-testid="text-hero-title">
+              <div className="inline-flex items-center bg-card px-4 py-2 rounded-full border border-border mb-6">
+                <span className="text-sm font-medium text-primary">✨ 프리미엄</span>
+              </div>
+              <h1 className="text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground leading-tight mb-6" data-testid="text-hero-title">
                 {t.hero.title.split('\n').map((line, index) => (
                   <span key={index}>
-                    {index === 1 ? <span className="text-primary-600">{line}</span> : line}
+                    {index === 1 ? <span className="premium-gradient bg-clip-text text-transparent">{line}</span> : line}
                     {index < t.hero.title.split('\n').length - 1 && <br />}
                   </span>
                 ))}
               </h1>
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed" data-testid="text-hero-subtitle">
+              <p className="text-xl text-muted-foreground mb-8 leading-relaxed" data-testid="text-hero-subtitle">
                 {t.hero.subtitle.split('\n').map((line, index) => (
                   <span key={index}>
                     {line}
@@ -37,14 +45,14 @@ export default function Landing() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link 
                   href="/contact" 
-                  className="bg-primary-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-primary-700 transition-colors text-center"
+                  className="premium-gradient text-primary-foreground px-8 py-4 rounded-xl font-semibold hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 text-center glow-effect"
                   data-testid="button-cta-contact"
                 >
                   {t.hero.cta1}
                 </Link>
                 <Link 
                   href="/portfolio" 
-                  className="border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-lg font-semibold hover:border-primary-600 hover:text-primary-600 transition-colors text-center"
+                  className="premium-card text-foreground px-8 py-4 rounded-xl font-semibold hover:border-primary/50 transition-all duration-300 text-center"
                   data-testid="button-cta-portfolio"
                 >
                   {t.hero.cta2}
@@ -53,10 +61,10 @@ export default function Landing() {
             </div>
             <div className="relative">
               {/* Hero dashboard mockup */}
-              <div className="bg-white rounded-2xl shadow-2xl p-6 border border-gray-200">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-800" data-testid="text-dashboard-title">
-                    마케팅 대시보드
+              <div className="premium-card rounded-2xl shadow-2xl p-6 glow-effect">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-semibold text-foreground" data-testid="text-dashboard-title">
+                    퍼포먼스 대시보드
                   </h3>
                   <div className="flex space-x-2">
                     <div className="w-3 h-3 bg-red-400 rounded-full"></div>
@@ -65,43 +73,43 @@ export default function Landing() {
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-6">
-                  <div className="bg-blue-50 p-4 rounded-lg">
-                    <div className="text-sm text-blue-600 font-medium" data-testid="text-metric-revenue-label">
+                  <div className="bg-primary/10 p-4 rounded-lg border border-primary/20">
+                    <div className="text-sm text-primary font-medium" data-testid="text-metric-revenue-label">
                       총 매출
                     </div>
-                    <div className="text-2xl font-bold text-blue-700" data-testid="text-metric-revenue-value">
+                    <div className="text-2xl font-bold text-primary" data-testid="text-metric-revenue-value">
                       ₩12.5M
                     </div>
-                    <div className="text-xs text-blue-500" data-testid="text-metric-revenue-change">
+                    <div className="text-xs text-primary/70" data-testid="text-metric-revenue-change">
                       +24% 증가
                     </div>
                   </div>
-                  <div className="bg-green-50 p-4 rounded-lg">
-                    <div className="text-sm text-green-600 font-medium" data-testid="text-metric-roas-label">
+                  <div className="bg-accent/10 p-4 rounded-lg border border-accent/20">
+                    <div className="text-sm text-accent font-medium" data-testid="text-metric-roas-label">
                       ROAS
                     </div>
-                    <div className="text-2xl font-bold text-green-700" data-testid="text-metric-roas-value">
+                    <div className="text-2xl font-bold text-accent" data-testid="text-metric-roas-value">
                       487%
                     </div>
-                    <div className="text-xs text-green-500" data-testid="text-metric-roas-change">
+                    <div className="text-xs text-accent/70" data-testid="text-metric-roas-change">
                       +12% 개선
                     </div>
                   </div>
                 </div>
-                <div className="h-32 bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg flex items-end justify-around p-4">
-                  <div className="w-8 bg-blue-500 rounded-t" style={{ height: '60%' }}></div>
-                  <div className="w-8 bg-blue-600 rounded-t" style={{ height: '80%' }}></div>
-                  <div className="w-8 bg-purple-500 rounded-t" style={{ height: '90%' }}></div>
-                  <div className="w-8 bg-purple-600 rounded-t" style={{ height: '75%' }}></div>
-                  <div className="w-8 bg-blue-400 rounded-t" style={{ height: '95%' }}></div>
+                <div className="h-32 bg-gradient-to-r from-primary/20 to-accent/20 rounded-lg flex items-end justify-around p-4">
+                  <div className="w-8 bg-primary rounded-t" style={{ height: '60%' }}></div>
+                  <div className="w-8 bg-primary rounded-t" style={{ height: '80%' }}></div>
+                  <div className="w-8 bg-accent rounded-t" style={{ height: '90%' }}></div>
+                  <div className="w-8 bg-accent rounded-t" style={{ height: '75%' }}></div>
+                  <div className="w-8 bg-primary rounded-t" style={{ height: '95%' }}></div>
                 </div>
               </div>
               {/* Floating elements */}
-              <div className="absolute -top-4 -right-4 bg-white rounded-lg shadow-lg p-3 border border-gray-200">
-                <i className="fas fa-chart-line text-green-500 text-xl"></i>
+              <div className="absolute -top-4 -right-4 premium-card rounded-lg shadow-lg p-3">
+                <i className="fas fa-chart-line text-primary text-xl"></i>
               </div>
-              <div className="absolute -bottom-4 -left-4 bg-white rounded-lg shadow-lg p-3 border border-gray-200">
-                <i className="fas fa-bullseye text-orange-500 text-xl"></i>
+              <div className="absolute -bottom-4 -left-4 premium-card rounded-lg shadow-lg p-3">
+                <i className="fas fa-bullseye text-accent text-xl"></i>
               </div>
             </div>
           </div>
@@ -109,61 +117,61 @@ export default function Landing() {
       </section>
 
       {/* Services Section */}
-      <section className="py-16 lg:py-24 bg-white">
+      <section className="py-16 lg:py-24 bg-secondary/30">
         <div className="container max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4" data-testid="text-services-title">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4" data-testid="text-services-title">
               {t.services.title}
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto" data-testid="text-services-subtitle">
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto" data-testid="text-services-subtitle">
               {t.services.subtitle}
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="group bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg hover:border-primary-200 transition-all duration-300">
-              <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-200 transition-colors">
-                <i className="fab fa-google text-2xl text-blue-600"></i>
+            <div className="group premium-card rounded-xl p-6 hover:shadow-xl hover:border-primary/30 transition-all duration-300">
+              <div className="w-16 h-16 bg-primary/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary/30 transition-colors">
+                <i className="fab fa-google text-2xl text-primary"></i>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2" data-testid="text-service-google-title">
+              <h3 className="text-xl font-semibold text-foreground mb-2" data-testid="text-service-google-title">
                 {t.services.googleAds.title}
               </h3>
-              <p className="text-gray-600 mb-4" data-testid="text-service-google-description">
+              <p className="text-muted-foreground mb-4" data-testid="text-service-google-description">
                 {t.services.googleAds.description}
               </p>
               <Link 
                 href="/services/google-ads" 
-                className="text-primary-600 font-medium hover:text-primary-700 transition-colors"
+                className="text-primary font-medium hover:text-primary/80 transition-colors"
                 data-testid="link-service-google"
               >
                 {t.services.learnMore} <i className="fas fa-arrow-right ml-1"></i>
               </Link>
             </div>
 
-            <div className="group bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg hover:border-primary-200 transition-all duration-300">
-              <div className="w-16 h-16 bg-green-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-green-200 transition-colors">
-                <span className="text-2xl font-bold text-green-600">N</span>
+            <div className="group premium-card rounded-xl p-6 hover:shadow-xl hover:border-primary/30 transition-all duration-300">
+              <div className="w-16 h-16 bg-accent/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-accent/30 transition-colors">
+                <span className="text-2xl font-bold text-accent">N</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2" data-testid="text-service-naver-title">
+              <h3 className="text-xl font-semibold text-foreground mb-2" data-testid="text-service-naver-title">
                 {t.services.naverAds.title}
               </h3>
-              <p className="text-gray-600 mb-4" data-testid="text-service-naver-description">
+              <p className="text-muted-foreground mb-4" data-testid="text-service-naver-description">
                 {t.services.naverAds.description}
               </p>
               <Link 
                 href="/services/naver-ads" 
-                className="text-primary-600 font-medium hover:text-primary-700 transition-colors"
+                className="text-primary font-medium hover:text-primary/80 transition-colors"
                 data-testid="link-service-naver"
               >
                 {t.services.learnMore} <i className="fas fa-arrow-right ml-1"></i>
               </Link>
             </div>
 
-            <div className="group bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg hover:border-primary-200 transition-all duration-300">
-              <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-200 transition-colors">
-                <i className="fab fa-facebook text-2xl text-blue-600"></i>
+            <div className="group premium-card rounded-xl p-6 hover:shadow-xl hover:border-primary/30 transition-all duration-300">
+              <div className="w-16 h-16 bg-primary/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary/30 transition-colors">
+                <i className="fab fa-facebook text-2xl text-primary"></i>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2" data-testid="text-service-meta-title">
+              <h3 className="text-xl font-semibold text-foreground mb-2" data-testid="text-service-meta-title">
                 {t.services.metaAds.title}
               </h3>
               <p className="text-gray-600 mb-4" data-testid="text-service-meta-description">
