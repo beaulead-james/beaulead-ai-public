@@ -24,16 +24,16 @@ export default {
         primary: {
           DEFAULT: "var(--primary)",
           foreground: "var(--primary-foreground)",
-          50: "hsl(134, 61%, 95%)", // #f0fdf4
-          100: "hsl(134, 61%, 90%)", // #dcfce7
-          200: "hsl(134, 61%, 80%)", // #bbf7d0
-          300: "hsl(134, 61%, 65%)", // #86efac
-          400: "hsl(134, 61%, 55%)", // #4ade80
-          500: "hsl(134, 61%, 41%)", // #22c55e - green-500
-          600: "hsl(134, 61%, 36%)", // #16a34a
-          700: "hsl(134, 61%, 30%)", // #15803d
-          800: "hsl(134, 61%, 24%)", // #166534
-          900: "hsl(134, 61%, 20%)", // #14532d
+          50: "#f0fdf4", // green-50
+          100: "#dcfce7", // green-100  
+          200: "#bbf7d0", // green-200
+          300: "#86efac", // green-300
+          400: "#4ade80", // green-400
+          500: "#22c55e", // green-500
+          600: "#16a34a", // green-600
+          700: "#15803d", // green-700
+          800: "#166534", // green-800
+          900: "#14532d", // green-900
         },
         secondary: {
           DEFAULT: "var(--secondary)",
