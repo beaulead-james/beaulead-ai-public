@@ -1,0 +1,741 @@
+# 뷰리드AI 웹사이트 Replit 스타터
+
+> **스택 요약**: Next.js 14(App Router) · TypeScript · TailwindCSS · Prisma(SQLite) · NextAuth(Credentials) · next-intl(i18n: ko/en) · API Routes(Slack 웹훅) · SEO 컴포넌트 · Admin CMS(블로그/포트폴리오) · Client Dashboard(유료 클라이언트)
+
+---
+
+## 폴더 트리
+
+```
+beaulead-ai/
+├─ prisma/
+│  └─ schema.prisma
+├─ src/
+│  ├─ app/
+│  │  ├─ (public)/
+│  │  │  ├─ [locale]/
+│  │  │  │  ├─ page.tsx                # 홈
+│  │  │  │  ├─ about/
+│  │  │  │  │  ├─ page.tsx             # 회사소개
+│  │  │  │  │  ├─ philosophy/page.tsx  # 기업철학
+│  │  │  │  │  ├─ leadership/page.tsx  # 대표인사, 임원
+│  │  │  │  │  ├─ profile/page.tsx     # 회사소개(사업영역)
+│  │  │  │  │  ├─ location/page.tsx    # 위치안내
+│  │  │  │  │  └─ history/page.tsx     # 연혁
+│  │  │  │  ├─ services/
+│  │  │  │  │  ├─ page.tsx             # 서비스 랜딩
+│  │  │  │  │  ├─ google-ads/page.tsx
+│  │  │  │  │  ├─ naver-ads/page.tsx
+│  │  │  │  │  ├─ meta-ads/page.tsx
+│  │  │  │  │  └─ kakao-ads/page.tsx
+│  │  │  │  ├─ blog/
+│  │  │  │  │  ├─ page.tsx             # 블로그 리스트
+│  │  │  │  │  └─ [slug]/page.tsx      # 블로그 상세
+│  │  │  │  ├─ portfolio/
+│  │  │  │  │  ├─ page.tsx             # 포트폴리오 리스트
+│  │  │  │  │  └─ [slug]/page.tsx      # 포트폴리오 상세
+│  │  │  │  ├─ contact/page.tsx        # 프로젝트문의 (폼 → Slack)
+│  │  │  │  ├─ careers/page.tsx        # 채용
+│  │  │  │  ├─ layout.tsx
+│  │  │  │  └─ global-error.tsx
+│  │  ├─ (protected)/
+│  │  │  ├─ admin/
+│  │  │  │  ├─ page.tsx                # Admin 대시보드
+│  │  │  │  ├─ blog/
+│  │  │  │  │  ├─ page.tsx             # CRUD 리스트
+│  │  │  │  │  ├─ new/page.tsx
+│  │  │  │  │  └─ [id]/page.tsx
+│  │  │  │  ├─ portfolio/
+│  │  │  │  │  ├─ page.tsx             # CRUD 리스트
+│  │  │  │  │  ├─ new/page.tsx
+│  │  │  │  │  └─ [id]/page.tsx
+│  │  │  │  ├─ analytics/page.tsx      # 접속 통계(임베드/차트)
+│  │  │  │  └─ users/page.tsx          # 유저 관리
+│  │  │  ├─ dashboard/page.tsx         # 유료 클라이언트 대시보드
+│  │  │  └─ layout.tsx                 # 보호 라우트용 레이아웃
+│  │  ├─ api/
+│  │  │  ├─ contact/route.ts           # Slack 웹훅
+│  │  │  ├─ auth/[...nextauth]/route.ts
+│  │  │  ├─ blog/route.ts              # POST, GET
+│  │  │  ├─ blog/[id]/route.ts         # PUT, DELETE, GET
+│  │  │  ├─ portfolio/route.ts
+│  │  │  ├─ portfolio/[id]/route.ts
+│  │  │  └─ me/route.ts
+│  │  ├─ middleware.ts                 # i18n/보호 라우팅
+│  │  └─ robots.txt/route.ts
+│  ├─ components/
+│  │  ├─ Seo.tsx
+│  │  ├─ Nav.tsx
+│  │  ├─ Footer.tsx
+│  │  ├─ LangSwitcher.tsx
+│  │  ├─ Forms.tsx
+│  │  └─ Cards.tsx
+│  ├─ lib/
+│  │  ├─ i18n.ts
+│  │  ├─ auth.ts
+│  │  ├─ prisma.ts
+│  │  ├─ validators.ts
+│  │  └─ slack.ts
+│  └─ styles/globals.css
+├─ public/
+│  ├─ favicon.ico
+│  └─ og-default.jpg
+├─ .env.example
+├─ next.config.mjs
+├─ package.json
+├─ postcss.config.mjs
+├─ tailwind.config.ts
+└─ tsconfig.json
+```
+
+---
+
+## 환경변수(.env.example)
+
+```bash
+# NextAuth
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=changeme-supersecret
+
+# DB (Prisma SQLite 기본)
+DATABASE_URL=file:./dev.db
+
+# Slack Incoming Webhook (문의폼)
+SLACK_WEBHOOK_URL=https://hooks.slack.com/services/XXX/YYY/ZZZ
+
+# 사이트 기본 메타
+SITE_NAME=뷰리드AI | 퍼포먼스마케팅 · SEO · 자동화 솔루션
+SITE_URL=https://www.xn--oi2ba04bai4alco.co.kr  # www.뷰리드AI.co.kr의 punycode 예시
+SITE_LOCALE_DEFAULT=ko
+```
+
+---
+
+## Prisma 스키마(prisma/schema.prisma)
+
+```prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  role      Role     @default(USER)
+  password  String   // bcrypt hash (Credentials Login)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sessions  Session[]
+  accounts  Account[]
+}
+
+enum Role { USER ADMIN CLIENT }
+
+model Blog {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title_ko  String
+  title_en  String
+  excerpt_ko String?
+  excerpt_en String?
+  content_ko String
+  content_en String
+  coverUrl  String?
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Portfolio {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title_ko  String
+  title_en  String
+  summary_ko String
+  summary_en String
+  metrics   Json?
+  thumbUrl  String?
+  images    Json?
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @map("refresh_token")
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+```
+
+---
+
+## Next 설정(next.config.mjs)
+
+```js
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  experimental: { serverActions: { allowedOrigins: ["*"] } },
+  images: { remotePatterns: [{ protocol: 'https', hostname: '**' }] },
+  i18n: { locales: ['ko', 'en'], defaultLocale: 'ko' },
+};
+export default nextConfig;
+```
+
+---
+
+## 패키지(package.json)
+
+```json
+{
+  "name": "beaulead-ai",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "prisma:gen": "prisma generate",
+    "prisma:migrate": "prisma migrate dev --name init"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.16.2",
+    "bcryptjs": "^2.4.3",
+    "next": "^14.2.5",
+    "next-auth": "^4.24.7",
+    "next-intl": "^3.14.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zod": "^3.23.8",
+    "class-variance-authority": "^0.7.0"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^20.11.30",
+    "@types/react": "^18.3.3",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.41",
+    "prisma": "^5.16.2",
+    "tailwindcss": "^3.4.10",
+    "typescript": "^5.5.4"
+  }
+}
+```
+
+---
+
+## Tailwind 설정(tailwind.config.ts)
+
+```ts
+import type { Config } from 'tailwindcss'
+const config: Config = {
+  content: ["./src/**/*.{ts,tsx}"],
+  theme: { extend: { container: { center: true, padding: '1rem' } } },
+  plugins: []
+}
+export default config
+```
+
+## 글로벌 스타일(src/styles/globals.css)
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: light; }
+```
+
+---
+
+## Prisma 클라이언트(src/lib/prisma.ts)
+
+```ts
+import { PrismaClient } from '@prisma/client'
+const globalForPrisma = global as unknown as { prisma: PrismaClient }
+export const prisma = globalForPrisma.prisma || new PrismaClient()
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+```
+
+---
+
+## Auth 설정(src/lib/auth.ts)
+
+```ts
+import NextAuth, { type NextAuthOptions } from 'next-auth'
+import Credentials from 'next-auth/providers/credentials'
+import { prisma } from './prisma'
+import bcrypt from 'bcryptjs'
+
+export const authOptions: NextAuthOptions = {
+  session: { strategy: 'jwt' },
+  pages: { signIn: '/ko/auth/signin' },
+  providers: [
+    Credentials({
+      name: 'Credentials',
+      credentials: { email: {}, password: {} },
+      async authorize(creds) {
+        if (!creds?.email || !creds?.password) return null
+        const user = await prisma.user.findUnique({ where: { email: creds.email } })
+        if (!user) return null
+        const ok = await bcrypt.compare(creds.password, user.password)
+        return ok ? { id: user.id, email: user.email, name: user.name, role: user.role } as any : null
+      }
+    })
+  ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) token.role = (user as any).role
+      return token
+    },
+    async session({ session, token }) {
+      (session as any).role = token.role
+      return session
+    }
+  }
+}
+```
+
+---
+
+## Slack 유틸(src/lib/slack.ts)
+
+```ts
+export async function sendToSlack(payload: any) {
+  const url = process.env.SLACK_WEBHOOK_URL
+  if (!url) throw new Error('SLACK_WEBHOOK_URL not set')
+  await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+}
+```
+
+---
+
+## 문의 API(src/app/api/contact/route.ts)
+
+```ts
+import { NextResponse } from 'next/server'
+import { z } from 'zod'
+import { sendToSlack } from '@/lib/slack'
+
+const Schema = z.object({
+  name: z.string().min(1),
+  phone: z.string().min(7),
+  email: z.string().email(),
+  budget: z.string().optional(),
+  message: z.string().min(1)
+})
+
+export async function POST(req: Request) {
+  const json = await req.json()
+  const data = Schema.parse(json)
+  await sendToSlack({
+    text: `🆕 프로젝트 문의\n• 이름: ${data.name}\n• 연락처: ${data.phone}\n• 이메일: ${data.email}\n• 예산: ${data.budget ?? '-'}\n• 내용: ${data.message}`
+  })
+  return NextResponse.json({ ok: true })
+}
+```
+
+---
+
+## SEO 컴포넌트(src/components/Seo.tsx)
+
+```tsx
+import React from 'react'
+export default function Seo({ title, description, keywords }: { title?: string; description?: string; keywords?: string }) {
+  const site = process.env.SITE_NAME ?? '뷰리드AI'
+  const fullTitle = title ? `${title} | ${site}` : site
+  const desc = description ?? '퍼포먼스마케팅 · SEO · 자동화 솔루션'
+  const kw = keywords ?? '뷰리드AI, 퍼포먼스마케팅, SEO, 자동화'
+  const url = process.env.SITE_URL ?? ''
+  return (
+    <>
+      <title>{fullTitle}</title>
+      <meta name="description" content={desc} />
+      <meta name="keywords" content={kw} />
+      <meta property="og:title" content={fullTitle} />
+      <meta property="og:description" content={desc} />
+      <meta property="og:type" content="website" />
+      <meta property="og:url" content={url} />
+      <meta property="og:image" content={`${url}/og-default.jpg`} />
+      <meta name="twitter:card" content="summary_large_image" />
+    </>
+  )
+}
+```
+
+---
+
+## 네비/푸터/언어 스위처 예시
+
+```tsx
+// src/components/Nav.tsx
+'use client'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+export default function Nav({ locale = 'ko' }: { locale?: 'ko' | 'en' }) {
+  const base = `/${locale}`
+  const menus = [
+    { href: `${base}`, label: locale === 'ko' ? '홈' : 'Home' },
+    { href: `${base}/about`, label: locale === 'ko' ? '회사소개' : 'About' },
+    { href: `${base}/services`, label: locale === 'ko' ? '서비스' : 'Services' },
+    { href: `${base}/blog`, label: 'Blog' },
+    { href: `${base}/portfolio`, label: locale === 'ko' ? '포트폴리오' : 'Portfolio' },
+    { href: `${base}/contact`, label: locale === 'ko' ? '프로젝트문의' : 'Contact' },
+    { href: `${base}/careers`, label: locale === 'ko' ? '채용' : 'Careers' },
+  ]
+  const pathname = usePathname()
+  return (
+    <nav className="flex gap-4 py-4 items-center">
+      <Link href={base} className="font-bold">뷰리드AI</Link>
+      <div className="flex gap-3 text-sm">
+        {menus.map(m => (
+          <Link key={m.href} href={m.href} className={pathname===m.href? 'font-semibold underline' : ''}>{m.label}</Link>
+        ))}
+      </div>
+      <div className="ml-auto flex gap-2 text-xs">
+        <Link href={pathname?.replace('/ko','/en') || '/en'}>EN</Link>
+        <span>·</span>
+        <Link href={pathname?.replace('/en','/ko') || '/ko'}>KO</Link>
+      </div>
+    </nav>
+  )
+}
+```
+
+---
+
+## 퍼블릭 레이아웃(src/app/(public)/\[locale]/layout.tsx)
+
+```tsx
+import '../globals.css'
+import Nav from '@/components/Nav'
+import Footer from '@/components/Footer'
+
+export default function PublicLayout({ children, params }: any) {
+  const { locale } = params
+  return (
+    <html lang={locale}>
+      <body className="min-h-screen antialiased">
+        <div className="container">
+          <Nav locale={locale} />
+          <main className="py-8">{children}</main>
+          <Footer />
+        </div>
+      </body>
+    </html>
+  )
+}
+```
+
+---
+
+## 홈 예시(src/app/(public)/\[locale]/page.tsx)
+
+```tsx
+import Seo from '@/components/Seo'
+import Link from 'next/link'
+
+export default function Home() {
+  return (
+    <>
+      <Seo title="뷰리드AI" description="퍼포먼스마케팅 · SEO · 자동화 솔루션" />
+      <section className="py-16">
+        <h1 className="text-4xl font-bold">퍼포먼스마케팅 · SEO · 자동화 솔루션</h1>
+        <p className="mt-4 text-gray-600">구글애즈 · 네이버검색광고 · 메타 · 카카오 전문</p>
+        <div className="mt-8 flex gap-3">
+          <Link href="/ko/contact" className="px-5 py-3 rounded-2xl bg-black text-white">프로젝트 문의</Link>
+          <Link href="/ko/portfolio" className="px-5 py-3 rounded-2xl border">포트폴리오 보기</Link>
+        </div>
+      </section>
+    </>
+  )
+}
+```
+
+---
+
+## 서비스 랜딩 예시(src/app/(public)/\[locale]/services/page.tsx)
+
+```tsx
+import Link from 'next/link'
+import Seo from '@/components/Seo'
+export default function Services() {
+  const items = [
+    { href: 'google-ads', title: '구글애즈', desc: '검색/디스플레이/유튜브 광고 설계·운영' },
+    { href: 'naver-ads', title: '네이버검색광고', desc: '파워링크·브랜드검색·SA360·GA4 연동' },
+    { href: 'meta-ads', title: '메타', desc: '페이스북/인스타 퍼포먼스·크리에이티브' },
+    { href: 'kakao-ads', title: '카카오', desc: '톡 채널·DA·키워드·리타게팅' },
+  ]
+  return (
+    <>
+      <Seo title="서비스" />
+      <h1 className="text-3xl font-semibold mb-6">서비스</h1>
+      <div className="grid md:grid-cols-2 gap-4">
+        {items.map(it => (
+          <Link key={it.href} href={`/ko/services/${it.href}`} className="border p-6 rounded-2xl hover:shadow">
+            <h2 className="text-xl font-semibold">{it.title}</h2>
+            <p className="text-gray-600 mt-2">{it.desc}</p>
+          </Link>
+        ))}
+      </div>
+    </>
+  )
+}
+```
+
+---
+
+## 프로젝트 문의 폼(src/app/(public)/\[locale]/contact/page.tsx)
+
+```tsx
+'use client'
+import { useState } from 'react'
+
+export default function Contact() {
+  const [state, setState] = useState<'idle'|'sending'|'sent'|'error'>('idle')
+  async function onSubmit(e: any) {
+    e.preventDefault(); setState('sending')
+    const body = Object.fromEntries(new FormData(e.currentTarget).entries())
+    try {
+      const res = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      if (!res.ok) throw new Error('fail')
+      setState('sent'); e.currentTarget.reset()
+    } catch { setState('error') }
+  }
+  return (
+    <div>
+      <h1 className="text-3xl font-semibold mb-6">프로젝트 문의</h1>
+      <form onSubmit={onSubmit} className="grid gap-3 max-w-xl">
+        <input name="name" placeholder="이름" className="border p-3 rounded-xl" required />
+        <input name="phone" placeholder="연락처" className="border p-3 rounded-xl" required />
+        <input name="email" type="email" placeholder="이메일" className="border p-3 rounded-xl" required />
+        <input name="budget" placeholder="예산 범위(선택)" className="border p-3 rounded-xl" />
+        <textarea name="message" placeholder="요청사항" className="border p-3 rounded-xl" required />
+        <button className="bg-black text-white px-5 py-3 rounded-2xl" disabled={state==='sending'}>
+          {state==='sending' ? '전송 중…' : '보내기'}
+        </button>
+        {state==='sent' && <p className="text-green-600">전송되었습니다. 곧 연락드릴게요.</p>}
+        {state==='error' && <p className="text-red-600">전송 오류가 발생했습니다.</p>}
+      </form>
+    </div>
+  )
+}
+```
+
+---
+
+## Admin 보호 레이아웃(src/app/(protected)/layout.tsx)
+
+```tsx
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
+import Link from 'next/link'
+
+export default async function ProtectedLayout({ children }: any) {
+  const session = await getServerSession(authOptions)
+  if (!session || (session as any).role !== 'ADMIN') {
+    return <html><body className="container py-16">접근 권한이 없습니다.</body></html>
+  }
+  return (
+    <html><body className="container py-8">
+      <nav className="flex gap-4">
+        <Link href="/ko/admin">대시보드</Link>
+        <Link href="/ko/admin/blog">블로그</Link>
+        <Link href="/ko/admin/portfolio">포트폴리오</Link>
+        <Link href="/ko/admin/analytics">접속 통계</Link>
+        <Link href="/ko/admin/users">유저</Link>
+      </nav>
+      <main className="py-6">{children}</main>
+    </body></html>
+  )
+}
+```
+
+---
+
+## 블로그 CRUD API 예시(src/app/api/blog/route.ts)
+
+```ts
+import { prisma } from '@/lib/prisma'
+import { NextResponse } from 'next/server'
+
+export async function GET() {
+  const list = await prisma.blog.findMany({ orderBy: { createdAt: 'desc' } })
+  return NextResponse.json(list)
+}
+
+export async function POST(req: Request) {
+  const data = await req.json()
+  const created = await prisma.blog.create({ data })
+  return NextResponse.json(created)
+}
+```
+
+---
+
+## i18n: 라우팅 전략
+
+* URL 프리픽스 사용: `/ko/...`, `/en/...`
+* 기본 로케일 `ko` (next.config.mjs 설정)
+* 각 문서 모델에 `*_ko`, `*_en` 필드로 다국어 필드 보유
+
+---
+
+## 배포/운영 가이드 (Replit)
+
+1. **Replit → Create Repl → Node.js** 대신 **Next.js** 템플릿 선택
+2. 위 파일 구조대로 생성 후 패키지 설치: `npm i`
+3. `npx prisma generate` → `npx prisma migrate dev --name init`
+4. `.env` 작성 (Webhook/도메인 등)
+5. "Run" 시 포트 3000 노출, Replit 제공 URL 확인
+6. 커스텀 도메인 연결: `www.xn--oi2ba04bai4alco.co.kr`(국문 도메인 punycode) CNAME → Replit 설정
+
+> **향후 확장**
+>
+> * **Analytics**: Vercel Analytics 또는 Plausible/Umami 임베드
+> * **Client Dashboard**: Google Ads/GA4/Meta Marketing API 연동(토큰 저장용 Postgres/Supabase 전환 권장)
+> * **파일 업로드**: Cloudflare R2 또는 Supabase Storage
+> * **에디터**: 블로그/포폴에 MDX 또는 TipTap 에디터 도입
+
+---
+
+## 초기 콘텐츠 템플릿(SEO)
+
+* 각 페이지에서 `<Seo title='' description='' keywords='' />` 사용
+* 예) `/services/google-ads` → `title="구글애즈 대행" description="검색/디스플레이/유튜브 최적화" keywords="구글광고, 유튜브광고, GA4"`
+
+---
+
+### 다음 단계 체크리스트
+
+* [ ] Replit에 프로젝트 생성
+* [ ] .env 세팅(특히 Slack 웹훅)
+* [ ] `prisma migrate`로 DB 초기화 & **관리자 계정 삽입**(수동 seed)
+* [ ] 네비게이션 텍스트/카피라이팅 반영
+* [ ] 블로그/포트폴리오 더미 3\~5건 입력
+* [ ] 다국어 텍스트 입력(ko/en)
+
+**시드 스니펫(관리자 생성)**
+
+```ts
+// scripts/seed-admin.ts (임시 실행: ts-node 또는 node --loader ts-node/esm)
+import { prisma } from '@/lib/prisma'
+import bcrypt from 'bcryptjs'
+
+async function main(){
+  const email = 'admin@beaulead.io'
+  const password = await bcrypt.hash('ChangeMe123!', 10)
+  await prisma.user.upsert({
+    where: { email },
+    update: { role: 'ADMIN' },
+    create: { email, password, role: 'ADMIN', name: 'Admin' }
+  })
+  console.log('Admin ready')
+}
+main()
+```
+
+---
+
+> 이 스타터로 **홈/회사소개/서비스(4)/블로그/포트폴리오/프로젝트문의/채용**까지 기본 라우팅과 SEO, 문의→Slack, 다국어, CMS 뼈대를 모두 갖춥니다. 이후 디자인(브랜드 컬러·UI 컴포넌트)은 벤치마킹 톤앤매너에 맞춰 커스텀합니다.
+
+---
+
+## Replit 에이전트 명령 프롬프트 (그대로 복붙)
+
+```
+프로젝트 이름: beaulead-ai
+목표: Next.js 14(App Router) + TypeScript + Tailwind + Prisma(SQLite→추후 Postgres) + NextAuth + i18n(ko/en)로 기업 사이트/관리자 CMS/문의→Slack 를 한 레포에서 구동. 초기 MVP 배포까지 완료.
+
+1) Next.js 앱 생성 및 패키지 설치
+- create-next-app은 스킵(빈 Next.js 템플릿이면 OK). 다음 패키지 설치:
+  npm i next@14 react react-dom @prisma/client next-auth next-intl zod bcryptjs
+  npm i -D typescript @types/node @types/react prisma tailwindcss postcss autoprefixer
+
+2) Tailwind 초기화
+  npx tailwindcss init -p
+  tailwind.config.ts 의 content에 "./src/**/*.{ts,tsx}" 포함. (없으면 생성)
+  src/styles/globals.css 생성 후 @tailwind base/components/utilities 추가.
+
+3) 프로젝트 구조/파일 생성
+- 캔버스 문서의 폴더 트리와 동일하게 생성. (prisma/, src/app/(public)/[locale]/..., (protected)/..., api routes, components, lib 등)
+- 아래 핵심 파일을 정확히 작성해 넣기:
+  • prisma/schema.prisma (User/Blog/Portfolio/Session/Account, Role enum) ← 캔버스 본문 사용
+  • src/lib/prisma.ts, src/lib/auth.ts, src/lib/slack.ts ← 캔버스 본문 사용
+  • src/components/Seo.tsx, Nav.tsx, Footer.tsx(심플), LangSwitcher.tsx(옵션)
+  • src/app/api/contact/route.ts (Slack 웹훅 호출) ← 캔버스 본문 사용
+  • src/app/(public)/[locale]/layout.tsx, page.tsx(홈), services/page.tsx, contact/page.tsx ← 캔버스 본문 사용
+  • src/app/(protected)/layout.tsx (권한 체크: ADMIN)
+  • src/app/api/blog/*.ts 와 portfolio/*.ts 의 CRUD 예시(리스트/생성만 먼저)
+  • next.config.mjs (i18n ko/en)
+  • tailwind.config.ts (container center 등)
+  • robots.txt/route.ts (간단 OK)
+
+4) 환경변수 파일 생성(.env)
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=ChangeMe-NextAuth-Secret
+DATABASE_URL=file:./dev.db
+SLACK_WEBHOOK_URL=PUT_YOUR_SLACK_WEBHOOK
+SITE_NAME=뷰리드AI | 퍼포먼스마케팅 · SEO · 자동화 솔루션
+SITE_URL=https://www.xn--oi2ba04bai4alco.co.kr
+SITE_LOCALE_DEFAULT=ko
+
+5) Prisma 세팅 및 마이그레이션
+  npx prisma generate
+  npx prisma migrate dev --name init
+
+6) 관리자 계정 시드 스크립트 작성 및 실행
+- scripts/seed-admin.js 생성 (Node 순수 JS)
+  내용: prisma.user.upsert({ email: 'admin@beaulead.io', role: 'ADMIN', password: bcrypt.hash('ChangeMe123!',10) })
+- 실행: node scripts/seed-admin.js
+
+7) 개발 서버 실행
+  npm run dev
+  출력된 URL 접속 → /ko 로 접근, /ko/admin 은 로그인 필요.
+
+8) 기본 점검
+- /ko/contact 에서 폼 제출 → Slack 웹훅으로 메시지 수신 확인.
+- /ko/services, /ko/blog, /ko/portfolio 라우팅, SEO <Seo/> 메타 태그 삽입 확인.
+- 다국어 라우팅 동작 확인: /en 경로 접근.
+
+9) 빌드/배포
+  npm run build && npm start (Replit run 버튼에 연결)
+  Replit 커스텀 도메인에 www.xn--oi2ba04bai4alco.co.kr CNAME 연결(= www.뷰리드AI.co.kr)
+
+10) TODO(에이전트가 해주면 좋음)
+- src/components/Footer.tsx 간단 제작(회사정보/주소/저작권)
+- Admin: /ko/admin/blog, /ko/admin/portfolio 에 테이블+생성 폼(간단) 구현
+- /ko/about 하위(기업철학/리더십/프로필/위치/연혁) 페이지에 최소한의 섹션 마크업 추가
+- SEO: 각 주요 페이지에서 <Seo title description keywords> 샘플 값 반영
+
+메모:
+- 초기 DB는 SQLite로 시작, 운영 이전엔 Postgres 전환 예정.
+- 인증은 NextAuth Credentials. 추후 유료 클라이언트 포털/대시보드는 별도 NestJS API로 확장 예정.
+```
