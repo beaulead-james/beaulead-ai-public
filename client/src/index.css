@@ -4,74 +4,74 @@
 @tailwind utilities;
 
 :root {
-  --background: hsl(0 0% 0%);
+  --background: hsl(262 83% 58%);
   --foreground: hsl(0 0% 100%);
-  --card: hsl(220 13% 9%);
+  --card: hsl(262 83% 20%);
   --card-foreground: hsl(0 0% 100%);
-  --popover: hsl(220 13% 9%);
+  --popover: hsl(262 83% 20%);
   --popover-foreground: hsl(0 0% 100%);
-  --primary: hsl(142 76% 36%);
+  --primary: hsl(262 83% 58%);
   --primary-foreground: hsl(0 0% 100%);
-  --secondary: hsl(220 13% 15%);
+  --secondary: hsl(262 83% 25%);
   --secondary-foreground: hsl(0 0% 100%);
-  --muted: hsl(220 13% 15%);
-  --muted-foreground: hsl(0 0% 64%);
+  --muted: hsl(262 83% 25%);
+  --muted-foreground: hsl(0 0% 80%);
   --accent: hsl(217 91% 60%);
   --accent-foreground: hsl(0 0% 100%);
   --destructive: hsl(0 84.2% 60.2%);
   --destructive-foreground: hsl(0 0% 98%);
-  --border: hsl(220 13% 20%);
-  --input: hsl(220 13% 15%);
-  --ring: hsl(142 76% 36%);
-  --chart-1: hsl(142 76% 36%);
+  --border: hsl(262 83% 30%);
+  --input: hsl(262 83% 25%);
+  --ring: hsl(262 83% 58%);
+  --chart-1: hsl(262 83% 58%);
   --chart-2: hsl(217 91% 60%);
   --chart-3: hsl(173 58% 39%);
   --chart-4: hsl(197 37% 24%);
-  --chart-5: hsl(142 76% 50%);
-  --sidebar: hsl(220 13% 9%);
+  --chart-5: hsl(262 83% 70%);
+  --sidebar: hsl(262 83% 20%);
   --sidebar-foreground: hsl(0 0% 100%);
-  --sidebar-primary: hsl(142 76% 36%);
+  --sidebar-primary: hsl(262 83% 58%);
   --sidebar-primary-foreground: hsl(0 0% 100%);
-  --sidebar-accent: hsl(220 13% 15%);
+  --sidebar-accent: hsl(262 83% 25%);
   --sidebar-accent-foreground: hsl(0 0% 100%);
-  --sidebar-border: hsl(220 13% 20%);
-  --sidebar-ring: hsl(142 76% 36%);
+  --sidebar-border: hsl(262 83% 30%);
+  --sidebar-ring: hsl(262 83% 58%);
   --radius: 0.5rem;
 }
 
 .dark {
-  --background: hsl(0 0% 0%);
+  --background: hsl(262 83% 40%);
   --foreground: hsl(0 0% 100%);
-  --card: hsl(220 13% 7%);
+  --card: hsl(262 83% 15%);
   --card-foreground: hsl(0 0% 100%);
-  --popover: hsl(220 13% 7%);
+  --popover: hsl(262 83% 15%);
   --popover-foreground: hsl(0 0% 100%);
-  --primary: hsl(142 76% 36%);
+  --primary: hsl(262 83% 65%);
   --primary-foreground: hsl(0 0% 100%);
-  --secondary: hsl(220 13% 12%);
+  --secondary: hsl(262 83% 20%);
   --secondary-foreground: hsl(0 0% 100%);
-  --muted: hsl(220 13% 12%);
-  --muted-foreground: hsl(0 0% 65%);
+  --muted: hsl(262 83% 20%);
+  --muted-foreground: hsl(0 0% 75%);
   --accent: hsl(217 91% 60%);
   --accent-foreground: hsl(0 0% 100%);
   --destructive: hsl(0 84.2% 60.2%);
   --destructive-foreground: hsl(0 0% 98%);
-  --border: hsl(220 13% 18%);
-  --input: hsl(220 13% 12%);
-  --ring: hsl(142 76% 36%);
-  --chart-1: hsl(142 76% 36%);
+  --border: hsl(262 83% 25%);
+  --input: hsl(262 83% 20%);
+  --ring: hsl(262 83% 65%);
+  --chart-1: hsl(262 83% 65%);
   --chart-2: hsl(217 91% 60%);
   --chart-3: hsl(173 58% 45%);
   --chart-4: hsl(197 37% 30%);
-  --chart-5: hsl(142 76% 55%);
-  --sidebar: hsl(220 13% 7%);
+  --chart-5: hsl(262 83% 75%);
+  --sidebar: hsl(262 83% 15%);
   --sidebar-foreground: hsl(0 0% 100%);
-  --sidebar-primary: hsl(142 76% 36%);
+  --sidebar-primary: hsl(262 83% 65%);
   --sidebar-primary-foreground: hsl(0 0% 100%);
-  --sidebar-accent: hsl(220 13% 12%);
+  --sidebar-accent: hsl(262 83% 20%);
   --sidebar-accent-foreground: hsl(0 0% 100%);
-  --sidebar-border: hsl(220 13% 18%);
-  --sidebar-ring: hsl(142 76% 36%);
+  --sidebar-border: hsl(262 83% 25%);
+  --sidebar-ring: hsl(262 83% 65%);
 }
 
 @layer base {
@@ -80,25 +80,25 @@
   }
   body {
     @apply bg-background text-foreground font-sans;
-    background: #000000;
+    background: linear-gradient(135deg, hsl(262 83% 25%) 0%, hsl(262 83% 58%) 100%);
   }
 }
 
 /* Premium design enhancements */
 .premium-gradient {
-  background: linear-gradient(135deg, #22c55e 0%, #3b82f6 100%);
+  background: linear-gradient(135deg, hsl(262 83% 58%) 0%, hsl(217 91% 60%) 100%);
 }
 
 .premium-card {
-  background: rgba(0, 0, 0, 0.8);
+  background: hsla(262, 83%, 20%, 0.8);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid hsla(262, 83%, 60%, 0.3);
 }
 
 .glow-effect {
   box-shadow: 
-    0 0 20px rgba(34, 197, 94, 0.3),
-    0 0 40px rgba(34, 197, 94, 0.1);
+    0 0 20px hsla(262, 83%, 58%, 0.4),
+    0 0 40px hsla(262, 83%, 58%, 0.2);
 }
 
 /* Typography enhancements */
