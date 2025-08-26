@@ -24,15 +24,15 @@ export default {
         primary: {
           DEFAULT: "var(--primary)",
           foreground: "var(--primary-foreground)",
-          50: "#faf5ff", // purple-50
-          100: "#f3e8ff", // purple-100  
-          200: "#e9d5ff", // purple-200
-          300: "#d8b4fe", // purple-300
-          400: "#c084fc", // purple-400
-          500: "#a855f7", // purple-500
-          600: "#9333ea", // purple-600
-          700: "#7c3aed", // purple-700
-          800: "#6b21a8", // purple-800
+          50: "#e0f2fe", // blue-50
+          100: "#bae6fd", // blue-100  
+          200: "#7dd3fc", // blue-200
+          300: "#38bdf8", // blue-300
+          400: "#0ea5e9", // blue-400
+          500: "#0A84FF", // PO+PLE brand primary
+          600: "#0369a1", // blue-600
+          700: "#0f172a", // slate-900
+          800: "#1e293b", // slate-800
           900: "#581c87", // purple-900
         },
         secondary: {
