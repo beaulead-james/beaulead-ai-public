@@ -1,0 +1,150 @@
+작업명: 회사소개 > 대표인사말 페이지 생성 (KO/EN, SEO 포함)
+
+목표:
+- 경로: /about/ceo (KO), /en/about/ceo (EN)
+- 벤치마킹 톤: 히어로(타이틀+서브카피) → CEO 소개(사진/이름/직함/서명) → 메시지(문단) → 핵심가치(3~4개 카드) → CTA(프로젝트문의/포트폴리오)
+- SEO 메타 및 구조화 데이터(Person) 추가
+- 내비게이션에 "대표인사말" 링크 추가
+
+1) 패키지 확인(없으면 설치)
+npm --prefix client i react-router-dom react-helmet-async i18next react-i18next
+
+2) 라우팅 추가: client/src/App.jsx 수정
+// 추가 임포트
+import CeoGreeting from "./pages/about/CeoGreeting";
+// 라우트 추가 (BrowserRouter 안)
+<Route path="/about/ceo" element={<CeoGreeting locale="ko" />} />
+<Route path="/en/about/ceo" element={<CeoGreeting locale="en" />} />
+
+3) i18n 번역 파일 생성
+# 한국어: client/src/i18n/ko/about.json
+{
+  "ceo": {
+    "title": "대표 인사말",
+    "heroTitle": "데이터로 성장시키는\n프리미엄 에이전시",
+    "heroSub": "구글·네이버·메타·카카오 광고와 SEO, 자동화로 매출 성장을 설계합니다.",
+    "name": "박현구",
+    "role": "대표이사, 뷰리드AI",
+    "messageP1": "뷰리드AI는 성과를 만드는 데이터와 실행력을 중시합니다. 우리는 광고와 SEO, 그리고 자동화를 유기적으로 연결하여 비용 대비 매출효율(ROAS)을 극대화합니다.",
+    "messageP2": "프로세스의 표준화, 대시보드 투명성, 빠른 실험과 학습을 통해 고객과 함께 성장하는 파트너가 되겠습니다.",
+    "valuesTitle": "우리가 일하는 방식",
+    "values": [
+      { "title": "Performance First", "desc": "성과 지표 중심의 의사결정과 반복 최적화" },
+      { "title": "Transparency", "desc": "데이터·예산·성과를 대시보드로 투명하게 공유" },
+      { "title": "Automation", "desc": "반복 업무 자동화로 속도와 정확도 강화" },
+      { "title": "Partnership", "desc": "장기 성장 관점의 공동 목표 수립" }
+    ],
+    "ctaConsult": "무료 컨설팅 받기",
+    "ctaPortfolio": "포트폴리오 보기"
+  }
+}
+# 영어: client/src/i18n/en/about.json
+{
+  "ceo": {
+    "title": "CEO Message",
+    "heroTitle": "A premium agency\npowered by data",
+    "heroSub": "We drive growth with Google, Naver, Meta, Kakao ads, SEO and automation.",
+    "name": "Hyungoo Park",
+    "role": "CEO, Beaulead AI",
+    "messageP1": "At Beaulead AI, we prioritize data and execution to deliver performance. We orchestrate ads, SEO, and automation to maximize ROAS.",
+    "messageP2": "With standardized processes, transparent dashboards, and rapid experimentation, we aim to be your long-term growth partner.",
+    "valuesTitle": "How we work",
+    "values": [
+      { "title": "Performance First", "desc": "Decisions by KPIs and continuous optimization" },
+      { "title": "Transparency", "desc": "Share data, budget, and results via dashboards" },
+      { "title": "Automation", "desc": "Automate repetitive tasks for speed and accuracy" },
+      { "title": "Partnership", "desc": "Set shared, long-term growth goals" }
+    ],
+    "ctaConsult": "Get free consulting",
+    "ctaPortfolio": "View portfolio"
+  }
+}
+
+4) 스타일 추가: client/src/styles/ceo.css
+.ceo-hero{padding:64px 0}
+.ceo-title{white-space:pre-line;font-weight:800;font-size:clamp(32px,5.5vw,56px);line-height:1.12;letter-spacing:-.02em;margin:0}
+.ceo-sub{margin-top:12px;opacity:.8}
+.ceo-card{display:flex;gap:24px;align-items:center;margin:32px 0}
+.ceo-photo{width:104px;height:104px;border-radius:9999px;object-fit:cover;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.values{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:12px}
+.value{padding:16px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
+.cta{display:flex;gap:12px;margin-top:24px;flex-wrap:wrap}
+.btn{padding:12px 18px;border-radius:14px;border:1px solid rgba(255,255,255,.15)}
+.btn.primary{background:linear-gradient(90deg,#3CC4FF,#20E3B2);color:#00131a;border:none}
+.section{margin:28px 0}
+.container{max-width:1040px;margin:0 auto;padding:0 20px}
+
+5) 페이지 컴포넌트 생성: client/src/pages/about/CeoGreeting.jsx
+import React from "react";
+import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
+import "../../styles/ceo.css";
+
+export default function CeoGreeting({ locale="ko" }) {
+  const { t, i18n } = useTranslation();
+  if (i18n.language !== locale) i18n.changeLanguage(locale);
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": t("ceo.name"),
+    "jobTitle": t("ceo.role"),
+    "worksFor": { "@type": "Organization", "name": "뷰리드AI" }
+  };
+
+  return (
+    <div className="container">
+      <Helmet>
+        <title>{t("ceo.title")} | 뷰리드AI</title>
+        <meta name="description" content={t("ceo.heroSub")} />
+        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+      </Helmet>
+
+      <section className="ceo-hero">
+        <h1 className="ceo-title">{t("ceo.heroTitle")}</h1>
+        <p className="ceo-sub">{t("ceo.heroSub")}</p>
+        <div className="cta">
+          <a className="btn primary" href="/contact">{t("ceo.ctaConsult")}</a>
+          <a className="btn" href="/portfolio">{t("ceo.ctaPortfolio")}</a>
+        </div>
+      </section>
+
+      <section className="section ceo-card">
+        <img className="ceo-photo" src="/assets/ceo.jpg" alt="CEO" />
+        <div>
+          <div style={{fontWeight:700}}>{t("ceo.name")}</div>
+          <div style={{opacity:.8,marginTop:4}}>{t("ceo.role")}</div>
+        </div>
+      </section>
+
+      <section className="section">
+        <p>{t("ceo.messageP1")}</p>
+        <p style={{marginTop:12}}>{t("ceo.messageP2")}</p>
+      </section>
+
+      <section className="section">
+        <h3 style={{fontWeight:700, marginBottom:8}}>{t("ceo.valuesTitle")}</h3>
+        <div className="values">
+          {t("ceo.values", { returnObjects: true }).map((v, i) => (
+            <div key={i} className="value">
+              <div style={{fontWeight:700}}>{v.title}</div>
+              <div style={{opacity:.85, marginTop:6}}>{v.desc}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+6) 내비게이션에 링크 추가 (예: client/src/components/Nav.jsx)
+# 회사소개 드롭다운 또는 단일 메뉴에 다음 링크 추가
+<li><a href="/about/ceo">대표인사말</a></li>
+
+7) 에셋 준비(선택)
+- /client/public/assets/ceo.jpg 파일 추가(대표 프로필 이미지). 없으면 임시 이미지 사용.
+
+8) 검증
+- https://beaulead-ai.replit.app/about/ceo 접속 → 타이틀/메시지/가치/CTA 정상 출력
+- https://beaulead-ai.replit.app/en/about/ceo 접속 → 영어 번역 노출
+- 크롤러 확인: <title>, meta description, Person JSON-LD 삽입 확인
