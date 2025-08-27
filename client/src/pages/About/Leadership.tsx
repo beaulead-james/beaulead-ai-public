@@ -171,8 +171,8 @@ export default function Leadership() {
               <div className="text-center lg:text-left">
                 <div className="relative inline-block mb-8">
                   <img 
-                    src="/attached_assets/robert_1756284324787.png"
-                    alt="로버트 CTO"
+                    src="/attached_assets/robert2_1756284716423.png"
+                    alt="권현수 CTO"
                     className="w-80 h-80 rounded-3xl object-cover shadow-2xl mx-auto lg:mx-0"
                     data-testid="img-cto-profile"
                     onError={(e) => {
@@ -190,7 +190,7 @@ export default function Leadership() {
               <div>
                 <div className="mb-8">
                   <h3 className="text-4xl font-bold text-white mb-4" data-testid="text-cto-name">
-                    로버트
+                    권현수
                   </h3>
                   <p className="text-xl text-green-300 font-semibold mb-6" data-testid="text-cto-title">
                     CTO · Chief Technology Officer
@@ -200,7 +200,7 @@ export default function Leadership() {
                 
                 <div className="space-y-6 text-white/90 leading-relaxed">
                   <p className="text-lg">
-                    뷰리드AI의 기술 혁신을 이끄는 로버트 CTO입니다.
+                    뷰리드AI의 기술 혁신을 이끄는 권현수 CTO입니다.
                   </p>
                   <p>
                     실리콘밸리에서 12년간 AI/ML 분야의 선도적인 기술 개발을 담당했으며, 
