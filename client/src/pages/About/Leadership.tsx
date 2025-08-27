@@ -114,7 +114,7 @@ export default function Leadership() {
         <section className="container max-w-6xl mx-auto mb-20">
           <div className="contact-card">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <div className="lg:order-2 text-center lg:text-left">
+              <div className="text-center lg:text-right">
                 <div className="relative inline-block mb-8">
                   <img 
                     src="/attached_assets/chals_1756284209106.png"
@@ -133,7 +133,7 @@ export default function Leadership() {
                   </div>
                 </div>
               </div>
-              <div className="lg:order-1">
+              <div>
                 <div className="mb-8">
                   <h3 className="text-4xl font-bold text-white mb-4" data-testid="text-vp-name">
                     김수진
