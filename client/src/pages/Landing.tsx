@@ -10,6 +10,12 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Background orbs */}
+      <div className="bg-orb">
+        <div className="orb orb-a"></div>
+        <div className="orb orb-b"></div>
+      </div>
+      
       <SEO />
       <Header />
 
