@@ -62,7 +62,7 @@ export default function Leadership() {
               <div className="text-center lg:text-left">
                 <div className="relative inline-block mb-8">
                   <img 
-                    src="/attached_assets/제임스 프로필 사진_1756281393284.png"
+                    src="/attached_assets/제임스 프로필 사진_1756282254052.png"
                     alt="박현구 대표이사"
                     className="w-80 h-80 rounded-3xl object-cover shadow-2xl mx-auto lg:mx-0"
                     data-testid="img-ceo-profile"
