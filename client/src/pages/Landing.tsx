@@ -241,47 +241,54 @@ export default function Landing() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 lg:py-24 bg-primary-600">
-        <div className="container max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4" data-testid="text-stats-title">
+      <section className="py-20 lg:py-32 relative overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900"></div>
+          <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+          <div className="absolute top-40 right-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+          <div className="absolute bottom-20 left-20 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+        </div>
+        
+        <div className="container max-w-7xl mx-auto relative z-10">
+          <div className="text-center mb-20">
+            <h2 className="hero-title text-4xl lg:text-6xl font-black mb-6" data-testid="text-stats-title">
               {t.stats.title}
             </h2>
-            <p className="text-xl text-primary-100 max-w-3xl mx-auto" data-testid="text-stats-subtitle">
+            <p className="text-xl lg:text-2xl text-white/80 max-w-4xl mx-auto leading-relaxed" data-testid="text-stats-subtitle">
               {t.stats.subtitle}
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="text-4xl lg:text-5xl font-bold text-white mb-2" data-testid="text-stat-projects-value">
+            <div className="stats-card group animate-fade-in-up">
+              <div className="text-5xl lg:text-7xl font-black bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent mb-4" data-testid="text-stat-projects-value">
                 200+
               </div>
-              <div className="text-primary-100 font-medium" data-testid="text-stat-projects-label">
+              <div className="text-white/90 font-semibold text-lg" data-testid="text-stat-projects-label">
                 {t.stats.projects}
               </div>
             </div>
-            <div className="text-center">
-              <div className="text-4xl lg:text-5xl font-bold text-white mb-2" data-testid="text-stat-roas-value">
+            <div className="stats-card group animate-fade-in-up animate-delay-100">
+              <div className="text-5xl lg:text-7xl font-black bg-gradient-to-r from-green-400 via-emerald-400 to-green-400 bg-clip-text text-transparent mb-4" data-testid="text-stat-roas-value">
                 487%
               </div>
-              <div className="text-primary-100 font-medium" data-testid="text-stat-roas-label">
+              <div className="text-white/90 font-semibold text-lg" data-testid="text-stat-roas-label">
                 {t.stats.roas}
               </div>
             </div>
-            <div className="text-center">
-              <div className="text-4xl lg:text-5xl font-bold text-white mb-2" data-testid="text-stat-revenue-value">
+            <div className="stats-card group animate-fade-in-up animate-delay-200">
+              <div className="text-5xl lg:text-7xl font-black bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-400 bg-clip-text text-transparent mb-4" data-testid="text-stat-revenue-value">
                 ₩12.5B
               </div>
-              <div className="text-primary-100 font-medium" data-testid="text-stat-revenue-label">
+              <div className="text-white/90 font-semibold text-lg" data-testid="text-stat-revenue-label">
                 {t.stats.revenue}
               </div>
             </div>
-            <div className="text-center">
-              <div className="text-4xl lg:text-5xl font-bold text-white mb-2" data-testid="text-stat-satisfaction-value">
+            <div className="stats-card group animate-fade-in-up animate-delay-300">
+              <div className="text-5xl lg:text-7xl font-black bg-gradient-to-r from-pink-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-4" data-testid="text-stat-satisfaction-value">
                 98%
               </div>
-              <div className="text-primary-100 font-medium" data-testid="text-stat-satisfaction-label">
+              <div className="text-white/90 font-semibold text-lg" data-testid="text-stat-satisfaction-label">
                 {t.stats.satisfaction}
               </div>
             </div>
@@ -290,58 +297,75 @@ export default function Landing() {
       </section>
 
       {/* Contact Section */}
-      <section className="py-16 lg:py-24 bg-white">
-        <div className="container max-w-7xl mx-auto">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4" data-testid="text-contact-title">
+      <section className="py-20 lg:py-32 relative overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900"></div>
+          <div className="absolute top-10 right-10 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-xl opacity-60 animate-blob"></div>
+          <div className="absolute bottom-10 left-10 w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-xl opacity-60 animate-blob animation-delay-2000"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-600 rounded-full mix-blend-multiply filter blur-xl opacity-50 animate-blob animation-delay-4000"></div>
+        </div>
+        
+        <div className="container max-w-7xl mx-auto relative z-10">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-20">
+              <h2 className="hero-title text-4xl lg:text-6xl font-black mb-6" data-testid="text-contact-title">
                 {t.contact.title}
               </h2>
-              <p className="text-xl text-gray-600" data-testid="text-contact-subtitle">
+              <p className="text-xl lg:text-2xl text-white/80 max-w-4xl mx-auto leading-relaxed" data-testid="text-contact-subtitle">
                 {t.contact.subtitle}
               </p>
             </div>
 
-            <ContactForm />
+            <div className="max-w-4xl mx-auto mb-20">
+              <ContactForm />
+            </div>
 
             {/* Contact info */}
-            <div className="grid md:grid-cols-3 gap-8 mt-16 text-center">
-              <div className="flex flex-col items-center">
-                <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center mb-4">
-                  <i className="fas fa-phone text-primary-600"></i>
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="contact-card animate-fade-in-up">
+                <div className="contact-icon">
+                  <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/>
+                  </svg>
                 </div>
-                <h4 className="font-semibold text-gray-900 mb-2" data-testid="text-contact-phone-title">
+                <h4 className="font-bold text-white text-xl mb-3" data-testid="text-contact-phone-title">
                   {t.contact.phone.title}
                 </h4>
-                <p className="text-gray-600" data-testid="text-contact-phone-value">
+                <p className="text-white/90 text-lg mb-2" data-testid="text-contact-phone-value">
                   {t.contact.phone.value}
                 </p>
-                <p className="text-sm text-gray-500 mt-1" data-testid="text-contact-phone-hours">
+                <p className="text-white/70" data-testid="text-contact-phone-hours">
                   {t.contact.phone.hours}
                 </p>
               </div>
-              <div className="flex flex-col items-center">
-                <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center mb-4">
-                  <i className="fas fa-envelope text-primary-600"></i>
+              
+              <div className="contact-card animate-fade-in-up animate-delay-100">
+                <div className="contact-icon">
+                  <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                  </svg>
                 </div>
-                <h4 className="font-semibold text-gray-900 mb-2" data-testid="text-contact-email-title">
+                <h4 className="font-bold text-white text-xl mb-3" data-testid="text-contact-email-title">
                   {t.contact.email.title}
                 </h4>
-                <p className="text-gray-600" data-testid="text-contact-email-value">
+                <p className="text-white/90 text-lg mb-2" data-testid="text-contact-email-value">
                   {t.contact.email.value}
                 </p>
-                <p className="text-sm text-gray-500 mt-1" data-testid="text-contact-email-response">
+                <p className="text-white/70" data-testid="text-contact-email-response">
                   {t.contact.email.response}
                 </p>
               </div>
-              <div className="flex flex-col items-center">
-                <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center mb-4">
-                  <i className="fas fa-map-marker-alt text-primary-600"></i>
+              
+              <div className="contact-card animate-fade-in-up animate-delay-200">
+                <div className="contact-icon">
+                  <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                  </svg>
                 </div>
-                <h4 className="font-semibold text-gray-900 mb-2" data-testid="text-contact-location-title">
+                <h4 className="font-bold text-white text-xl mb-3" data-testid="text-contact-location-title">
                   {t.contact.location.title}
                 </h4>
-                <p className="text-gray-600" data-testid="text-contact-location-value">
+                <p className="text-white/90 text-lg mb-3" data-testid="text-contact-location-value">
                   {t.contact.location.value.split('\n').map((line, index) => (
                     <span key={index}>
                       {line}
@@ -351,10 +375,13 @@ export default function Landing() {
                 </p>
                 <Link 
                   href="/about/location" 
-                  className="text-sm text-primary-600 hover:text-primary-700 mt-1"
+                  className="inline-flex items-center text-white font-semibold hover:text-white/80 transition-colors"
                   data-testid="link-contact-location"
                 >
-                  {t.contact.location.link}
+                  <span>{t.contact.location.link}</span>
+                  <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
                 </Link>
               </div>
             </div>
