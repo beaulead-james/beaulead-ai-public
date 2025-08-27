@@ -56,6 +56,8 @@ app.use((req, res, next) => {
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
+    // Serve attached assets in production as well
+    app.use('/attached_assets', express.static('attached_assets'));
     serveStatic(app);
   }
 
