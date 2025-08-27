@@ -24,12 +24,51 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         <Link href="/" className="mobile-menu-item" onClick={handleLinkClick} data-testid="link-mobile-home">
           {t.nav.home}
         </Link>
-        <Link href="/about" className="mobile-menu-item" onClick={handleLinkClick} data-testid="link-mobile-about">
-          {t.nav.about}
-        </Link>
-        <Link href="/services" className="mobile-menu-item" onClick={handleLinkClick} data-testid="link-mobile-services">
-          {t.nav.services}
-        </Link>
+        
+        {/* About 서브메뉴 */}
+        <div className="space-y-1">
+          <div className="mobile-menu-item font-semibold text-white/90">
+            {t.nav.about}
+          </div>
+          <Link href="/about/philosophy" className="mobile-menu-item ml-4 text-sm" onClick={handleLinkClick} data-testid="link-mobile-philosophy">
+            {t.nav.philosophy}
+          </Link>
+          <Link href="/about/leadership" className="mobile-menu-item ml-4 text-sm" onClick={handleLinkClick} data-testid="link-mobile-leadership">
+            {t.nav.leadership}
+          </Link>
+          <Link href="/about/profile" className="mobile-menu-item ml-4 text-sm" onClick={handleLinkClick} data-testid="link-mobile-profile">
+            {t.nav.profile}
+          </Link>
+          <Link href="/about/location" className="mobile-menu-item ml-4 text-sm" onClick={handleLinkClick} data-testid="link-mobile-location">
+            {t.nav.location}
+          </Link>
+          <Link href="/about/history" className="mobile-menu-item ml-4 text-sm" onClick={handleLinkClick} data-testid="link-mobile-history">
+            {t.nav.history}
+          </Link>
+          <Link href="/about/brand" className="mobile-menu-item ml-4 text-sm" onClick={handleLinkClick} data-testid="link-mobile-brand">
+            브랜드 CI
+          </Link>
+        </div>
+        
+        {/* Services 서브메뉴 */}
+        <div className="space-y-1">
+          <div className="mobile-menu-item font-semibold text-white/90">
+            {t.nav.services}
+          </div>
+          <Link href="/services/google-ads" className="mobile-menu-item ml-4 text-sm" onClick={handleLinkClick} data-testid="link-mobile-google-ads">
+            {t.nav.googleAds}
+          </Link>
+          <Link href="/services/naver-ads" className="mobile-menu-item ml-4 text-sm" onClick={handleLinkClick} data-testid="link-mobile-naver-ads">
+            {t.nav.naverAds}
+          </Link>
+          <Link href="/services/meta-ads" className="mobile-menu-item ml-4 text-sm" onClick={handleLinkClick} data-testid="link-mobile-meta-ads">
+            {t.nav.metaAds}
+          </Link>
+          <Link href="/services/kakao-ads" className="mobile-menu-item ml-4 text-sm" onClick={handleLinkClick} data-testid="link-mobile-kakao-ads">
+            {t.nav.kakaoAds}
+          </Link>
+        </div>
+        
         <Link href="/blog" className="mobile-menu-item" onClick={handleLinkClick} data-testid="link-mobile-blog">
           {t.nav.blog}
         </Link>
