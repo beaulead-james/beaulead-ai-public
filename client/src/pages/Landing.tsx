@@ -21,19 +21,14 @@ export default function Landing() {
       <Header />
 
       {/* Hero Section */}
-      <section className="relative py-20 lg:py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-secondary"></div>
-        <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl"></div>
-        </div>
+      <section className="hero-container relative py-24 lg:py-40 overflow-hidden">
         <div className="container max-w-7xl mx-auto relative">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="inline-flex items-center bg-card px-4 py-2 rounded-full border border-border mb-6">
-                <span className="text-sm font-medium text-primary">✨ 프리미엄</span>
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div className="space-y-8">
+              <div className="inline-flex items-center bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full border border-white/20">
+                <span className="text-sm font-semibold text-white">✨ AI 기반 퍼포먼스 마케팅</span>
               </div>
-              <h1 className="hero-title text-5xl lg:text-6xl xl:text-7xl font-extrabold text-foreground leading-tight tracking-tight mb-6" data-testid="text-hero-title">
+              <h1 className="hero-title" data-testid="text-hero-title">
                 {t.hero.title.split('\n').map((line, index) => (
                   <span key={index}>
                     {index === 1 ? <span className="marker">{line}</span> : line}
@@ -41,7 +36,7 @@ export default function Landing() {
                   </span>
                 ))}
               </h1>
-              <p className="text-xl text-muted-foreground mb-8 leading-relaxed" data-testid="text-hero-subtitle">
+              <p className="hero-subtitle text-white/80" data-testid="text-hero-subtitle">
                 {t.hero.subtitle.split('\n').map((line, index) => (
                   <span key={index}>
                     {line}
@@ -49,74 +44,85 @@ export default function Landing() {
                   </span>
                 ))}
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-6">
                 <Link 
                   href="/contact" 
-                  className="premium-gradient text-primary-foreground px-8 py-4 rounded-xl font-semibold hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 text-center glow-effect"
+                  className="modern-btn"
                   data-testid="button-cta-contact"
                 >
-                  {t.hero.cta1}
+                  <span>{t.hero.cta1}</span>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
                 </Link>
                 <Link 
                   href="/portfolio" 
-                  className="premium-card text-foreground px-8 py-4 rounded-xl font-semibold hover:border-primary/50 transition-all duration-300 text-center"
+                  className="modern-btn-outline"
                   data-testid="button-cta-portfolio"
                 >
-                  {t.hero.cta2}
+                  <span>{t.hero.cta2}</span>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
                 </Link>
               </div>
             </div>
             <div className="relative">
-              {/* Hero dashboard mockup */}
-              <div className="premium-card rounded-2xl shadow-2xl p-6 glow-effect">
+              {/* 현대적인 대시보드 모형 */}
+              <div className="floating-card relative">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-semibold text-foreground" data-testid="text-dashboard-title">
-                    퍼포먼스 대시보드
+                  <h3 className="text-xl font-bold text-white" data-testid="text-dashboard-title">
+                    AI 퍼포먼스 대시보드
                   </h3>
-                  <div className="flex space-x-2">
-                    <div className="w-3 h-3 bg-red-400 rounded-full"></div>
-                    <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
-                    <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                  <div className="flex space-x-3">
+                    <div className="w-4 h-4 bg-gradient-to-r from-red-400 to-red-500 rounded-full shadow-lg"></div>
+                    <div className="w-4 h-4 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full shadow-lg"></div>
+                    <div className="w-4 h-4 bg-gradient-to-r from-green-400 to-green-500 rounded-full shadow-lg"></div>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-4 mb-6">
-                  <div className="bg-primary/10 p-4 rounded-lg border border-primary/20">
-                    <div className="text-sm text-primary font-medium" data-testid="text-metric-revenue-label">
-                      총 매출
+                <div className="grid grid-cols-2 gap-6 mb-8">
+                  <div className="bg-gradient-to-br from-blue-500/20 to-purple-600/20 p-5 rounded-2xl border border-blue-400/30">
+                    <div className="text-sm text-blue-300 font-semibold mb-2" data-testid="text-metric-revenue-label">
+                      월 매출액
                     </div>
-                    <div className="text-2xl font-bold text-primary" data-testid="text-metric-revenue-value">
-                      ₩12.5M
+                    <div className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent" data-testid="text-metric-revenue-value">
+                      ₩15.2M
                     </div>
-                    <div className="text-xs text-primary/70" data-testid="text-metric-revenue-change">
-                      +24% 증가
+                    <div className="text-sm text-green-400 font-medium" data-testid="text-metric-revenue-change">
+                      ↗ +32% 성장
                     </div>
                   </div>
-                  <div className="bg-accent/10 p-4 rounded-lg border border-accent/20">
-                    <div className="text-sm text-accent font-medium" data-testid="text-metric-roas-label">
-                      ROAS
+                  <div className="bg-gradient-to-br from-purple-500/20 to-pink-600/20 p-5 rounded-2xl border border-purple-400/30">
+                    <div className="text-sm text-purple-300 font-semibold mb-2" data-testid="text-metric-roas-label">
+                      평균 ROAS
                     </div>
-                    <div className="text-2xl font-bold text-accent" data-testid="text-metric-roas-value">
-                      487%
+                    <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent" data-testid="text-metric-roas-value">
+                      524%
                     </div>
-                    <div className="text-xs text-accent/70" data-testid="text-metric-roas-change">
-                      +12% 개선
+                    <div className="text-sm text-green-400 font-medium" data-testid="text-metric-roas-change">
+                      ↗ +18% 향상
                     </div>
                   </div>
                 </div>
-                <div className="h-32 bg-gradient-to-r from-primary/20 to-accent/20 rounded-lg flex items-end justify-around p-4">
-                  <div className="w-8 bg-primary rounded-t" style={{ height: '60%' }}></div>
-                  <div className="w-8 bg-primary rounded-t" style={{ height: '80%' }}></div>
-                  <div className="w-8 bg-accent rounded-t" style={{ height: '90%' }}></div>
-                  <div className="w-8 bg-accent rounded-t" style={{ height: '75%' }}></div>
-                  <div className="w-8 bg-primary rounded-t" style={{ height: '95%' }}></div>
+                <div className="h-40 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 rounded-2xl flex items-end justify-around p-6 border border-white/10">
+                  <div className="w-10 bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-lg shadow-lg" style={{ height: '55%' }}></div>
+                  <div className="w-10 bg-gradient-to-t from-purple-500 to-purple-400 rounded-t-lg shadow-lg" style={{ height: '75%' }}></div>
+                  <div className="w-10 bg-gradient-to-t from-pink-500 to-pink-400 rounded-t-lg shadow-lg" style={{ height: '90%' }}></div>
+                  <div className="w-10 bg-gradient-to-t from-indigo-500 to-indigo-400 rounded-t-lg shadow-lg" style={{ height: '68%' }}></div>
+                  <div className="w-10 bg-gradient-to-t from-cyan-500 to-cyan-400 rounded-t-lg shadow-lg" style={{ height: '95%' }}></div>
                 </div>
               </div>
-              {/* Floating elements */}
-              <div className="absolute -top-4 -right-4 premium-card rounded-lg shadow-lg p-3">
-                <i className="fas fa-chart-line text-primary text-xl"></i>
+              {/* 플로팅 요소들 */}
+              <div className="absolute -top-6 -right-6 modern-icon">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
               </div>
-              <div className="absolute -bottom-4 -left-4 premium-card rounded-lg shadow-lg p-3">
-                <i className="fas fa-bullseye text-accent text-xl"></i>
+              <div className="absolute -bottom-6 -left-6 modern-icon">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
               </div>
             </div>
           </div>
@@ -124,91 +130,110 @@ export default function Landing() {
       </section>
 
       {/* Services Section */}
-      <section className="py-16 lg:py-24 bg-secondary/30">
+      <section className="py-20 lg:py-32 bg-gradient-to-b from-transparent to-black/20">
         <div className="container max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4" data-testid="text-services-title">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent mb-6" data-testid="text-services-title">
               {t.services.title}
             </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto" data-testid="text-services-subtitle">
+            <p className="text-xl text-white/70 max-w-4xl mx-auto leading-relaxed" data-testid="text-services-subtitle">
               {t.services.subtitle}
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="group premium-card rounded-xl p-6 hover:shadow-xl hover:border-primary/30 transition-all duration-300">
-              <div className="w-16 h-16 bg-primary/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary/30 transition-colors">
-                <i className="fab fa-google text-2xl text-primary"></i>
+            <div className="service-card group animate-fade-in-up">
+              <div className="modern-icon bg-gradient-to-r from-red-500 to-orange-500">
+                <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
               </div>
-              <h3 className="text-xl font-semibold text-foreground mb-2" data-testid="text-service-google-title">
+              <h3 className="text-xl font-bold text-white mb-3" data-testid="text-service-google-title">
                 {t.services.googleAds.title}
               </h3>
-              <p className="text-muted-foreground mb-4" data-testid="text-service-google-description">
+              <p className="text-white/70 mb-6" data-testid="text-service-google-description">
                 {t.services.googleAds.description}
               </p>
               <Link 
                 href="/services/google-ads" 
-                className="text-primary font-medium hover:text-primary/80 transition-colors"
+                className="inline-flex items-center text-white font-semibold hover:text-white/80 transition-colors"
                 data-testid="link-service-google"
               >
-                {t.services.learnMore} <i className="fas fa-arrow-right ml-1"></i>
+                <span>{t.services.learnMore}</span>
+                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
               </Link>
             </div>
 
-            <div className="group premium-card rounded-xl p-6 hover:shadow-xl hover:border-primary/30 transition-all duration-300">
-              <div className="w-16 h-16 bg-accent/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-accent/30 transition-colors">
-                <span className="text-2xl font-bold text-accent">N</span>
+            <div className="service-card group animate-fade-in-up animate-delay-100">
+              <div className="modern-icon bg-gradient-to-r from-green-500 to-emerald-500">
+                <span className="text-2xl font-bold text-white">N</span>
               </div>
-              <h3 className="text-xl font-semibold text-foreground mb-2" data-testid="text-service-naver-title">
+              <h3 className="text-xl font-bold text-white mb-3" data-testid="text-service-naver-title">
                 {t.services.naverAds.title}
               </h3>
-              <p className="text-muted-foreground mb-4" data-testid="text-service-naver-description">
+              <p className="text-white/70 mb-6" data-testid="text-service-naver-description">
                 {t.services.naverAds.description}
               </p>
               <Link 
                 href="/services/naver-ads" 
-                className="text-primary font-medium hover:text-primary/80 transition-colors"
+                className="inline-flex items-center text-white font-semibold hover:text-white/80 transition-colors"
                 data-testid="link-service-naver"
               >
-                {t.services.learnMore} <i className="fas fa-arrow-right ml-1"></i>
+                <span>{t.services.learnMore}</span>
+                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
               </Link>
             </div>
 
-            <div className="group premium-card rounded-xl p-6 hover:shadow-xl hover:border-primary/30 transition-all duration-300">
-              <div className="w-16 h-16 bg-primary/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary/30 transition-colors">
-                <i className="fab fa-facebook text-2xl text-primary"></i>
+            <div className="service-card group animate-fade-in-up animate-delay-200">
+              <div className="modern-icon bg-gradient-to-r from-blue-500 to-blue-600">
+                <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
               </div>
-              <h3 className="text-xl font-semibold text-foreground mb-2" data-testid="text-service-meta-title">
+              <h3 className="text-xl font-bold text-white mb-3" data-testid="text-service-meta-title">
                 {t.services.metaAds.title}
               </h3>
-              <p className="text-gray-600 mb-4" data-testid="text-service-meta-description">
+              <p className="text-white/70 mb-6" data-testid="text-service-meta-description">
                 {t.services.metaAds.description}
               </p>
               <Link 
                 href="/services/meta-ads" 
-                className="text-primary-600 font-medium hover:text-primary-700 transition-colors"
+                className="inline-flex items-center text-white font-semibold hover:text-white/80 transition-colors"
                 data-testid="link-service-meta"
               >
-                {t.services.learnMore} <i className="fas fa-arrow-right ml-1"></i>
+                <span>{t.services.learnMore}</span>
+                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
               </Link>
             </div>
 
-            <div className="group bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg hover:border-primary-200 transition-all duration-300">
-              <div className="w-16 h-16 bg-yellow-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-yellow-200 transition-colors">
-                <span className="text-2xl font-bold text-yellow-600">K</span>
+            <div className="service-card group animate-fade-in-up animate-delay-300">
+              <div className="modern-icon bg-gradient-to-r from-yellow-500 to-yellow-600">
+                <span className="text-2xl font-bold text-white">K</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2" data-testid="text-service-kakao-title">
+              <h3 className="text-xl font-bold text-white mb-3" data-testid="text-service-kakao-title">
                 {t.services.kakaoAds.title}
               </h3>
-              <p className="text-gray-600 mb-4" data-testid="text-service-kakao-description">
+              <p className="text-white/70 mb-6" data-testid="text-service-kakao-description">
                 {t.services.kakaoAds.description}
               </p>
               <Link 
                 href="/services/kakao-ads" 
-                className="text-primary-600 font-medium hover:text-primary-700 transition-colors"
+                className="inline-flex items-center text-white font-semibold hover:text-white/80 transition-colors"
                 data-testid="link-service-kakao"
               >
-                {t.services.learnMore} <i className="fas fa-arrow-right ml-1"></i>
+                <span>{t.services.learnMore}</span>
+                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
               </Link>
             </div>
           </div>
