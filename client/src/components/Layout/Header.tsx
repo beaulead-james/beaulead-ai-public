@@ -4,6 +4,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../contexts/LanguageContext';
 import LanguageSwitcher from '../UI/LanguageSwitcher';
 import MobileMenu from './MobileMenu';
+import '../../styles/hero.css';
 
 export default function Header() {
   const { isAuthenticated, user } = useAuth();
@@ -12,100 +13,114 @@ export default function Header() {
 
   return (
     <>
-      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+      <header className="modern-header">
         <div className="container max-w-7xl mx-auto">
           <nav className="flex items-center justify-between py-4">
-            <div className="flex items-center space-x-8">
-              <Link href="/" className="text-2xl font-bold text-primary-600" data-testid="link-home">
+            <div className="flex items-center space-x-10">
+              <Link href="/" className="modern-logo" data-testid="link-home">
                 뷰리드AI
               </Link>
               
-              <div className="hidden md:flex items-center space-x-6">
-                <Link href="/" className="text-gray-700 hover:text-primary-600 transition-colors font-medium" data-testid="link-nav-home">
+              <div className="hidden lg:flex items-center space-x-2">
+                <Link href="/" className="modern-nav-link" data-testid="link-nav-home">
                   {t.nav.home}
                 </Link>
                 
                 <div className="relative group">
-                  <button className="text-gray-700 hover:text-primary-600 transition-colors font-medium flex items-center" data-testid="button-nav-about">
-                    {t.nav.about} <i className="fas fa-chevron-down ml-1 text-xs"></i>
+                  <button className="modern-nav-link flex items-center" data-testid="button-nav-about">
+                    {t.nav.about} 
+                    <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
                   </button>
-                  <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                    <Link href="/about/philosophy" className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50" data-testid="link-nav-philosophy">
+                  <div className="absolute top-full left-0 mt-2 w-56 mobile-menu rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+                    <Link href="/about/philosophy" className="mobile-menu-item rounded-t-2xl" data-testid="link-nav-philosophy">
                       {t.nav.philosophy}
                     </Link>
-                    <Link href="/about/leadership" className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50" data-testid="link-nav-leadership">
+                    <Link href="/about/leadership" className="mobile-menu-item" data-testid="link-nav-leadership">
                       {t.nav.leadership}
                     </Link>
-                    <Link href="/about/profile" className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50" data-testid="link-nav-profile">
+                    <Link href="/about/profile" className="mobile-menu-item" data-testid="link-nav-profile">
                       {t.nav.profile}
                     </Link>
-                    <Link href="/about/location" className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50" data-testid="link-nav-location">
+                    <Link href="/about/location" className="mobile-menu-item" data-testid="link-nav-location">
                       {t.nav.location}
                     </Link>
-                    <Link href="/about/history" className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50" data-testid="link-nav-history">
+                    <Link href="/about/history" className="mobile-menu-item rounded-b-2xl border-b-0" data-testid="link-nav-history">
                       {t.nav.history}
                     </Link>
                   </div>
                 </div>
                 
                 <div className="relative group">
-                  <button className="text-gray-700 hover:text-primary-600 transition-colors font-medium flex items-center" data-testid="button-nav-services">
-                    {t.nav.services} <i className="fas fa-chevron-down ml-1 text-xs"></i>
+                  <button className="modern-nav-link flex items-center" data-testid="button-nav-services">
+                    {t.nav.services} 
+                    <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
                   </button>
-                  <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                    <Link href="/services/google-ads" className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50" data-testid="link-nav-google-ads">
+                  <div className="absolute top-full left-0 mt-2 w-56 mobile-menu rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+                    <Link href="/services/google-ads" className="mobile-menu-item rounded-t-2xl" data-testid="link-nav-google-ads">
                       {t.nav.googleAds}
                     </Link>
-                    <Link href="/services/naver-ads" className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50" data-testid="link-nav-naver-ads">
+                    <Link href="/services/naver-ads" className="mobile-menu-item" data-testid="link-nav-naver-ads">
                       {t.nav.naverAds}
                     </Link>
-                    <Link href="/services/meta-ads" className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50" data-testid="link-nav-meta-ads">
+                    <Link href="/services/meta-ads" className="mobile-menu-item" data-testid="link-nav-meta-ads">
                       {t.nav.metaAds}
                     </Link>
-                    <Link href="/services/kakao-ads" className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50" data-testid="link-nav-kakao-ads">
+                    <Link href="/services/kakao-ads" className="mobile-menu-item rounded-b-2xl border-b-0" data-testid="link-nav-kakao-ads">
                       {t.nav.kakaoAds}
                     </Link>
                   </div>
                 </div>
                 
-                <Link href="/blog" className="text-gray-700 hover:text-primary-600 transition-colors font-medium" data-testid="link-nav-blog">
+                <Link href="/blog" className="modern-nav-link" data-testid="link-nav-blog">
                   {t.nav.blog}
                 </Link>
-                <Link href="/portfolio" className="text-gray-700 hover:text-primary-600 transition-colors font-medium" data-testid="link-nav-portfolio">
+                <Link href="/portfolio" className="modern-nav-link" data-testid="link-nav-portfolio">
                   {t.nav.portfolio}
                 </Link>
-                <Link href="/contact" className="text-gray-700 hover:text-primary-600 transition-colors font-medium" data-testid="link-nav-contact">
+                <Link href="/contact" className="modern-nav-link" data-testid="link-nav-contact">
                   {t.nav.contact}
                 </Link>
               </div>
             </div>
 
             <div className="flex items-center space-x-4">
-              <LanguageSwitcher />
+              <div className="language-switcher">
+                <LanguageSwitcher />
+              </div>
 
               <div className="hidden sm:flex items-center space-x-3">
                 {isAuthenticated ? (
                   <>
-                    <Link href="/dashboard" className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors font-medium" data-testid="link-dashboard">
+                    <Link href="/dashboard" className="modern-cta-btn" data-testid="link-dashboard">
                       {t.nav.dashboard}
                     </Link>
-                    <a href="/api/logout" className="text-gray-700 hover:text-primary-600 font-medium transition-colors" data-testid="link-logout">
+                    <a href="/api/logout" className="modern-nav-link" data-testid="link-logout">
                       Logout
                     </a>
                   </>
                 ) : (
-                  <a href="/api/login" className="text-gray-700 hover:text-primary-600 font-medium transition-colors" data-testid="link-signin">
+                  <a href="/api/login" className="modern-cta-btn" data-testid="link-signin">
                     {t.nav.signIn}
                   </a>
                 )}
               </div>
 
               <button 
-                className="md:hidden text-gray-700" 
+                className="lg:hidden text-white hover:text-white/80 transition-colors p-2" 
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 data-testid="button-mobile-menu"
               >
-                <i className={`fas ${mobileMenuOpen ? 'fa-times' : 'fa-bars'} text-xl`}></i>
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  {mobileMenuOpen ? (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  ) : (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  )}
+                </svg>
               </button>
             </div>
           </nav>
