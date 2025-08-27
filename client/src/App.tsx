@@ -19,6 +19,7 @@ import Leadership from "./pages/About/Leadership";
 import Profile from "./pages/About/Profile";
 import Location from "./pages/About/Location";
 import History from "./pages/About/History";
+import Brand from "./pages/About/Brand";
 
 // Services pages
 import Services from "./pages/Services/Services";
@@ -63,6 +64,7 @@ function Router() {
       <Route path="/about/profile" component={Profile} />
       <Route path="/about/location" component={Location} />
       <Route path="/about/history" component={History} />
+      <Route path="/about/brand" component={Brand} />
       
       {/* Services Routes */}
       <Route path="/services" component={Services} />
