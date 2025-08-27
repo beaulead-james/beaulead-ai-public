@@ -1,0 +1,35 @@
+.marker {
+  position: relative;
+  display: inline-block;
+  line-height: 1.1;
+  z-index: 0;            /* 텍스트 레이어 기준 */
+  word-break: keep-all;  /* 한국어 단어 중간 분리 방지 */
+}
+
+.marker::after {
+  content: "";
+  position: absolute;
+  left: -4px;            /* 살짝 좌우 여백 */
+  right: -4px;
+  bottom: 0.12em;        /* 글자 하단에 깔림 */
+  height: 0.38em;        /* 하이라이트 두께 */
+  background: linear-gradient(90deg, #3CC4FF 0%, #20E3B2 100%);
+  border-radius: 6px;
+  z-index: -1;           /* 텍스트 뒤로 보냄 (핵심) */
+  pointer-events: none;
+}
+
+/* 작은 화면에서 두께 살짝 줄여 겹침 방지 */
+@media (max-width: 480px) {
+  .marker::after { 
+    height: 0.32em; 
+    bottom: 0.10em; 
+  }
+}
+
+.hero-title {
+  font-size: clamp(32px, 6vw, 64px);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  margin: 0;
+}

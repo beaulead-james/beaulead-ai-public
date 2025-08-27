@@ -4,6 +4,7 @@ import SEO from '../components/UI/SEO';
 import Header from '../components/Layout/Header';
 import Footer from '../components/Layout/Footer';
 import ContactForm from '../components/Forms/ContactForm';
+import '../styles/hero.css';
 
 export default function Landing() {
   const { t } = useLanguage();
@@ -32,10 +33,10 @@ export default function Landing() {
               <div className="inline-flex items-center bg-card px-4 py-2 rounded-full border border-border mb-6">
                 <span className="text-sm font-medium text-primary">✨ 프리미엄</span>
               </div>
-              <h1 className="text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground leading-tight mb-6" data-testid="text-hero-title">
+              <h1 className="hero-title text-5xl lg:text-6xl xl:text-7xl font-extrabold text-foreground leading-tight tracking-tight mb-6" data-testid="text-hero-title">
                 {t.hero.title.split('\n').map((line, index) => (
                   <span key={index}>
-                    {index === 1 ? <span className="premium-gradient bg-clip-text text-transparent">{line}</span> : line}
+                    {index === 1 ? <span className="marker">{line}</span> : line}
                     {index < t.hero.title.split('\n').length - 1 && <br />}
                   </span>
                 ))}
