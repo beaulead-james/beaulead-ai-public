@@ -164,6 +164,60 @@ export default function Leadership() {
           </div>
         </section>
 
+        {/* CTO Profile Section */}
+        <section className="container max-w-6xl mx-auto mb-20">
+          <div className="contact-card">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="text-center lg:text-left">
+                <div className="relative inline-block mb-8">
+                  <img 
+                    src="/attached_assets/robert_1756284324787.png"
+                    alt="로버트 CTO"
+                    className="w-80 h-80 rounded-3xl object-cover shadow-2xl mx-auto lg:mx-0"
+                    data-testid="img-cto-profile"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400&q=80";
+                    }}
+                  />
+                  <div className="absolute -bottom-4 -right-4 w-16 h-16 bg-gradient-to-br from-green-500 to-cyan-600 rounded-full flex items-center justify-center">
+                    <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0L19.2 12l-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className="mb-8">
+                  <h3 className="text-4xl font-bold text-white mb-4" data-testid="text-cto-name">
+                    로버트
+                  </h3>
+                  <p className="text-xl text-green-300 font-semibold mb-6" data-testid="text-cto-title">
+                    CTO · Chief Technology Officer
+                  </p>
+                  <div className="w-20 h-1 bg-gradient-to-r from-green-500 to-cyan-600 rounded-full mb-6"></div>
+                </div>
+                
+                <div className="space-y-6 text-white/90 leading-relaxed">
+                  <p className="text-lg">
+                    뷰리드AI의 기술 혁신을 이끄는 로버트 CTO입니다.
+                  </p>
+                  <p>
+                    실리콘밸리에서 12년간 AI/ML 분야의 선도적인 기술 개발을 담당했으며, 
+                    Google, Meta에서 대규모 머신러닝 시스템 설계와 운영 경험을 보유하고 있습니다. 
+                    특히 광고 최적화 알고리즘과 실시간 데이터 처리 시스템 분야의 전문가입니다.
+                  </p>
+                  <p>
+                    뷰리드AI에서는 최첨단 AI 기술을 마케팅 솔루션에 접목하여 
+                    고객에게 차별화된 가치를 제공하는 혁신적인 플랫폼을 구축하고 있습니다. 
+                    기술의 힘으로 마케팅의 미래를 만들어가겠습니다.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Core Values Section */}
         <section className="container max-w-6xl mx-auto">
           <div className="text-center mb-16">
