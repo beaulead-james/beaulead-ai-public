@@ -114,25 +114,6 @@ export default function Leadership() {
         <section className="container max-w-6xl mx-auto mb-20">
           <div className="contact-card">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <div className="text-center lg:text-right">
-                <div className="relative inline-block mb-8">
-                  <img 
-                    src="/attached_assets/chals_1756284209106.png"
-                    alt="김수진 부사장"
-                    className="w-80 h-80 rounded-3xl object-cover shadow-2xl mx-auto lg:mx-0"
-                    data-testid="img-vp-profile"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400&q=80";
-                    }}
-                  />
-                  <div className="absolute -bottom-4 -right-4 w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center">
-                    <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                    </svg>
-                  </div>
-                </div>
-              </div>
               <div>
                 <div className="mb-8">
                   <h3 className="text-4xl font-bold text-white mb-4" data-testid="text-vp-name">
@@ -158,6 +139,25 @@ export default function Leadership() {
                     효율적인 프로세스 구축과 팀 간 원활한 협업을 통해 
                     고객에게 최고 품질의 서비스를 제공하는 것이 저의 목표입니다.
                   </p>
+                </div>
+              </div>
+              <div className="text-center lg:text-right">
+                <div className="relative inline-block mb-8">
+                  <img 
+                    src="/attached_assets/chals_1756284209106.png"
+                    alt="김수진 부사장"
+                    className="w-80 h-80 rounded-3xl object-cover shadow-2xl mx-auto lg:mx-0"
+                    data-testid="img-vp-profile"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400&q=80";
+                    }}
+                  />
+                  <div className="absolute -bottom-4 -right-4 w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center">
+                    <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                  </div>
                 </div>
               </div>
             </div>
