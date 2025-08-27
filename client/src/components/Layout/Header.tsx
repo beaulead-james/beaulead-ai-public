@@ -33,20 +33,20 @@ export default function Header() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
-                  <div className="absolute top-full left-0 mt-2 w-56 mobile-menu rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-                    <Link href="/about/philosophy" className="mobile-menu-item rounded-t-2xl" data-testid="link-nav-philosophy">
+                  <div className="absolute top-full left-0 mt-2 dropdown-menu opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+                    <Link href="/about/philosophy" className="dropdown-item" data-testid="link-nav-philosophy">
                       {t.nav.philosophy}
                     </Link>
-                    <Link href="/about/leadership" className="mobile-menu-item" data-testid="link-nav-leadership">
+                    <Link href="/about/leadership" className="dropdown-item" data-testid="link-nav-leadership">
                       {t.nav.leadership}
                     </Link>
-                    <Link href="/about/profile" className="mobile-menu-item" data-testid="link-nav-profile">
+                    <Link href="/about/profile" className="dropdown-item" data-testid="link-nav-profile">
                       {t.nav.profile}
                     </Link>
-                    <Link href="/about/location" className="mobile-menu-item" data-testid="link-nav-location">
+                    <Link href="/about/location" className="dropdown-item" data-testid="link-nav-location">
                       {t.nav.location}
                     </Link>
-                    <Link href="/about/history" className="mobile-menu-item rounded-b-2xl border-b-0" data-testid="link-nav-history">
+                    <Link href="/about/history" className="dropdown-item" data-testid="link-nav-history">
                       {t.nav.history}
                     </Link>
                   </div>
@@ -59,17 +59,17 @@ export default function Header() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
-                  <div className="absolute top-full left-0 mt-2 w-56 mobile-menu rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-                    <Link href="/services/google-ads" className="mobile-menu-item rounded-t-2xl" data-testid="link-nav-google-ads">
+                  <div className="absolute top-full left-0 mt-2 dropdown-menu opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+                    <Link href="/services/google-ads" className="dropdown-item" data-testid="link-nav-google-ads">
                       {t.nav.googleAds}
                     </Link>
-                    <Link href="/services/naver-ads" className="mobile-menu-item" data-testid="link-nav-naver-ads">
+                    <Link href="/services/naver-ads" className="dropdown-item" data-testid="link-nav-naver-ads">
                       {t.nav.naverAds}
                     </Link>
-                    <Link href="/services/meta-ads" className="mobile-menu-item" data-testid="link-nav-meta-ads">
+                    <Link href="/services/meta-ads" className="dropdown-item" data-testid="link-nav-meta-ads">
                       {t.nav.metaAds}
                     </Link>
-                    <Link href="/services/kakao-ads" className="mobile-menu-item rounded-b-2xl border-b-0" data-testid="link-nav-kakao-ads">
+                    <Link href="/services/kakao-ads" className="dropdown-item" data-testid="link-nav-kakao-ads">
                       {t.nav.kakaoAds}
                     </Link>
                   </div>
