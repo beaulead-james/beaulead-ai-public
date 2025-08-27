@@ -185,7 +185,7 @@ export const translations: Record<Language, Translations> = {
       title: '전문 마케팅 서비스',
       subtitle: '각 플랫폼의 특성을 깊이 이해하고, 데이터 분석을 통해 최적의 성과를 창출합니다',
       googleAds: {
-        title: '구글 광고',
+        title: '구글애즈',
         description: '검색광고부터 디스플레이, 쇼핑광고까지 구글 생태계를 활용한 통합 마케팅',
       },
       naverAds: {
