@@ -2,110 +2,248 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import SEO from '../../components/UI/SEO';
 import Header from '../../components/Layout/Header';
 import Footer from '../../components/Layout/Footer';
+import '../../styles/hero.css';
+// Profile images will be referenced directly from assets
 
 export default function Leadership() {
   const { t } = useLanguage();
 
-  const leaders = [
-    {
-      name: '김영수',
-      title: '대표이사 CEO',
-      description: '15년간 디지털 마케팅 업계에서 쌓은 풍부한 경험을 바탕으로 뷰리드AI를 설립했습니다. 구글 코리아, 네이버 등에서 마케팅 전략 수립과 실행을 담당했으며, 데이터 기반 마케팅의 선구자로 활동하고 있습니다.',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300'
-    },
-    {
-      name: '박지연',
-      title: '기술이사 CTO',
-      description: 'AI와 머신러닝 분야에서 10년 이상의 전문성을 보유하고 있으며, 마케팅 자동화 시스템 개발을 이끌고 있습니다. 삼성전자, 카카오에서 AI 개발 경험을 쌓았으며, 현재 뷰리드AI의 기술 혁신을 주도하고 있습니다.',
-      image: 'https://images.unsplash.com/photo-1494790108755-2616b612b191?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300'
-    },
-    {
-      name: '이민호',
-      title: '마케팅이사 CMO',
-      description: '퍼포먼스 마케팅 분야에서 12년의 경력을 보유하며, 수백 개 브랜드의 성공적인 마케팅 캠페인을 기획하고 실행했습니다. 특히 이커머스와 모바일 앱 마케팅에서 탁월한 성과를 보여주고 있습니다.',
-      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300'
-    }
-  ];
-
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen relative overflow-hidden">
       <SEO 
         title={`${t.nav.leadership} | 뷰리드AI`}
         description="뷰리드AI의 경영진과 리더십 팀을 소개합니다"
-        keywords="뷰리드AI, 대표인사, 경영진, 리더십"
+        keywords="뷰리드AI, 대표인사, 경영진, 리더십, 박현구, 김수진"
       />
+      
+      {/* Background */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900"></div>
+        <div className="absolute top-20 left-10 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+        <div className="absolute top-40 right-10 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+        <div className="absolute bottom-20 left-20 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+      </div>
+      
       <Header />
 
-      <main className="py-16 lg:py-24">
-        <div className="container max-w-6xl mx-auto">
+      <main className="relative z-10 py-20 lg:py-32">
+        {/* Header Section */}
+        <section className="container max-w-7xl mx-auto mb-20">
           <div className="text-center mb-16">
-            <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6" data-testid="text-page-title">
-              {t.nav.leadership}
+            <h1 className="hero-title text-4xl lg:text-6xl font-black mb-6" data-testid="text-page-title">
+              대표인사
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              풍부한 경험과 전문성을 갖춘 리더십 팀이 뷰리드AI의 성장과 혁신을 이끌어갑니다
+            <p className="text-xl lg:text-2xl text-white/80 max-w-4xl mx-auto leading-relaxed">
+              데이터와 혁신으로 고객의 성공을 만들어가는 뷰리드AI의 리더십
             </p>
           </div>
+        </section>
 
-          {/* CEO Message */}
-          <section className="bg-white rounded-2xl p-8 lg:p-12 shadow-sm mb-16">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">대표 인사말</h2>
+        {/* CEO Message Section */}
+        <section className="container max-w-6xl mx-auto mb-20">
+          <div className="stats-card text-center mb-16">
+            <div className="contact-icon mb-8">
+              <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
             </div>
-            <div className="max-w-4xl mx-auto">
-              <p className="text-lg text-gray-700 leading-relaxed mb-6">
-                안녕하세요. 뷰리드AI 대표 김영수입니다.
-              </p>
-              <p className="text-lg text-gray-700 leading-relaxed mb-6">
-                디지털 마케팅 환경은 하루가 다르게 변화하고 있습니다. 새로운 플랫폼이 등장하고, 
-                알고리즘이 업데이트되며, 소비자의 행동 패턴도 끊임없이 진화하고 있죠. 
-                이러한 급변하는 환경에서 성공하기 위해서는 데이터에 기반한 정확한 인사이트와 
-                빠른 실행력이 무엇보다 중요합니다.
-              </p>
-              <p className="text-lg text-gray-700 leading-relaxed mb-6">
-                뷰리드AI는 이러한 도전에 맞서 데이터 분석과 AI 기술을 활용한 혁신적인 마케팅 솔루션을 
-                제공하고 있습니다. 우리의 목표는 단순히 광고를 대행하는 것이 아니라, 
-                고객의 비즈니스 성장을 위한 진정한 파트너가 되는 것입니다.
-              </p>
-              <p className="text-lg text-gray-700 leading-relaxed">
-                앞으로도 끊임없는 혁신과 도전을 통해 고객의 성공을 함께 만들어가겠습니다. 
-                감사합니다.
-              </p>
-            </div>
-          </section>
+            <h2 className="text-3xl font-bold text-white mb-6">대표이사 인사말</h2>
+            <p className="text-lg text-white/90 leading-relaxed max-w-4xl mx-auto">
+              "데이터는 진실을 말하고, 실행력은 성과를 만듭니다. 
+              뷰리드AI는 고객의 성공을 위해 끊임없이 도전하고 혁신합니다."
+            </p>
+          </div>
+        </section>
 
-          {/* Leadership Team */}
-          <section>
-            <h2 className="text-2xl font-bold text-gray-900 text-center mb-12">경영진</h2>
-            <div className="space-y-12">
-              {leaders.map((leader, index) => (
-                <div key={index} className="bg-white rounded-2xl p-8 shadow-sm">
-                  <div className={`grid lg:grid-cols-2 gap-8 items-center ${index % 2 === 1 ? 'lg:grid-flow-col-dense' : ''}`}>
-                    <div className={index % 2 === 1 ? 'lg:col-start-2' : ''}>
-                      <img 
-                        src={leader.image}
-                        alt={`${leader.name} ${leader.title}`}
-                        className="w-64 h-64 rounded-2xl object-cover mx-auto shadow-lg"
-                        data-testid={`img-leader-${index}`}
-                      />
-                    </div>
-                    <div className={index % 2 === 1 ? 'lg:col-start-1' : ''}>
-                      <h3 className="text-2xl font-bold text-gray-900 mb-2" data-testid={`text-leader-name-${index}`}>
-                        {leader.name}
-                      </h3>
-                      <p className="text-lg text-primary-600 font-semibold mb-4" data-testid={`text-leader-title-${index}`}>
-                        {leader.title}
-                      </p>
-                      <p className="text-gray-700 leading-relaxed" data-testid={`text-leader-description-${index}`}>
-                        {leader.description}
-                      </p>
-                    </div>
+        {/* CEO Profile Section */}
+        <section className="container max-w-6xl mx-auto mb-20">
+          <div className="contact-card">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="text-center lg:text-left">
+                <div className="relative inline-block mb-8">
+                  <img 
+                    src="/attached_assets/제임스 프로필 사진_1756280042291.png"
+                    alt="박현구 대표이사"
+                    className="w-80 h-80 rounded-3xl object-cover shadow-2xl mx-auto lg:mx-0"
+                    data-testid="img-ceo-profile"
+                  />
+                  <div className="absolute -bottom-4 -right-4 w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                    <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
                   </div>
                 </div>
-              ))}
+              </div>
+              <div>
+                <div className="mb-8">
+                  <h3 className="text-4xl font-bold text-white mb-4" data-testid="text-ceo-name">
+                    박현구
+                  </h3>
+                  <p className="text-xl text-blue-300 font-semibold mb-6" data-testid="text-ceo-title">
+                    대표이사 · CEO
+                  </p>
+                  <div className="w-20 h-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-6"></div>
+                </div>
+                
+                <div className="space-y-6 text-white/90 leading-relaxed">
+                  <p className="text-lg">
+                    안녕하세요. 뷰리드AI 대표이사 박현구입니다.
+                  </p>
+                  <p>
+                    15년간 디지털 마케팅 업계에서 쌓은 경험을 바탕으로, 
+                    데이터 기반의 정확한 인사이트와 창의적인 마케팅 솔루션을 통해 
+                    고객의 비즈니스 성장을 가속화하고 있습니다.
+                  </p>
+                  <p>
+                    뷰리드AI는 단순히 광고를 대행하는 에이전시가 아닙니다. 
+                    우리는 고객의 성공을 우리의 성공으로 여기며, 
+                    AI와 빅데이터 기술을 활용한 혁신적인 마케팅 솔루션으로 
+                    함께 성장해 나가는 진정한 비즈니스 파트너입니다.
+                  </p>
+                </div>
+              </div>
             </div>
-          </section>
-        </div>
+          </div>
+        </section>
+
+        {/* VP Profile Section */}
+        <section className="container max-w-6xl mx-auto mb-20">
+          <div className="contact-card">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="lg:order-2 text-center lg:text-left">
+                <div className="relative inline-block mb-8">
+                  <img 
+                    src="/attached_assets/김수진_1756280050659.png"
+                    alt="김수진 부사장"
+                    className="w-80 h-80 rounded-3xl object-cover shadow-2xl mx-auto lg:mx-0"
+                    data-testid="img-vp-profile"
+                  />
+                  <div className="absolute -bottom-4 -right-4 w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center">
+                    <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div className="lg:order-1">
+                <div className="mb-8">
+                  <h3 className="text-4xl font-bold text-white mb-4" data-testid="text-vp-name">
+                    김수진
+                  </h3>
+                  <p className="text-xl text-purple-300 font-semibold mb-6" data-testid="text-vp-title">
+                    부사장 · VP of Operations
+                  </p>
+                  <div className="w-20 h-1 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full mb-6"></div>
+                </div>
+                
+                <div className="space-y-6 text-white/90 leading-relaxed">
+                  <p className="text-lg">
+                    뷰리드AI의 운영 전반을 책임지고 있는 김수진 부사장입니다.
+                  </p>
+                  <p>
+                    AI와 머신러닝 분야에서 10년 이상의 전문성을 보유하며, 
+                    마케팅 자동화 시스템 개발과 운영 최적화를 이끌고 있습니다. 
+                    삼성전자, 카카오에서의 AI 개발 경험을 바탕으로 
+                    뷜리드AI의 기술 혁신을 주도하고 있습니다.
+                  </p>
+                  <p>
+                    효율적인 프로세스 구축과 팀 간 원활한 협업을 통해 
+                    고객에게 최고 품질의 서비스를 제공하는 것이 저의 목표입니다.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Core Values Section */}
+        <section className="container max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-8">리더십 핵심 가치</h2>
+            <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
+              뷰리드AI 리더십이 추구하는 핵심 가치와 경영 철학
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="contact-card text-center animate-fade-in-up">
+              <div className="contact-icon mb-6">
+                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-4">데이터 중심</h3>
+              <p className="text-white/80">
+                모든 의사결정을 데이터에 기반하여 객관적이고 정확한 판단을 합니다
+              </p>
+            </div>
+            
+            <div className="contact-card text-center animate-fade-in-up animate-delay-100">
+              <div className="contact-icon mb-6">
+                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-4">고객 성공</h3>
+              <p className="text-white/80">
+                고객의 성공을 우리의 성공으로 여기며 진정한 파트너십을 구축합니다
+              </p>
+            </div>
+            
+            <div className="contact-card text-center animate-fade-in-up animate-delay-200">
+              <div className="contact-icon mb-6">
+                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M9 11H7v9h2v-9zm4-4H11v13h2V7zm4-4H15v17h2V3z"/>
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-4">지속적 혁신</h3>
+              <p className="text-white/80">
+                끊임없는 학습과 혁신을 통해 업계를 선도하는 솔루션을 개발합니다
+              </p>
+            </div>
+            
+            <div className="contact-card text-center animate-fade-in-up animate-delay-300">
+              <div className="contact-icon mb-6">
+                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-4">투명성</h3>
+              <p className="text-white/80">
+                투명한 소통과 명확한 성과 공유로 신뢰할 수 있는 관계를 만듭니다
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="container max-w-4xl mx-auto mt-20">
+          <div className="stats-card text-center">
+            <h2 className="text-3xl font-bold text-white mb-6">함께 성장할 준비가 되셨나요?</h2>
+            <p className="text-lg text-white/90 mb-8 leading-relaxed">
+              뷰리드AI와 함께 데이터 기반의 혁신적인 마케팅 여정을 시작하세요
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a 
+                href="/contact" 
+                className="modern-btn px-8 py-4 text-lg"
+                data-testid="button-contact-cta"
+              >
+                무료 상담 받기
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </a>
+              <a 
+                href="/portfolio" 
+                className="modern-btn-outline px-8 py-4 text-lg"
+                data-testid="button-portfolio-cta"
+              >
+                포트폴리오 보기
+              </a>
+            </div>
+          </div>
+        </section>
       </main>
 
       <Footer />
