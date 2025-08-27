@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'wouter';
 import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -10,10 +10,22 @@ export default function Header() {
   const { isAuthenticated, user } = useAuth();
   const { t } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  // 포커 플레이어 스타일 스크롤 감지
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      setIsScrolled(scrollTop > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <>
-      <header className="modern-header">
+      <header className={`modern-header ${isScrolled ? 'scrolled' : ''}`}>
         <div className="container max-w-7xl mx-auto">
           <nav className="flex items-center justify-between py-4">
             <div className="flex items-center space-x-10">
@@ -48,6 +60,9 @@ export default function Header() {
                     </Link>
                     <Link href="/about/history" className="dropdown-item" data-testid="link-nav-history">
                       {t.nav.history}
+                    </Link>
+                    <Link href="/about/brand" className="dropdown-item" data-testid="link-nav-brand">
+                      브랜드 CI
                     </Link>
                   </div>
                 </div>

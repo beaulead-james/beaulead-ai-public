@@ -193,27 +193,43 @@
   animation: glitch 0.3s ease-in-out;
 }
 
-/* 현대적인 헤더 스타일 */
+/* 현대적인 헤더 스타일 - 포커 플레이어 벤치마킹 */
 .modern-header {
-  background: rgba(11, 18, 32, 0.95);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   position: fixed;
   width: 100%;
   top: 0;
   z-index: 1000;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* 포커 사이트처럼 더 투명하고 깔끔한 배경 */
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* 스크롤 시 헤더 배경 강화 */
+.modern-header.scrolled {
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(60px);
+  -webkit-backdrop-filter: blur(60px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
 }
 
 .modern-nav-link {
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.9);
   font-weight: 500;
   padding: 0.75rem 1.5rem;
   border-radius: 12px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  text-decoration: none;
+  
+  /* 포커 사이트처럼 더 선명한 텍스트 */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .modern-nav-link::before {
@@ -233,8 +249,11 @@
 
 .modern-nav-link:hover {
   color: white;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
   transform: translateY(-1px);
+  
+  /* 포커 사이트처럼 부드러운 호버 효과 */
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
 }
 
 .modern-nav-link.active {
@@ -246,11 +265,21 @@
 .modern-logo {
   font-size: 1.5rem;
   font-weight: 800;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: -0.02em;
+  text-decoration: none;
+  
+  /* 포커 사이트처럼 깔끔한 화이트 톤 로고 */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.modern-logo:hover {
+  transform: scale(1.02);
+  filter: brightness(1.1);
 }
 
 .modern-cta-btn {
@@ -285,16 +314,30 @@
   border-color: rgba(255, 255, 255, 0.3);
 }
 
-/* 드롭다운 메뉴 스타일 */
+/* 드롭다운 메뉴 스타일 - 포커 사이트 벤치마킹 */
 .dropdown-menu {
-  background: rgba(11, 18, 32, 0.98);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
   padding: 0.5rem 0;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
   min-width: 220px;
+  
+  /* 포커 사이트처럼 더 투명하고 블러 강화 */
+  animation: dropdownFadeIn 0.2s ease-out;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .dropdown-item {
