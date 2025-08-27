@@ -62,10 +62,14 @@ export default function Leadership() {
               <div className="text-center lg:text-left">
                 <div className="relative inline-block mb-8">
                   <img 
-                    src="/attached_assets/제임스 프로필 사진_1756280296759.png"
+                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400&q=80"
                     alt="박현구 대표이사"
                     className="w-80 h-80 rounded-3xl object-cover shadow-2xl mx-auto lg:mx-0"
                     data-testid="img-ceo-profile"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400&q=80";
+                    }}
                   />
                   <div className="absolute -bottom-4 -right-4 w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                     <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
@@ -113,10 +117,14 @@ export default function Leadership() {
               <div className="lg:order-2 text-center lg:text-left">
                 <div className="relative inline-block mb-8">
                   <img 
-                    src="/attached_assets/김수진_1756280050659.png"
+                    src="https://images.unsplash.com/photo-1494790108755-2616b612b191?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400&q=80"
                     alt="김수진 부사장"
                     className="w-80 h-80 rounded-3xl object-cover shadow-2xl mx-auto lg:mx-0"
                     data-testid="img-vp-profile"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400&q=80";
+                    }}
                   />
                   <div className="absolute -bottom-4 -right-4 w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center">
                     <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
