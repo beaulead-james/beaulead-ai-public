@@ -80,7 +80,11 @@
   }
   body {
     @apply bg-background text-foreground font-sans;
-    background: linear-gradient(to bottom, #0f172a 0%, #581c87 50%, #0f172a 100%);
+    min-height: 100vh;
+    background: radial-gradient(1200px 600px at 10% 0%, rgba(124,58,237,.24), transparent 60%), 
+                radial-gradient(1200px 600px at 90% 100%, rgba(37,99,235,.22), transparent 60%), 
+                #0b1220;
+    color: #e7ecf6;
   }
 }
 
@@ -90,15 +94,48 @@
 }
 
 .premium-card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(17,25,40,.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,.08);
+  box-shadow: 0 20px 60px rgba(0,0,0,.35);
 }
 
 .glow-effect {
   box-shadow: 
     0 0 20px rgba(10, 132, 255, 0.3),
     0 0 40px rgba(10, 132, 255, 0.1);
+}
+
+/* Orb effects for background */
+.bg-orb {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.orb {
+  position: absolute;
+  filter: blur(64px);
+  opacity: .55;
+  border-radius: 9999px;
+}
+
+.orb-a {
+  width: 420px;
+  height: 420px;
+  top: -80px;
+  left: -60px;
+  background: #7c3aed;
+}
+
+.orb-b {
+  width: 520px;
+  height: 520px;
+  bottom: -120px;
+  right: -80px;
+  background: #2563eb;
 }
 
 /* Typography enhancements */
