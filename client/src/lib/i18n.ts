@@ -164,7 +164,7 @@ export const translations: Record<Language, Translations> = {
       location: '위치안내',
       history: '연혁',
       services: '서비스',
-      googleAds: '구글 광고',
+      googleAds: '구글애즈',
       naverAds: '네이버 광고',
       metaAds: '메타 광고',
       kakaoAds: '카카오 광고',
@@ -287,7 +287,7 @@ export const translations: Record<Language, Translations> = {
       },
       services: {
         title: '서비스',
-        googleAds: '구글 광고',
+        googleAds: '구글애즈',
         naverAds: '네이버 광고',
         metaAds: '메타 광고',
         kakaoAds: '카카오 광고',
