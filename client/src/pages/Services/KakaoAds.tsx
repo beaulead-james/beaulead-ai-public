@@ -66,7 +66,7 @@ export default function KakaoAds() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <SEO 
         title="카카오 광고 | 뷰리드AI"
         description="카카오톡, 카카오 모먼트, 비즈메시지까지 카카오 플랫폼 전문 광고 서비스"
@@ -74,36 +74,42 @@ export default function KakaoAds() {
       />
       <Header />
 
-      <main>
+      {/* Background Effects */}
+      <div className="bg-orb">
+        <div className="orb orb-a"></div>
+        <div className="orb orb-b"></div>
+      </div>
+
+      <main className="relative z-10">
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-yellow-50 via-white to-gray-50 py-16 lg:py-24">
+        <section className="pt-32 pb-20 lg:pb-32">
           <div className="container max-w-6xl mx-auto">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
               <div>
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mr-3">
-                    <span className="text-yellow-600 font-bold text-xl">K</span>
+                <div className="flex items-center mb-6">
+                  <div className="contact-icon mr-4">
+                    <span className="text-white font-bold text-xl">K</span>
                   </div>
-                  <span className="text-yellow-600 font-semibold">Kakao Ads</span>
+                  <span className="text-xl font-semibold text-white/90">Kakao Ads</span>
                 </div>
-                <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6" data-testid="text-page-title">
+                <h1 className="text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight" data-testid="text-page-title">
                   카카오 광고로 일상 속에서 고객을 만나세요
                 </h1>
-                <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+                <p className="text-xl text-white/80 mb-8 leading-relaxed">
                   4,700만 명이 매일 사용하는 카카오톡을 통해 고객과 더욱 친밀하게 소통하세요. 
                   개인화된 메시지와 자연스러운 광고 노출로 높은 참여도를 달성합니다.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Link 
                     href="/contact" 
-                    className="bg-primary-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-primary-700 transition-colors text-center"
+                    className="modern-btn text-center"
                     data-testid="button-contact-cta"
                   >
                     무료 상담 신청
                   </Link>
                   <Link 
                     href="/portfolio" 
-                    className="border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-lg font-semibold hover:border-primary-600 hover:text-primary-600 transition-colors text-center"
+                    className="modern-btn-outline text-center"
                     data-testid="button-portfolio-cta"
                   >
                     성공 사례 보기
@@ -111,26 +117,28 @@ export default function KakaoAds() {
                 </div>
               </div>
               <div className="relative">
-                <div className="bg-white rounded-2xl shadow-xl p-6 border">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold text-gray-800">카카오 광고 대시보드</h3>
-                    <span className="text-yellow-600 font-bold text-xl">K</span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mb-4">
-                    <div className="bg-yellow-50 p-4 rounded-lg">
-                      <div className="text-sm text-yellow-600 font-medium">메시지 전송</div>
-                      <div className="text-2xl font-bold text-yellow-700">23,560</div>
-                      <div className="text-xs text-yellow-500">+42% 증가</div>
-                    </div>
-                    <div className="bg-green-50 p-4 rounded-lg">
-                      <div className="text-sm text-green-600 font-medium">친구 추가</div>
-                      <div className="text-2xl font-bold text-green-700">1,240</div>
-                      <div className="text-xs text-green-500">+35% 증가</div>
+                <div className="floating-card">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-xl font-bold text-white">카카오 광고 대시보드</h3>
+                    <div className="contact-icon">
+                      <span className="text-white font-bold text-xl">K</span>
                     </div>
                   </div>
-                  <div className="text-center p-4 bg-gray-50 rounded-lg">
-                    <div className="text-3xl font-bold text-primary-600 mb-1">390%</div>
-                    <div className="text-sm text-gray-600">평균 ROAS</div>
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div className="stats-card">
+                      <div className="text-sm text-white/70 font-medium">메시지 전송</div>
+                      <div className="text-2xl font-bold text-white">23,560</div>
+                      <div className="text-xs text-green-400">+42% 증가</div>
+                    </div>
+                    <div className="stats-card">
+                      <div className="text-sm text-white/70 font-medium">친구 추가</div>
+                      <div className="text-2xl font-bold text-white">1,240</div>
+                      <div className="text-xs text-green-400">+35% 증가</div>
+                    </div>
+                  </div>
+                  <div className="text-center stats-card">
+                    <div className="text-3xl font-bold text-white mb-1">390%</div>
+                    <div className="text-sm text-white/70">평균 ROAS</div>
                   </div>
                 </div>
               </div>
@@ -139,26 +147,26 @@ export default function KakaoAds() {
         </section>
 
         {/* Service Types */}
-        <section className="py-16 lg:py-24 bg-white">
+        <section className="py-16 lg:py-24">
           <div className="container max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">카카오 광고 서비스</h2>
-              <p className="text-xl text-gray-600">카카오 생태계를 활용한 통합 모바일 마케팅</p>
+              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">카카오 광고 서비스</h2>
+              <p className="text-xl text-white/80">카카오 생태계를 활용한 통합 모바일 마케팅</p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-8">
               {serviceTypes.map((service, index) => (
-                <div key={index} className="bg-white border border-gray-200 rounded-xl p-8 hover:shadow-lg hover:border-yellow-200 transition-all">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4" data-testid={`text-service-type-title-${index}`}>
+                <div key={index} className="service-card">
+                  <h3 className="text-xl font-bold text-white mb-4" data-testid={`text-service-type-title-${index}`}>
                     {service.title}
                   </h3>
-                  <p className="text-gray-600 mb-6 leading-relaxed" data-testid={`text-service-type-description-${index}`}>
+                  <p className="text-white/70 mb-6 leading-relaxed" data-testid={`text-service-type-description-${index}`}>
                     {service.description}
                   </p>
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     {service.features.map((feature, featureIndex) => (
-                      <div key={featureIndex} className="flex items-center text-sm text-gray-700">
-                        <div className="w-1.5 h-1.5 bg-yellow-600 rounded-full mr-3"></div>
+                      <div key={featureIndex} className="flex items-center text-sm text-white/80">
+                        <div className="w-2 h-2 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full mr-3"></div>
                         <span data-testid={`text-service-feature-${index}-${featureIndex}`}>{feature}</span>
                       </div>
                     ))}
@@ -170,23 +178,36 @@ export default function KakaoAds() {
         </section>
 
         {/* Benefits */}
-        <section className="py-16 lg:py-24 bg-gray-50">
+        <section className="py-16 lg:py-24">
           <div className="container max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">카카오 광고의 장점</h2>
-              <p className="text-xl text-gray-600">한국인의 일상에 가장 밀접한 플랫폼의 힘</p>
+              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">카카오 광고의 장점</h2>
+              <p className="text-xl text-white/80">한국인의 일상에 가장 밀접한 플랫폼의 힘</p>
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
               {benefits.map((benefit, index) => (
-                <div key={index} className="bg-white rounded-xl p-6 text-center shadow-sm hover:shadow-md transition-shadow">
-                  <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i className={`${benefit.icon} text-yellow-600 text-xl`}></i>
+                <div key={index} className="service-card text-center">
+                  <div className="contact-icon mb-6">
+                    <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      {benefit.icon === 'fas fa-comments' && (
+                        <path d="M20,2H4A2,2 0 0,0 2,4V22L6,18H20A2,2 0 0,0 22,16V4C22,2.89 21.1,2 20,2Z"/>
+                      )}
+                      {benefit.icon === 'fas fa-mobile-alt' && (
+                        <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/>
+                      )}
+                      {benefit.icon === 'fas fa-user-friends' && (
+                        <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63A1.92 1.92 0 0 0 18.14 7c-.8 0-1.54.5-1.85 1.26l-.92 2.74h-2.74l-.92-2.74C11.4 7.5 10.66 7 9.86 7s-1.54.5-1.85 1.26L5.5 16H8v6h12zM12.5 11.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5S11 9.17 11 10s.67 1.5 1.5 1.5z"/>
+                      )}
+                      {benefit.icon === 'fas fa-chart-pie' && (
+                        <path d="M11,2V22C5.9,21.5 2,17.2 2,12C2,6.8 5.9,2.5 11,2M13,2V11H22C22,6.8 18.1,2.5 13,2M13,13V22C18.1,21.5 22,17.2 22,12H13Z"/>
+                      )}
+                    </svg>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3" data-testid={`text-benefit-title-${index}`}>
+                  <h3 className="text-lg font-bold text-white mb-4" data-testid={`text-benefit-title-${index}`}>
                     {benefit.title}
                   </h3>
-                  <p className="text-gray-600 text-sm leading-relaxed" data-testid={`text-benefit-description-${index}`}>
+                  <p className="text-white/70 text-sm leading-relaxed" data-testid={`text-benefit-description-${index}`}>
                     {benefit.description}
                   </p>
                 </div>
@@ -196,44 +217,44 @@ export default function KakaoAds() {
         </section>
 
         {/* Case Study */}
-        <section className="py-16 lg:py-24 bg-white">
+        <section className="py-16 lg:py-24">
           <div className="container max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">성공 사례</h2>
-              <p className="text-xl text-gray-600">실제 고객사의 카카오 광고 성과를 확인해보세요</p>
+              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">성공 사례</h2>
+              <p className="text-xl text-white/80">실제 고객사의 카카오 광고 성과를 확인해보세요</p>
             </div>
 
-            <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-8 lg:p-12">
+            <div className="floating-card">
               <div className="grid lg:grid-cols-2 gap-12 items-center">
                 <div>
-                  <div className="mb-6">
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2" data-testid="text-case-company">
+                  <div className="mb-8">
+                    <h3 className="text-2xl font-bold text-white mb-4" data-testid="text-case-company">
                       {caseStudy.company}
                     </h3>
-                    <div className="space-y-4">
+                    <div className="space-y-6">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-1">도전 과제:</h4>
-                        <p className="text-gray-700" data-testid="text-case-challenge">{caseStudy.challenge}</p>
+                        <h4 className="font-semibold text-white mb-2">도전 과제:</h4>
+                        <p className="text-white/80 leading-relaxed" data-testid="text-case-challenge">{caseStudy.challenge}</p>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-1">해결책:</h4>
-                        <p className="text-gray-700" data-testid="text-case-solution">{caseStudy.solution}</p>
+                        <h4 className="font-semibold text-white mb-2">해결책:</h4>
+                        <p className="text-white/80 leading-relaxed" data-testid="text-case-solution">{caseStudy.solution}</p>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-6">5개월 후 결과:</h4>
+                  <h4 className="font-semibold text-white mb-6 text-center">5개월 후 결과:</h4>
                   <div className="grid grid-cols-2 gap-4">
                     {caseStudy.results.map((result, index) => (
-                      <div key={index} className="bg-white rounded-xl p-4 text-center shadow-sm">
-                        <div className="text-sm text-gray-600 mb-1" data-testid={`text-case-metric-${index}`}>
+                      <div key={index} className="stats-card">
+                        <div className="text-sm text-white/70 mb-2" data-testid={`text-case-metric-${index}`}>
                           {result.metric}
                         </div>
-                        <div className="text-2xl font-bold text-gray-900 mb-1" data-testid={`text-case-value-${index}`}>
+                        <div className="text-2xl font-bold text-white mb-1" data-testid={`text-case-value-${index}`}>
                           {result.value}
                         </div>
-                        <div className="text-xs text-green-600 font-medium" data-testid={`text-case-change-${index}`}>
+                        <div className="text-xs text-green-400 font-medium" data-testid={`text-case-change-${index}`}>
                           {result.change}
                         </div>
                       </div>
@@ -246,43 +267,45 @@ export default function KakaoAds() {
         </section>
 
         {/* Kakao Statistics */}
-        <section className="py-16 lg:py-24 bg-gray-50">
+        <section className="py-16 lg:py-24">
           <div className="container max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-8">카카오의 영향력</h2>
+            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-12">카카오의 영향력</h2>
             <div className="grid md:grid-cols-3 gap-8 mb-12">
-              <div className="bg-white rounded-xl p-6 shadow-sm">
-                <div className="text-3xl font-bold text-yellow-600 mb-2">4,700만</div>
-                <div className="text-gray-900 font-semibold mb-1">카카오톡 사용자</div>
-                <div className="text-sm text-gray-600">국내 인구의 91%</div>
+              <div className="stats-card">
+                <div className="text-3xl font-bold text-white mb-2">4,700만</div>
+                <div className="text-white font-semibold mb-1">카카오톡 사용자</div>
+                <div className="text-sm text-white/70">국내 인구의 91%</div>
               </div>
-              <div className="bg-white rounded-xl p-6 shadow-sm">
-                <div className="text-3xl font-bold text-yellow-600 mb-2">57분</div>
-                <div className="text-gray-900 font-semibold mb-1">일평균 이용시간</div>
-                <div className="text-sm text-gray-600">압도적 사용시간</div>
+              <div className="stats-card">
+                <div className="text-3xl font-bold text-white mb-2">57분</div>
+                <div className="text-white font-semibold mb-1">일평균 이용시간</div>
+                <div className="text-sm text-white/70">압도적 사용시간</div>
               </div>
-              <div className="bg-white rounded-xl p-6 shadow-sm">
-                <div className="text-3xl font-bold text-yellow-600 mb-2">95%</div>
-                <div className="text-gray-900 font-semibold mb-1">메시지 읽음률</div>
-                <div className="text-sm text-gray-600">즉시 확인하는 메시지</div>
+              <div className="stats-card">
+                <div className="text-3xl font-bold text-white mb-2">95%</div>
+                <div className="text-white font-semibold mb-1">메시지 읽음률</div>
+                <div className="text-sm text-white/70">즉시 확인하는 메시지</div>
               </div>
             </div>
           </div>
         </section>
 
         {/* CTA Section */}
-        <section className="py-16 lg:py-24 bg-primary-600">
+        <section className="py-16 lg:py-24">
           <div className="container max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-white mb-4">카카오 광고를 시작해보세요</h2>
-            <p className="text-xl text-primary-100 mb-8">
-              카카오 플랫폼 전문가와의 무료 상담을 통해 모바일 마케팅 전략을 수립하세요
-            </p>
-            <Link 
-              href="/contact" 
-              className="bg-white text-primary-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-50 transition-colors inline-block"
-              data-testid="button-final-cta"
-            >
-              무료 상담 신청하기
-            </Link>
+            <div className="floating-card">
+              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">카카오 광고를 시작해보세요</h2>
+              <p className="text-xl text-white/80 mb-8 leading-relaxed">
+                카카오 플랫폼 전문가와의 무료 상담을 통해 모바일 마케팅 전략을 수립하세요
+              </p>
+              <Link 
+                href="/contact" 
+                className="modern-btn"
+                data-testid="button-final-cta"
+              >
+                무료 상담 신청하기
+              </Link>
+            </div>
           </div>
         </section>
       </main>
