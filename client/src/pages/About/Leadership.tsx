@@ -14,15 +14,12 @@ export default function Leadership() {
         <div className="orb orb-a"></div>
         <div className="orb orb-b"></div>
       </div>
-      
       <SEO 
         title={`${t.nav.leadership} | 뷰리드AI`}
         description="뷰리드AI의 경영진과 리더십 팀을 소개합니다"
         keywords="뷰리드AI, 대표인사, 경영진, 리더십, 박현구, 김수진"
       />
-      
       <Header />
-
       <main className="py-20 lg:py-32 relative z-10">
         {/* Hero Section */}
         <section className="container max-w-7xl mx-auto mb-20">
@@ -32,9 +29,7 @@ export default function Leadership() {
                 <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
               </svg>
             </div>
-            <h1 className="hero-title text-4xl lg:text-6xl font-black mb-6" data-testid="text-page-title">
-              대표인사
-            </h1>
+            <h1 className="hero-title text-4xl lg:text-6xl font-black mb-6" data-testid="text-page-title">회사인사말</h1>
             <p className="text-xl lg:text-2xl text-white/80 max-w-4xl mx-auto leading-relaxed">
               데이터와 혁신으로 고객의 성공을 만들어가는 뷰리드AI의 리더십
             </p>
@@ -318,7 +313,6 @@ export default function Leadership() {
           </div>
         </section>
       </main>
-
       <Footer />
     </div>
   );
