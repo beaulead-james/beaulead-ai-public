@@ -129,6 +129,127 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Portfolio/Clients Section */}
+      <section className="py-20 lg:py-32 relative overflow-hidden">
+        <div className="container max-w-7xl mx-auto relative z-10">
+          <div className="text-center mb-20">
+            <div className="inline-flex items-center bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full border border-white/20 mb-8">
+              <span className="text-sm font-semibold text-white">🏆 성공 사례</span>
+            </div>
+            <h2 className="text-3xl lg:text-5xl font-headline font-bold text-white mb-6 leading-tight" data-testid="text-portfolio-title">
+              도대체 무슨 자신감으로?<br />
+              <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">오직 결과로 증명하겠습니다.</span>
+            </h2>
+            <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed" data-testid="text-portfolio-subtitle">
+              다양한 업종의 기업들과 함께 성장한 성공 사례들을 확인해보세요
+            </p>
+          </div>
+
+          {/* Client Logos Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 mb-16">
+            {/* Row 1 */}
+            <div className="floating-card flex items-center justify-center p-6 group hover:bg-white/10 transition-all duration-300">
+              <div className="text-2xl font-bold text-white/80 group-hover:text-white transition-colors">
+                Samsung
+              </div>
+            </div>
+            <div className="floating-card flex items-center justify-center p-6 group hover:bg-white/10 transition-all duration-300">
+              <div className="text-2xl font-bold text-white/80 group-hover:text-white transition-colors">
+                LG
+              </div>
+            </div>
+            <div className="floating-card flex items-center justify-center p-6 group hover:bg-white/10 transition-all duration-300">
+              <div className="text-2xl font-bold text-white/80 group-hover:text-white transition-colors">
+                SK
+              </div>
+            </div>
+            <div className="floating-card flex items-center justify-center p-6 group hover:bg-white/10 transition-all duration-300">
+              <div className="text-2xl font-bold text-white/80 group-hover:text-white transition-colors">
+                Hyundai
+              </div>
+            </div>
+            <div className="floating-card flex items-center justify-center p-6 group hover:bg-white/10 transition-all duration-300">
+              <div className="text-2xl font-bold text-white/80 group-hover:text-white transition-colors">
+                Lotte
+              </div>
+            </div>
+            <div className="floating-card flex items-center justify-center p-6 group hover:bg-white/10 transition-all duration-300">
+              <div className="text-2xl font-bold text-white/80 group-hover:text-white transition-colors">
+                CJ
+              </div>
+            </div>
+            
+            {/* Row 2 */}
+            <div className="floating-card flex items-center justify-center p-6 group hover:bg-white/10 transition-all duration-300">
+              <div className="text-2xl font-bold text-white/80 group-hover:text-white transition-colors">
+                Naver
+              </div>
+            </div>
+            <div className="floating-card flex items-center justify-center p-6 group hover:bg-white/10 transition-all duration-300">
+              <div className="text-2xl font-bold text-white/80 group-hover:text-white transition-colors">
+                Kakao
+              </div>
+            </div>
+            <div className="floating-card flex items-center justify-center p-6 group hover:bg-white/10 transition-all duration-300">
+              <div className="text-2xl font-bold text-white/80 group-hover:text-white transition-colors">
+                Coupang
+              </div>
+            </div>
+            <div className="floating-card flex items-center justify-center p-6 group hover:bg-white/10 transition-all duration-300">
+              <div className="text-2xl font-bold text-white/80 group-hover:text-white transition-colors">
+                Toss
+              </div>
+            </div>
+            <div className="floating-card flex items-center justify-center p-6 group hover:bg-white/10 transition-all duration-300">
+              <div className="text-2xl font-bold text-white/80 group-hover:text-white transition-colors">
+                Baemin
+              </div>
+            </div>
+            <div className="floating-card flex items-center justify-center p-6 group hover:bg-white/10 transition-all duration-300">
+              <div className="text-2xl font-bold text-white/80 group-hover:text-white transition-colors">
+                Yogiyo
+              </div>
+            </div>
+          </div>
+
+          {/* Success Metrics */}
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="service-card text-center">
+              <div className="text-4xl font-bold text-white mb-2 font-data" data-testid="text-client-count">
+                120+
+              </div>
+              <p className="text-white/70 text-lg">성공한 클라이언트</p>
+            </div>
+            <div className="service-card text-center">
+              <div className="text-4xl font-bold text-white mb-2 font-data" data-testid="text-campaign-count">
+                500+
+              </div>
+              <p className="text-white/70 text-lg">성공한 캠페인</p>
+            </div>
+            <div className="service-card text-center">
+              <div className="text-4xl font-bold text-white mb-2 font-data" data-testid="text-avg-growth">
+                287%
+              </div>
+              <p className="text-white/70 text-lg">평균 매출 성장률</p>
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div className="text-center mt-16">
+            <Link 
+              href="/portfolio" 
+              className="modern-btn text-center inline-flex items-center"
+              data-testid="button-portfolio-cta"
+            >
+              <span>성공 사례 더 보기</span>
+              <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Services Section */}
       <section className="py-20 lg:py-32 bg-gradient-to-b from-transparent to-black/20">
         <div className="container max-w-7xl mx-auto">
