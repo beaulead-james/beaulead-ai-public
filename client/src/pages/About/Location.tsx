@@ -66,21 +66,22 @@ export default function Location() {
 
           {/* Main Location Info */}
           <section className="service-card mb-20 animate-fade-in-up">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">오시는 길</h2>
+              <p className="text-lg text-white/80">강남역에서 가까운 편리한 위치</p>
+            </div>
+            
             <div className="grid lg:grid-cols-2 gap-12">
-              <div>
-                <h2 className="text-3xl lg:text-4xl font-bold text-white mb-8">오시는 길</h2>
-                
+              <div className="space-y-8">
                 {/* Address */}
-                <div className="mb-10">
-                  <div className="flex items-center mb-4">
-                    <div className="contact-icon mr-4">
-                      <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                      </svg>
-                    </div>
-                    <h3 className="text-xl font-bold text-white">주소</h3>
+                <div className="flex items-start">
+                  <div className="contact-icon mr-6 mt-1">
+                    <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
                   </div>
-                  <div className="ml-14">
+                  <div>
+                    <h3 className="text-xl font-bold text-white mb-3">주소</h3>
                     <p className="text-white/80 text-lg leading-relaxed" data-testid="text-address">
                       서울특별시 강남구 테헤란로 123<br />
                       뷰리드타워 15층<br />
@@ -90,48 +91,48 @@ export default function Location() {
                 </div>
 
                 {/* Contact Info */}
-                <div className="mb-10">
-                  <div className="flex items-center mb-4">
-                    <div className="contact-icon mr-4">
-                      <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
-                      </svg>
-                    </div>
-                    <h3 className="text-xl font-bold text-white">연락처</h3>
+                <div className="flex items-start">
+                  <div className="contact-icon mr-6 mt-1">
+                    <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                    </svg>
                   </div>
-                  <div className="ml-14 space-y-3">
-                    <p className="text-white/80 text-lg" data-testid="text-phone">
-                      전화: 02-1234-5678
-                    </p>
-                    <p className="text-white/80 text-lg" data-testid="text-fax">
-                      팩스: 02-1234-5679
-                    </p>
-                    <p className="text-white/80 text-lg" data-testid="text-email">
-                      이메일: contact@beauleadai.co.kr
-                    </p>
+                  <div>
+                    <h3 className="text-xl font-bold text-white mb-3">연락처</h3>
+                    <div className="space-y-2">
+                      <p className="text-white/80 text-lg" data-testid="text-phone">
+                        전화: 02-1234-5678
+                      </p>
+                      <p className="text-white/80 text-lg" data-testid="text-fax">
+                        팩스: 02-1234-5679
+                      </p>
+                      <p className="text-white/80 text-lg" data-testid="text-email">
+                        이메일: contact@beauleadai.co.kr
+                      </p>
+                    </div>
                   </div>
                 </div>
 
                 {/* Business Hours */}
-                <div>
-                  <div className="flex items-center mb-4">
-                    <div className="contact-icon mr-4">
-                      <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M16.2,16.2L11,13V7H12.5V12.2L17,14.7L16.2,16.2Z"/>
-                      </svg>
-                    </div>
-                    <h3 className="text-xl font-bold text-white">운영시간</h3>
+                <div className="flex items-start">
+                  <div className="contact-icon mr-6 mt-1">
+                    <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M16.2,16.2L11,13V7H12.5V12.2L17,14.7L16.2,16.2Z"/>
+                    </svg>
                   </div>
-                  <div className="ml-14 space-y-3">
-                    <p className="text-white/80 text-lg" data-testid="text-weekday-hours">
-                      평일: 오전 9시 ~ 오후 6시
-                    </p>
-                    <p className="text-white/80 text-lg" data-testid="text-weekend-hours">
-                      토요일, 일요일, 공휴일 휴무
-                    </p>
-                    <p className="text-white/60 text-sm mt-4">
-                      * 방문 상담은 사전 예약을 권장드립니다
-                    </p>
+                  <div>
+                    <h3 className="text-xl font-bold text-white mb-3">운영시간</h3>
+                    <div className="space-y-2">
+                      <p className="text-white/80 text-lg" data-testid="text-weekday-hours">
+                        평일: 오전 9시 ~ 오후 6시
+                      </p>
+                      <p className="text-white/80 text-lg" data-testid="text-weekend-hours">
+                        토요일, 일요일, 공휴일 휴무
+                      </p>
+                      <p className="text-white/60 text-sm mt-3">
+                        * 방문 상담은 사전 예약을 권장드립니다
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
