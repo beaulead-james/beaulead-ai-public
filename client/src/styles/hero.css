@@ -314,39 +314,64 @@
   border-color: rgba(255, 255, 255, 0.3);
 }
 
-/* 드롭다운 메뉴 스타일 - 포커 사이트 벤치마킹 */
+/* 드롭다운 메뉴 스타일 - 브랜드 맞춤 현대적 디자인 */
 .dropdown-menu {
-  background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  padding: 0.5rem 0;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-  min-width: 220px;
+  background: linear-gradient(135deg, 
+    rgba(17, 25, 40, 0.95) 0%, 
+    rgba(17, 25, 40, 0.98) 100%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 0.75rem 0;
+  box-shadow: 
+    0 32px 64px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  min-width: 240px;
   
-  /* 포커 사이트처럼 더 투명하고 블러 강화 */
-  animation: dropdownFadeIn 0.2s ease-out;
+  /* 부드러운 페이드인 애니메이션 */
+  animation: dropdownFadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes dropdownFadeIn {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-8px) scale(0.95);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
 .dropdown-item {
-  color: rgba(255, 255, 255, 0.8);
-  padding: 0.75rem 1.25rem;
+  color: rgba(255, 255, 255, 0.85);
+  padding: 0.875rem 1.5rem;
   display: block;
-  transition: all 0.3s ease;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.dropdown-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(135deg, #0A84FF 0%, #00B894 100%);
+  transform: scaleY(0);
+  transition: transform 0.25s ease;
+}
+
+.dropdown-item:hover::before {
+  transform: scaleY(1);
 }
 
 .dropdown-item:last-child {
@@ -354,19 +379,22 @@
 }
 
 .dropdown-item:first-child {
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
 }
 
 .dropdown-item:last-child {
-  border-bottom-left-radius: 16px;
-  border-bottom-right-radius: 16px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
 }
 
 .dropdown-item:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(90deg, 
+    rgba(10, 132, 255, 0.08) 0%, 
+    rgba(0, 184, 148, 0.06) 100%);
   color: white;
-  transform: translateX(4px);
+  transform: translateX(6px);
+  border-left: 3px solid transparent;
 }
 
 /* 모바일 메뉴 */
