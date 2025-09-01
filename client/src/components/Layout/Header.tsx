@@ -3,7 +3,6 @@ import { Link } from 'wouter';
 import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../contexts/LanguageContext';
 import LanguageSwitcher from '../UI/LanguageSwitcher';
-import ThemeSwitcher from '../UI/ThemeSwitcher';
 import MobileMenu from './MobileMenu';
 import '../../styles/hero.css';
 
@@ -107,7 +106,6 @@ export default function Header() {
               <div className="language-switcher">
                 <LanguageSwitcher />
               </div>
-              <ThemeSwitcher />
 
               <div className="hidden sm:flex items-center space-x-3">
                 {isAuthenticated ? (

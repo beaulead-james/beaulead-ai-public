@@ -164,7 +164,7 @@ export const translations: Record<Language, Translations> = {
       location: '위치안내',
       history: '연혁',
       services: '서비스',
-      googleAds: '구글애즈',
+      googleAds: '구글 광고',
       naverAds: '네이버 광고',
       metaAds: '메타 광고',
       kakaoAds: '카카오 광고',
@@ -185,7 +185,7 @@ export const translations: Record<Language, Translations> = {
       title: '전문 마케팅 서비스',
       subtitle: '각 플랫폼의 특성을 깊이 이해하고, 데이터 분석을 통해 최적의 성과를 창출합니다',
       googleAds: {
-        title: '구글애즈',
+        title: '구글 광고',
         description: '검색광고부터 디스플레이, 쇼핑광고까지 구글 생태계를 활용한 통합 마케팅',
       },
       naverAds: {
@@ -287,7 +287,7 @@ export const translations: Record<Language, Translations> = {
       },
       services: {
         title: '서비스',
-        googleAds: '구글애즈',
+        googleAds: '구글 광고',
         naverAds: '네이버 광고',
         metaAds: '메타 광고',
         kakaoAds: '카카오 광고',
