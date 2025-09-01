@@ -92,14 +92,13 @@ export default function MetaAds() {
                       <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                     </svg>
                   </div>
-                  <span className="text-xl font-semibold text-white/90">Meta Ads</span>
+                  <span className="text-xl font-semibold text-white/90">{t.services.metaAds.brandName}</span>
                 </div>
                 <h1 className="text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight" data-testid="text-page-title">
-                  메타 광고로 소셜미디어를 정복하세요
+                  {t.services.metaAds.heroTitle}
                 </h1>
                 <p className="text-xl text-white/80 mb-8 leading-relaxed">
-                  페이스북과 인스타그램을 통해 38억 명의 글로벌 사용자에게 도달하세요. 
-                  창의적인 콘텐츠와 정밀한 타겟팅으로 브랜드의 성장을 가속화합니다.
+                  {t.services.metaAds.heroDescription}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Link 
@@ -107,14 +106,14 @@ export default function MetaAds() {
                     className="modern-btn text-center"
                     data-testid="button-contact-cta"
                   >
-                    무료 상담 신청
+                    {t.services.contactCta}
                   </Link>
                   <Link 
                     href="/portfolio" 
                     className="modern-btn-outline text-center"
                     data-testid="button-portfolio-cta"
                   >
-                    성공 사례 보기
+                    {t.services.portfolioCta}
                   </Link>
                 </div>
               </div>

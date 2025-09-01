@@ -90,14 +90,13 @@ export default function NaverAds() {
                   <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg">
                     <span className="text-white font-bold text-xl">N</span>
                   </div>
-                  <span className="text-xl font-semibold text-white/90">Naver Ads</span>
+                  <span className="text-xl font-semibold text-white/90">{t.services.naverAds.brandName}</span>
                 </div>
                 <h1 className="text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight" data-testid="text-page-title">
-                  네이버 광고로 국내 고객을 정확히 공략하세요
+                  {t.services.naverAds.heroTitle}
                 </h1>
                 <p className="text-xl text-white/80 mb-8 leading-relaxed">
-                  국내 검색 점유율 1위 네이버에서 한국 고객에게 최적화된 마케팅을 진행하세요. 
-                  파워링크, 브랜드검색, 쇼핑검색까지 모든 네이버 광고 솔루션을 제공합니다.
+                  {t.services.naverAds.heroDescription}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Link 
@@ -105,14 +104,14 @@ export default function NaverAds() {
                     className="modern-btn text-center"
                     data-testid="button-contact-cta"
                   >
-                    무료 상담 신청
+                    {t.services.contactCta}
                   </Link>
                   <Link 
                     href="/portfolio" 
                     className="modern-btn-outline text-center"
                     data-testid="button-portfolio-cta"
                   >
-                    성공 사례 보기
+                    {t.services.portfolioCta}
                   </Link>
                 </div>
               </div>

@@ -33,20 +33,34 @@ export interface Translations {
     googleAds: {
       title: string;
       description: string;
+      heroTitle: string;
+      heroDescription: string;
+      brandName: string;
     };
     naverAds: {
       title: string;
       description: string;
+      heroTitle: string;
+      heroDescription: string;
+      brandName: string;
     };
     metaAds: {
       title: string;
       description: string;
+      heroTitle: string;
+      heroDescription: string;
+      brandName: string;
     };
     kakaoAds: {
       title: string;
       description: string;
+      heroTitle: string;
+      heroDescription: string;
+      brandName: string;
     };
     learnMore: string;
+    contactCta: string;
+    portfolioCta: string;
   };
   stats: {
     title: string;
@@ -202,20 +216,34 @@ export const translations: Record<Language, Translations> = {
       googleAds: {
         title: '구글 광고',
         description: '검색광고부터 디스플레이, 쇼핑광고까지 구글 생태계를 활용한 통합 마케팅',
+        heroTitle: '구글 광고로 더 많은 고객을 만나보세요',
+        heroDescription: '전 세계 90억 명이 사용하는 구글에서 정확한 타겟 고객에게 도달하세요. 검색, 디스플레이, 쇼핑, YouTube까지 모든 구글 광고 솔루션을 제공합니다.',
+        brandName: 'Google Ads',
       },
       naverAds: {
         title: '네이버 광고',
         description: '국내 최대 검색엔진 네이버에서의 검색광고, 쇼핑광고, 브랜드검색 최적화',
+        heroTitle: '네이버 광고로 국내 고객을 정확히 공략하세요',
+        heroDescription: '국내 검색 점유율 1위 네이버에서 한국 고객에게 최적화된 마케팅을 진행하세요. 파워링크, 브랜드검색, 쇼핑검색까지 모든 네이버 광고 솔루션을 제공합니다.',
+        brandName: 'Naver Ads',
       },
       metaAds: {
         title: '메타 광고',
         description: '페이스북과 인스타그램을 활용한 소셜미디어 마케팅과 타겟 광고',
+        heroTitle: '메타 광고로 소셜미디어를 정복하세요',
+        heroDescription: '페이스북과 인스타그램을 통해 38억 명의 글로벌 사용자에게 도달하세요. 창의적인 콘텐츠와 정밀한 타겟팅으로 브랜드의 성장을 가속화합니다.',
+        brandName: 'Meta Ads',
       },
       kakaoAds: {
         title: '카카오 광고',
         description: '카카오톡, 카카오스토리 등 카카오 플랫폼을 통한 모바일 마케팅',
+        heroTitle: '카카오 광고로 일상 속에서 고객을 만나세요',
+        heroDescription: '4,700만 명이 매일 사용하는 카카오톡을 통해 고객과 더욱 친밀하게 소통하세요. 개인화된 메시지와 자연스러운 광고 노출로 높은 참여도를 달성합니다.',
+        brandName: 'Kakao Ads',
       },
       learnMore: '자세히 보기',
+      contactCta: '무료 상담 신청',
+      portfolioCta: '성공 사례 보기',
     },
     stats: {
       title: '뛰어난 성과로 입증된 전문성',
@@ -363,20 +391,34 @@ export const translations: Record<Language, Translations> = {
       googleAds: {
         title: 'Google Ads',
         description: 'Integrated marketing leveraging Google ecosystem from search ads to display and shopping ads',
+        heroTitle: 'Reach More Customers with Google Ads',
+        heroDescription: 'Reach your precise target audience on Google, used by 9 billion people worldwide. We provide all Google advertising solutions including Search, Display, Shopping, and YouTube.',
+        brandName: 'Google Ads',
       },
       naverAds: {
         title: 'Naver Ads',
         description: 'Search ads, shopping ads, and brand search optimization on Korea\'s largest search engine',
+        heroTitle: 'Target Korean Customers Precisely with Naver Ads',
+        heroDescription: 'Execute marketing optimized for Korean customers on Naver, Korea\'s #1 search engine. We provide all Naver advertising solutions including PowerLink, Brand Search, and Shopping Search.',
+        brandName: 'Naver Ads',
       },
       metaAds: {
         title: 'Meta Ads',
         description: 'Social media marketing and targeted advertising using Facebook and Instagram',
+        heroTitle: 'Conquer Social Media with Meta Ads',
+        heroDescription: 'Reach 3.8 billion global users through Facebook and Instagram. Accelerate your brand growth with creative content and precise targeting.',
+        brandName: 'Meta Ads',
       },
       kakaoAds: {
         title: 'Kakao Ads',
         description: 'Mobile marketing through Kakao platforms including KakaoTalk and KakaoStory',
+        heroTitle: 'Meet Customers in Daily Life with Kakao Ads',
+        heroDescription: 'Communicate more intimately with customers through KakaoTalk, used daily by 47 million people. Achieve high engagement with personalized messages and natural ad exposure.',
+        brandName: 'Kakao Ads',
       },
       learnMore: 'Learn More',
+      contactCta: 'Get Free Consultation',
+      portfolioCta: 'View Success Stories',
     },
     stats: {
       title: 'Expertise Proven by Outstanding Results',
