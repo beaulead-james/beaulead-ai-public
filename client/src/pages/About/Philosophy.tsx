@@ -15,10 +15,10 @@ export default function Philosophy() {
         keywords="뷰리드AI, 기업철학, 핵심가치, 마케팅철학"
       />
       
-      {/* Background */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900"></div>
-        <div className="bg-orb"></div>
+      {/* Background orbs */}
+      <div className="bg-orb">
+        <div className="orb orb-a"></div>
+        <div className="orb orb-b"></div>
       </div>
       
       <Header />
