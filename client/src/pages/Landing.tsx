@@ -203,7 +203,7 @@ export default function Landing() {
         <div className="container max-w-7xl mx-auto relative z-10">
           <div className="text-center mb-20">
             <div className="inline-flex items-center bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full border border-white/20 mb-8">
-              <span className="text-sm font-semibold text-white">🏆 성공 사례</span>
+              <span className="text-sm font-semibold text-white">🏆 {t.portfolio.clients.title.includes('무슨') ? '성공 사례' : 'Success Stories'}</span>
             </div>
             <h2 className="text-3xl lg:text-5xl font-headline font-bold text-white mb-6 leading-tight" data-testid="text-portfolio-title">
               {t.portfolio.clients.title}<br />
@@ -449,7 +449,7 @@ export default function Landing() {
         <div className="container max-w-7xl mx-auto relative z-10">
           <div className="text-center mb-20">
             <div className="inline-flex items-center bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full border border-white/20 mb-8">
-              <span className="text-sm font-semibold text-white">📊 뛰어난 성과</span>
+              <span className="text-sm font-semibold text-white">📊 {t.stats.title.includes('뛰어난') ? '뛰어난 성과' : 'Outstanding Performance'}</span>
             </div>
             <h2 className="text-3xl lg:text-5xl font-headline font-bold text-white mb-6 leading-tight" data-testid="text-stats-title">
               {t.stats.title.split('입증된 전문성')[0]}<br />
@@ -532,7 +532,7 @@ export default function Landing() {
         <div className="container max-w-7xl mx-auto relative z-10">
           <div className="text-center mb-20">
             <div className="inline-flex items-center bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full border border-white/20 mb-8">
-              <span className="text-sm font-semibold text-white">📖 마케팅 인사이트</span>
+              <span className="text-sm font-semibold text-white">📖 {t.blog.title.includes('마케팅') ? '마케팅 인사이트' : 'Marketing Insights'}</span>
             </div>
             <h2 className="text-3xl lg:text-5xl font-headline font-bold text-white mb-6 leading-tight" data-testid="text-blog-title">
               {t.blog.insights?.title || t.blog.title}<br />
