@@ -9,68 +9,68 @@ export default function MetaAds() {
 
   const serviceTypes = [
     {
-      title: '페이스북 광고',
-      description: '28억 명의 글로벌 사용자를 대상으로 정교한 타겟팅을 통해 브랜드 인지도를 높이고 전환을 유도합니다.',
-      features: ['뉴스피드 광고', 'Stories 광고', '비디오 광고', 'Carousel 광고']
+      title: t.services.metaAds.serviceTypes.facebook.title,
+      description: t.services.metaAds.serviceTypes.facebook.description,
+      features: t.services.metaAds.serviceTypes.facebook.features
     },
     {
-      title: '인스타그램 광고',
-      description: '시각적으로 매력적인 콘텐츠로 젊은 타겟층에게 어필하고 높은 참여율을 달성합니다.',
-      features: ['피드 광고', 'Stories 광고', 'Reels 광고', '쇼핑 광고']
+      title: t.services.metaAds.serviceTypes.instagram.title,
+      description: t.services.metaAds.serviceTypes.instagram.description,
+      features: t.services.metaAds.serviceTypes.instagram.features
     },
     {
-      title: '리타겟팅 캠페인',
-      description: '웹사이트 방문자를 다시 찾아가 구매 전환율을 높이는 효과적인 재방문 유도 전략입니다.',
-      features: ['픽셀 설치', '맞춤 오디언스', '동적 제품 광고', '장바구니 리마케팅']
+      title: t.services.metaAds.serviceTypes.messenger.title,
+      description: t.services.metaAds.serviceTypes.messenger.description,
+      features: t.services.metaAds.serviceTypes.messenger.features
     },
     {
-      title: 'Lookalike 타겟팅',
-      description: '기존 고객과 유사한 특성을 가진 새로운 잠재 고객을 찾아 효율적인 신규 고객 획득을 지원합니다.',
-      features: ['유사 오디언스', '관심사 타겟팅', '행동 기반 타겟팅', 'A/B 테스트']
+      title: t.services.metaAds.serviceTypes.audience.title,
+      description: t.services.metaAds.serviceTypes.audience.description,
+      features: t.services.metaAds.serviceTypes.audience.features
     }
   ];
 
   const benefits = [
     {
       icon: 'fas fa-bullseye',
-      title: '정밀한 타겟팅',
-      description: '연령, 성별, 관심사, 행동패턴 등 세분화된 타겟팅으로 정확한 고객에게 도달합니다.'
+      title: t.services.metaAds.benefits.targeting.title,
+      description: t.services.metaAds.benefits.targeting.description
     },
     {
       icon: 'fas fa-images',
-      title: '다양한 광고 형식',
-      description: '이미지, 비디오, 캐러셀, 스토리즈 등 다양한 형식으로 창의적인 광고를 제작합니다.'
+      title: t.services.metaAds.benefits.creative.title,
+      description: t.services.metaAds.benefits.creative.description
     },
     {
       icon: 'fas fa-chart-line',
-      title: '실시간 성과 측정',
-      description: 'Facebook Pixel을 통해 실시간으로 광고 성과를 측정하고 최적화할 수 있습니다.'
+      title: t.services.metaAds.benefits.engagement.title,
+      description: t.services.metaAds.benefits.engagement.description
     },
     {
       icon: 'fas fa-globe',
-      title: '글로벌 리치',
-      description: '전 세계 38억 명의 메타 플랫폼 사용자에게 광고를 노출할 수 있습니다.'
+      title: t.services.metaAds.benefits.global.title,
+      description: t.services.metaAds.benefits.global.description
     }
   ];
 
   const caseStudy = {
-    company: 'D2C 뷰티 브랜드 C사',
-    challenge: '신제품 론칭과 브랜드 인지도 향상',
-    solution: '인스타그램 + 페이스북 통합 캠페인 + 인플루언서 협업',
+    company: t.services.metaAds.caseStudy.company,
+    challenge: t.services.metaAds.caseStudy.challenge,
+    solution: t.services.metaAds.caseStudy.solution,
     results: [
       { metric: 'ROAS', value: '410%', change: '+160%' },
-      { metric: '브랜드 인지도', value: '340%', change: '+240%' },
-      { metric: '팔로워', value: '+15K', change: '+180%' },
-      { metric: '매출', value: '₩850M', change: '+320%' }
+      { metric: language === 'ko' ? '브랜드 인지도' : 'Brand Awareness', value: '340%', change: '+240%' },
+      { metric: language === 'ko' ? '팔로워' : 'Followers', value: '+15K', change: '+180%' },
+      { metric: language === 'ko' ? '매출' : 'Revenue', value: language === 'ko' ? '₩850M' : '$680K', change: '+320%' }
     ]
   };
 
   return (
     <div className="min-h-screen">
       <SEO 
-        title="메타 광고 | 뷰리드AI"
-        description="페이스북, 인스타그램 광고로 소셜미디어 마케팅의 새로운 차원을 경험하세요"
-        keywords="메타광고, 페이스북광고, 인스타그램광고, 소셜미디어마케팅, 리타겟팅"
+        title={`${t.services.metaAds.title} | ${language === 'ko' ? '뷰리드AI' : 'BeauLeadAI'}`}
+        description={t.services.metaAds.heroDescription}
+        keywords={language === 'ko' ? '메타광고, 페이스북광고, 인스타그램광고, 소셜미디어마케팅, 리타겟팅' : 'Meta Ads, Facebook Ads, Instagram Ads, Social Media Marketing, Retargeting'}
       />
       <Header />
 
@@ -120,7 +120,7 @@ export default function MetaAds() {
               <div className="relative">
                 <div className="floating-card">
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-bold text-white">Meta Ads 대시보드</h3>
+                    <h3 className="text-xl font-bold text-white">{t.services.metaAds.dashboard}</h3>
                     <div className="contact-icon">
                       <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>

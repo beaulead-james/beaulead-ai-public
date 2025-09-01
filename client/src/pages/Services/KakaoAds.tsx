@@ -9,68 +9,68 @@ export default function KakaoAds() {
 
   const serviceTypes = [
     {
-      title: '카카오톡 비즈메시지',
-      description: '4,700만 카카오톡 사용자에게 직접 도달하는 개인화된 메시지 광고로 높은 전환율을 달성합니다.',
-      features: ['친구톡', '알림톡', '템플릿 메시지', '개인화 메시지']
+      title: t.services.kakaoAds.serviceTypes.talk.title,
+      description: t.services.kakaoAds.serviceTypes.talk.description,
+      features: t.services.kakaoAds.serviceTypes.talk.features
     },
     {
-      title: '카카오 모먼트',
-      description: '카카오톡 상단 광고 영역에 노출되는 프리미엄 디스플레이 광고입니다.',
-      features: ['타임라인 광고', '프로필 광고', '톡보드 광고', '브랜드 캠페인']
+      title: t.services.kakaoAds.serviceTypes.bizboard.title,
+      description: t.services.kakaoAds.serviceTypes.bizboard.description,
+      features: t.services.kakaoAds.serviceTypes.bizboard.features
     },
     {
-      title: '카카오 디스플레이',
-      description: '카카오 계열 서비스 전반에 노출되는 통합 디스플레이 광고 네트워크입니다.',
-      features: ['다음 메인', '카카오스토리', '카카오맵', '카카오페이지']
+      title: t.services.kakaoAds.serviceTypes.display.title,
+      description: t.services.kakaoAds.serviceTypes.display.description,
+      features: t.services.kakaoAds.serviceTypes.display.features
     },
     {
-      title: '비즈보드 광고',
-      description: '카카오톡 채팅방 하단에 노출되는 네이티브 광고로 자연스러운 노출이 가능합니다.',
-      features: ['채팅방 광고', '네이티브 형태', '상황별 타겟팅', 'CPC/CPM 과금']
+      title: t.services.kakaoAds.serviceTypes.shopping.title,
+      description: t.services.kakaoAds.serviceTypes.shopping.description,
+      features: t.services.kakaoAds.serviceTypes.shopping.features
     }
   ];
 
   const benefits = [
     {
       icon: 'fas fa-comments',
-      title: '높은 사용자 참여도',
-      description: '일상 깊숙이 자리잡은 카카오톡을 통해 자연스럽고 친밀한 광고 노출이 가능합니다.'
+      title: t.services.kakaoAds.benefits.daily.title,
+      description: t.services.kakaoAds.benefits.daily.description
     },
     {
       icon: 'fas fa-mobile-alt',
-      title: '모바일 최적화',
-      description: '모바일 퍼스트 환경에 완벽 최적화된 광고 솔루션을 제공합니다.'
+      title: t.services.kakaoAds.benefits.mobile.title,
+      description: t.services.kakaoAds.benefits.mobile.description
     },
     {
       icon: 'fas fa-user-friends',
-      title: '개인화 메시지',
-      description: '사용자 행동 패턴과 관심사를 기반으로 한 개인화된 메시지 전달이 가능합니다.'
+      title: t.services.kakaoAds.benefits.messaging.title,
+      description: t.services.kakaoAds.benefits.messaging.description
     },
     {
       icon: 'fas fa-chart-pie',
-      title: '통합 분석',
-      description: '카카오 비즈니스 플랫폼을 통해 통합된 성과 분석과 리포팅을 제공합니다.'
+      title: t.services.kakaoAds.benefits.local.title,
+      description: t.services.kakaoAds.benefits.local.description
     }
   ];
 
   const caseStudy = {
-    company: '온라인 쇼핑몰 D사',
-    challenge: '젊은 층 타겟팅과 모바일 전환율 개선',
-    solution: '카카오톡 친구톡 + 비즈보드 + 카카오페이 연동',
+    company: t.services.kakaoAds.caseStudy.company,
+    challenge: t.services.kakaoAds.caseStudy.challenge,
+    solution: t.services.kakaoAds.caseStudy.solution,
     results: [
       { metric: 'ROAS', value: '390%', change: '+140%' },
-      { metric: '모바일 전환', value: '6.8%', change: '+220%' },
-      { metric: '친구 추가', value: '+8,500', change: '+300%' },
-      { metric: '재방문율', value: '45%', change: '+180%' }
+      { metric: language === 'ko' ? '모바일 전환' : 'Mobile Conversion', value: '6.8%', change: '+220%' },
+      { metric: language === 'ko' ? '친구 추가' : 'Friend Adds', value: '+8,500', change: '+300%' },
+      { metric: language === 'ko' ? '재방문율' : 'Return Rate', value: '45%', change: '+180%' }
     ]
   };
 
   return (
     <div className="min-h-screen">
       <SEO 
-        title="카카오 광고 | 뷰리드AI"
-        description="카카오톡, 카카오 모먼트, 비즈메시지까지 카카오 플랫폼 전문 광고 서비스"
-        keywords="카카오광고, 카카오톡광고, 비즈메시지, 카카오모먼트, 모바일마케팅"
+        title={`${t.services.kakaoAds.title} | ${language === 'ko' ? '뷰리드AI' : 'BeauLeadAI'}`}
+        description={t.services.kakaoAds.heroDescription}
+        keywords={language === 'ko' ? '카카오광고, 카카오톡광고, 비즈메시지, 카카오모먼트, 모바일마케팅' : 'Kakao Ads, KakaoTalk Ads, Biz Message, Mobile Marketing'}
       />
       <Header />
 
@@ -118,7 +118,7 @@ export default function KakaoAds() {
               <div className="relative">
                 <div className="floating-card">
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-bold text-white">카카오 광고 대시보드</h3>
+                    <h3 className="text-xl font-bold text-white">{t.services.kakaoAds.dashboard}</h3>
                     <div className="contact-icon">
                       <span className="text-white font-bold text-xl">K</span>
                     </div>
@@ -149,8 +149,8 @@ export default function KakaoAds() {
         <section className="py-16 lg:py-24">
           <div className="container max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">카카오 광고 서비스</h2>
-              <p className="text-xl text-white/80">카카오 생태계를 활용한 통합 모바일 마케팅</p>
+              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">{t.services.kakaoAds.serviceTypes.title}</h2>
+              <p className="text-xl text-white/80">{t.services.kakaoAds.serviceTypes.subtitle}</p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-8">
@@ -180,8 +180,8 @@ export default function KakaoAds() {
         <section className="py-16 lg:py-24">
           <div className="container max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">카카오 광고의 장점</h2>
-              <p className="text-xl text-white/80">한국인의 일상에 가장 밀접한 플랫폼의 힘</p>
+              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">{t.services.kakaoAds.benefits.title}</h2>
+              <p className="text-xl text-white/80">{language === 'ko' ? '한국인의 일상에 가장 밀접한 플랫폼의 힘' : 'The power of the platform closest to Korean daily life'}</p>
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -219,8 +219,8 @@ export default function KakaoAds() {
         <section className="py-16 lg:py-24">
           <div className="container max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">성공 사례</h2>
-              <p className="text-xl text-white/80">실제 고객사의 카카오 광고 성과를 확인해보세요</p>
+              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">{t.services.kakaoAds.caseStudy.title}</h2>
+              <p className="text-xl text-white/80">{language === 'ko' ? '실제 고객사의 카카오 광고 성과를 확인해보세요' : 'Check out the actual results of Kakao advertising from our clients'}</p>
             </div>
 
             <div className="floating-card">
@@ -232,18 +232,18 @@ export default function KakaoAds() {
                     </h3>
                     <div className="space-y-6">
                       <div>
-                        <h4 className="font-semibold text-white mb-2">도전 과제:</h4>
+                        <h4 className="font-semibold text-white mb-2">{language === 'ko' ? '도전 과제:' : 'Challenge:'}</h4>
                         <p className="text-white/80 leading-relaxed" data-testid="text-case-challenge">{caseStudy.challenge}</p>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-white mb-2">해결책:</h4>
+                        <h4 className="font-semibold text-white mb-2">{language === 'ko' ? '해결책:' : 'Solution:'}</h4>
                         <p className="text-white/80 leading-relaxed" data-testid="text-case-solution">{caseStudy.solution}</p>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-white mb-6 text-center">5개월 후 결과:</h4>
+                  <h4 className="font-semibold text-white mb-6 text-center">{t.services.kakaoAds.caseStudy.resultsTitle}</h4>
                   <div className="grid grid-cols-2 gap-4">
                     {caseStudy.results.map((result, index) => (
                       <div key={index} className="stats-card">
