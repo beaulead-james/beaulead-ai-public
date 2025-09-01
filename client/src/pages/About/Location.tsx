@@ -71,8 +71,8 @@ export default function Location() {
                 <h2 className="text-3xl lg:text-4xl font-bold text-white mb-8">오시는 길</h2>
                 
                 {/* Address */}
-                <div className="mb-8">
-                  <div className="flex items-center mb-6">
+                <div className="mb-10">
+                  <div className="flex items-center mb-4">
                     <div className="contact-icon mr-4">
                       <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
@@ -80,16 +80,18 @@ export default function Location() {
                     </div>
                     <h3 className="text-xl font-bold text-white">주소</h3>
                   </div>
-                  <p className="text-white/80 text-lg" data-testid="text-address">
-                    서울특별시 강남구 테헤란로 123<br />
-                    뷰리드타워 15층<br />
-                    우편번호: 06142
-                  </p>
+                  <div className="ml-14">
+                    <p className="text-white/80 text-lg leading-relaxed" data-testid="text-address">
+                      서울특별시 강남구 테헤란로 123<br />
+                      뷰리드타워 15층<br />
+                      우편번호: 06142
+                    </p>
+                  </div>
                 </div>
 
                 {/* Contact Info */}
-                <div className="mb-8">
-                  <div className="flex items-center mb-6">
+                <div className="mb-10">
+                  <div className="flex items-center mb-4">
                     <div className="contact-icon mr-4">
                       <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
@@ -97,7 +99,7 @@ export default function Location() {
                     </div>
                     <h3 className="text-xl font-bold text-white">연락처</h3>
                   </div>
-                  <div className="space-y-3">
+                  <div className="ml-14 space-y-3">
                     <p className="text-white/80 text-lg" data-testid="text-phone">
                       전화: 02-1234-5678
                     </p>
@@ -112,7 +114,7 @@ export default function Location() {
 
                 {/* Business Hours */}
                 <div>
-                  <div className="flex items-center mb-6">
+                  <div className="flex items-center mb-4">
                     <div className="contact-icon mr-4">
                       <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M16.2,16.2L11,13V7H12.5V12.2L17,14.7L16.2,16.2Z"/>
@@ -120,14 +122,14 @@ export default function Location() {
                     </div>
                     <h3 className="text-xl font-bold text-white">운영시간</h3>
                   </div>
-                  <div className="space-y-3">
+                  <div className="ml-14 space-y-3">
                     <p className="text-white/80 text-lg" data-testid="text-weekday-hours">
                       평일: 오전 9시 ~ 오후 6시
                     </p>
                     <p className="text-white/80 text-lg" data-testid="text-weekend-hours">
                       토요일, 일요일, 공휴일 휴무
                     </p>
-                    <p className="text-white/60 mt-4">
+                    <p className="text-white/60 text-sm mt-4">
                       * 방문 상담은 사전 예약을 권장드립니다
                     </p>
                   </div>
@@ -158,40 +160,42 @@ export default function Location() {
             <div className="grid md:grid-cols-3 gap-8">
               {transportInfo.map((transport, index) => (
                 <div key={index} className="service-card animate-fade-in-up" style={{animationDelay: `${index * 100}ms`}}>
-                  <div className="text-center mb-8">
-                    <div className="contact-icon mb-6">
-                      {index === 0 && (
-                        <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M17.8,20C17.4,21.2 16.3,22 15,22H5C3.3,22 2,20.7 2,19V18C2,17.4 2.4,17 3,17S4,17.4 4,18V19C4,19.6 4.4,20 5,20H15C15.6,20 16,19.6 16,19V5C16,4.4 15.6,4 15,4H5C4.4,4 4,4.4 4,5V6C4,6.6 3.6,7 3,7S2,6.6 2,6V5C2,3.3 3.3,2 5,2H15C16.3,2 17.4,2.8 17.8,4H19C20.1,4 21,4.9 21,6V18C21,19.1 20.1,20 19,20H17.8M19,18V6H18V18H19Z"/>
-                        </svg>
-                      )}
-                      {index === 1 && (
-                        <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M18,11H22L20,8H18V6.5C18,5.1 16.9,4 15.5,4H8.5C7.1,4 6,5.1 6,6.5V8H4L2,11H6V12.5C6,13.9 7.1,15 8.5,15H15.5C16.9,15 18,13.9 18,12.5V11M8,7.5H16V8.5H8V7.5Z"/>
-                        </svg>
-                      )}
-                      {index === 2 && (
-                        <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M18.92,6.01C18.72,5.42 18.16,5 17.5,5H15V4A2,2 0 0,0 13,2H11A2,2 0 0,0 9,4V5H6.5C5.84,5 5.29,5.42 5.08,6.01L3,12V20A1,1 0 0,0 4,21H5A1,1 0 0,0 6,20V19H18V20A1,1 0 0,0 19,21H20A1,1 0 0,0 21,20V12L18.92,6.01M13.5,16.5C12.67,16.5 12,15.83 12,15C12,14.17 12.67,13.5 13.5,13.5C14.33,13.5 15,14.17 15,15C15,15.83 14.33,16.5 13.5,16.5M10.5,16.5C9.67,16.5 9,15.83 9,15C9,14.17 9.67,13.5 10.5,13.5C11.33,13.5 12,14.17 12,15C12,15.83 11.33,16.5 10.5,16.5M11,4H13V5H11V4Z"/>
-                        </svg>
-                      )}
+                  <div className="mb-8">
+                    <div className="flex items-center justify-center mb-6">
+                      <div className="contact-icon">
+                        {index === 0 && (
+                          <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M17.8,20C17.4,21.2 16.3,22 15,22H5C3.3,22 2,20.7 2,19V18C2,17.4 2.4,17 3,17S4,17.4 4,18V19C4,19.6 4.4,20 5,20H15C15.6,20 16,19.6 16,19V5C16,4.4 15.6,4 15,4H5C4.4,4 4,4.4 4,5V6C4,6.6 3.6,7 3,7S2,6.6 2,6V5C2,3.3 3.3,2 5,2H15C16.3,2 17.4,2.8 17.8,4H19C20.1,4 21,4.9 21,6V18C21,19.1 20.1,20 19,20H17.8M19,18V6H18V18H19Z"/>
+                          </svg>
+                        )}
+                        {index === 1 && (
+                          <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M18,11H22L20,8H18V6.5C18,5.1 16.9,4 15.5,4H8.5C7.1,4 6,5.1 6,6.5V8H4L2,11H6V12.5C6,13.9 7.1,15 8.5,15H15.5C16.9,15 18,13.9 18,12.5V11M8,7.5H16V8.5H8V7.5Z"/>
+                          </svg>
+                        )}
+                        {index === 2 && (
+                          <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M18.92,6.01C18.72,5.42 18.16,5 17.5,5H15V4A2,2 0 0,0 13,2H11A2,2 0 0,0 9,4V5H6.5C5.84,5 5.29,5.42 5.08,6.01L3,12V20A1,1 0 0,0 4,21H5A1,1 0 0,0 6,20V19H18V20A1,1 0 0,0 19,21H20A1,1 0 0,0 21,20V12L18.92,6.01M13.5,16.5C12.67,16.5 12,15.83 12,15C12,14.17 12.67,13.5 13.5,13.5C14.33,13.5 15,14.17 15,15C15,15.83 14.33,16.5 13.5,16.5M10.5,16.5C9.67,16.5 9,15.83 9,15C9,14.17 9.67,13.5 10.5,13.5C11.33,13.5 12,14.17 12,15C12,15.83 11.33,16.5 10.5,16.5M11,4H13V5H11V4Z"/>
+                          </svg>
+                        )}
+                      </div>
                     </div>
-                    <h3 className="text-2xl font-bold text-white mb-4" data-testid={`text-transport-title-${index}`}>
+                    <h3 className="text-2xl font-bold text-white text-center mb-6" data-testid={`text-transport-title-${index}`}>
                       {transport.title}
                     </h3>
                   </div>
-                  <ul className="space-y-3 text-left">
+                  <div className="space-y-4">
                     {transport.details.map((detail, detailIndex) => (
-                      <li 
+                      <div 
                         key={detailIndex} 
-                        className="text-white/80 text-lg leading-relaxed flex items-start"
+                        className="flex items-start text-white/80 text-lg leading-relaxed"
                         data-testid={`text-transport-detail-${index}-${detailIndex}`}
                       >
-                        <span className="text-white/60 mr-3">•</span>
-                        {detail}
-                      </li>
+                        <div className="w-2 h-2 bg-white/60 rounded-full mr-4 mt-3 flex-shrink-0"></div>
+                        <span>{detail}</span>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 </div>
               ))}
             </div>
