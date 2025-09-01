@@ -137,17 +137,17 @@ export default function GoogleAds() {
                   <div className="grid grid-cols-2 gap-4 mb-6">
                     <div className="stats-card">
                       <div className="text-sm text-white/70 font-medium">클릭수</div>
-                      <div className="text-2xl font-bold text-white">12,840</div>
-                      <div className="text-xs text-green-400">+24% 증가</div>
+                      <div className="text-2xl font-bold text-white font-data">12,840</div>
+                      <div className="text-xs text-green-400 font-data">+24% 증가</div>
                     </div>
                     <div className="stats-card">
                       <div className="text-sm text-white/70 font-medium">전환수</div>
-                      <div className="text-2xl font-bold text-white">156</div>
-                      <div className="text-xs text-green-400">+18% 증가</div>
+                      <div className="text-2xl font-bold text-white font-data">156</div>
+                      <div className="text-xs text-green-400 font-data">+18% 증가</div>
                     </div>
                   </div>
                   <div className="text-center stats-card">
-                    <div className="text-3xl font-bold text-white mb-1">520%</div>
+                    <div className="text-3xl font-bold text-white mb-1 font-data">520%</div>
                     <div className="text-sm text-white/70">평균 ROAS</div>
                   </div>
                 </div>
