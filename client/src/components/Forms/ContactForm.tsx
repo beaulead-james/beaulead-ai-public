@@ -77,7 +77,7 @@ export default function ContactForm() {
   ];
 
   return (
-    <div className="bg-gray-50 rounded-2xl p-8 lg:p-12">
+    <div className="floating-card">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6" data-testid="form-contact">
           <div className="grid md:grid-cols-2 gap-6">
@@ -86,7 +86,7 @@ export default function ContactForm() {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel data-testid="label-name">{t.contact.form.nameLabel}</FormLabel>
+                  <FormLabel className="text-white" data-testid="label-name">{t.contact.form.nameLabel}</FormLabel>
                   <FormControl>
                     <Input 
                       placeholder={t.contact.form.namePlaceholder} 
@@ -104,7 +104,7 @@ export default function ContactForm() {
               name="phone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel data-testid="label-phone">{t.contact.form.phoneLabel}</FormLabel>
+                  <FormLabel className="text-white" data-testid="label-phone">{t.contact.form.phoneLabel}</FormLabel>
                   <FormControl>
                     <Input 
                       type="tel"
@@ -124,7 +124,7 @@ export default function ContactForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel data-testid="label-email">{t.contact.form.emailLabel}</FormLabel>
+                <FormLabel className="text-white" data-testid="label-email">{t.contact.form.emailLabel}</FormLabel>
                 <FormControl>
                   <Input 
                     type="email"
@@ -143,7 +143,7 @@ export default function ContactForm() {
             name="budget"
             render={({ field }) => (
               <FormItem>
-                <FormLabel data-testid="label-budget">{t.contact.form.budgetLabel}</FormLabel>
+                <FormLabel className="text-white" data-testid="label-budget">{t.contact.form.budgetLabel}</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger data-testid="select-budget">
@@ -168,7 +168,7 @@ export default function ContactForm() {
             name="message"
             render={({ field }) => (
               <FormItem>
-                <FormLabel data-testid="label-message">{t.contact.form.messageLabel}</FormLabel>
+                <FormLabel className="text-white" data-testid="label-message">{t.contact.form.messageLabel}</FormLabel>
                 <FormControl>
                   <Textarea
                     placeholder={t.contact.form.messagePlaceholder}
@@ -196,9 +196,9 @@ export default function ContactForm() {
                   />
                 </FormControl>
                 <div className="space-y-1 leading-none">
-                  <FormLabel className="text-sm text-gray-600" data-testid="label-privacy">
+                  <FormLabel className="text-sm text-white/70" data-testid="label-privacy">
                     {t.contact.form.privacyLabel}{' '}
-                    <a href="/privacy" className="text-primary-600 hover:text-primary-700 underline" data-testid="link-privacy">
+                    <a href="/privacy" className="text-white hover:text-white/80 underline" data-testid="link-privacy">
                       {t.contact.form.privacyLink}
                     </a>
                   </FormLabel>
@@ -209,14 +209,14 @@ export default function ContactForm() {
 
           <Button 
             type="submit" 
-            className="w-full" 
+            className="modern-btn w-full" 
             disabled={contactMutation.isPending}
             data-testid="button-submit"
           >
             {contactMutation.isPending ? 'Sending...' : t.contact.form.submitButton}
           </Button>
 
-          <p className="text-center text-sm text-gray-500" data-testid="text-response-time">
+          <p className="text-center text-sm text-white/70" data-testid="text-response-time">
             {t.contact.form.responseTime}
           </p>
         </form>
