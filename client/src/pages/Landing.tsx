@@ -449,11 +449,11 @@ export default function Landing() {
         <div className="container max-w-7xl mx-auto relative z-10">
           <div className="text-center mb-20">
             <div className="inline-flex items-center bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full border border-white/20 mb-8">
-              <span className="text-sm font-semibold text-white">📊 {t.stats.title.includes('뛰어난') ? '뛰어난 성과' : 'Outstanding Performance'}</span>
+              <span className="text-sm font-semibold text-white">📊 {t.stats.title.includes('뛰어난') ? '뷰리드.AI 성과' : 'BeauLead.AI Performance'}</span>
             </div>
             <h2 className="text-3xl lg:text-5xl font-headline font-bold text-white mb-6 leading-tight" data-testid="text-stats-title">
               {t.stats.title.split('입증된 전문성')[0]}<br />
-              <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">입증된 전문성</span>
+              <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">말보다 결과로 증명합니다</span>
             </h2>
             <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed" data-testid="text-stats-subtitle">
               {t.stats.subtitle}
