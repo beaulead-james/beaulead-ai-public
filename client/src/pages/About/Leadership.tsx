@@ -166,7 +166,7 @@ export default function Leadership() {
             <div className="group">
               <div className="service-card animate-fade-in-up animate-delay-200">
                 <div className="grid lg:grid-cols-5 gap-0">
-                  <div className="lg:col-span-2 p-8 lg:p-12 bg-gradient-to-br from-green-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800">
+                  <div className="lg:col-span-2 p-8 lg:p-12">
                     <div className="text-center h-full flex flex-col justify-center">
                       <div className="relative inline-block mb-6">
                         <img 
@@ -189,17 +189,17 @@ export default function Leadership() {
                   </div>
                   <div className="lg:col-span-3 p-8 lg:p-12 lg:pl-0 flex flex-col justify-center">
                     <div className="mb-8">
-                      <h3 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-3" data-testid="text-cto-name">
+                      <h3 className="text-4xl lg:text-5xl font-bold text-white mb-3" data-testid="text-cto-name">
                         권현수
                       </h3>
-                      <p className="text-xl lg:text-2xl text-green-600 dark:text-green-400 font-semibold mb-6" data-testid="text-cto-title">
+                      <p className="text-xl lg:text-2xl text-green-400 font-semibold mb-6" data-testid="text-cto-title">
                         CTO · Chief Technology Officer
                       </p>
                       <div className="w-20 h-1.5 bg-gradient-to-r from-green-500 to-cyan-500 rounded-full"></div>
                     </div>
                     
-                    <div className="space-y-5 text-gray-600 dark:text-gray-300 leading-relaxed">
-                      <p className="text-lg lg:text-xl font-medium text-gray-900 dark:text-white">
+                    <div className="space-y-5 text-white/80 leading-relaxed">
+                      <p className="text-lg lg:text-xl font-medium text-white">
                         뷰리드AI의 기술 혁신을 이끄는 권현수 CTO입니다.
                       </p>
                       <p className="text-base lg:text-lg">
@@ -219,59 +219,59 @@ export default function Leadership() {
         {/* Core Values */}
         <section className="container max-w-7xl mx-auto px-6 mt-24 mb-16">
           <div className="text-center mb-16">
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+            <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
               리더십 핵심 가치
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
               뷰리드AI 리더십이 추구하는 핵심 가치와 경영 철학
             </p>
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700">
+            <div className="contact-card">
               <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
                 <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">데이터 중심</h3>
-              <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+              <h3 className="text-xl font-bold text-white mb-4">데이터 중심</h3>
+              <p className="text-white/70 leading-relaxed">
                 모든 의사결정을 데이터에 기반하여 객관적이고 정확한 판단을 합니다
               </p>
             </div>
             
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700">
+            <div className="contact-card">
               <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
                 <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">고객 성공</h3>
-              <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+              <h3 className="text-xl font-bold text-white mb-4">고객 성공</h3>
+              <p className="text-white/70 leading-relaxed">
                 고객의 성공을 우리의 성공으로 여기며 진정한 파트너십을 구축합니다
               </p>
             </div>
             
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700">
+            <div className="contact-card">
               <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
                 <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M9 11H7v9h2v-9zm4-4H11v13h2V7zm4-4H15v17h2V3z"/>
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">지속적 혁신</h3>
-              <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+              <h3 className="text-xl font-bold text-white mb-4">지속적 혁신</h3>
+              <p className="text-white/70 leading-relaxed">
                 끊임없는 학습과 혁신을 통해 업계를 선도하는 솔루션을 개발합니다
               </p>
             </div>
             
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700">
+            <div className="contact-card">
               <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
                 <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">투명성</h3>
-              <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+              <h3 className="text-xl font-bold text-white mb-4">투명성</h3>
+              <p className="text-white/70 leading-relaxed">
                 투명한 소통과 명확한 성과 공유로 신뢰할 수 있는 관계를 만듭니다
               </p>
             </div>
