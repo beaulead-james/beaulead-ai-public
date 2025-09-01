@@ -26,12 +26,10 @@ export default function About() {
         keywords="뷰리드AI, 회사소개, 퍼포먼스마케팅, 마케팅에이전시"
       />
       
-      {/* Background */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900"></div>
-        <div className="absolute top-20 left-10 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-        <div className="absolute top-40 right-10 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-20 left-20 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+      {/* Background orbs */}
+      <div className="bg-orb">
+        <div className="orb orb-a"></div>
+        <div className="orb orb-b"></div>
       </div>
 
       <Header />
