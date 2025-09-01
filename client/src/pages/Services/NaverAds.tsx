@@ -87,7 +87,7 @@ export default function NaverAds() {
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               <div>
                 <div className="flex items-center mb-6">
-                  <div className="contact-icon mr-4">
+                  <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg">
                     <span className="text-white font-bold text-xl">N</span>
                   </div>
                   <span className="text-xl font-semibold text-white/90">Naver Ads</span>
