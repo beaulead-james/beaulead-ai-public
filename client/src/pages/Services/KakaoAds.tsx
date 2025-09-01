@@ -87,7 +87,7 @@ export default function KakaoAds() {
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               <div>
                 <div className="flex items-center mb-6">
-                  <div className="contact-icon mr-4">
+                  <div className="w-16 h-16 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-2xl flex items-center justify-center mr-4 shadow-lg">
                     <span className="text-white font-bold text-xl">K</span>
                   </div>
                   <span className="text-xl font-semibold text-white/90">Kakao Ads</span>
