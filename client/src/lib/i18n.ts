@@ -539,6 +539,57 @@ export const translations: Record<Language, Translations> = {
         heroTitle: '메타 광고로 소셜미디어를 정복하세요',
         heroDescription: '페이스북과 인스타그램을 통해 38억 명의 글로벌 사용자에게 도달하세요. 창의적인 콘텐츠와 정밀한 타겟팅으로 브랜드의 성장을 가속화합니다.',
         brandName: 'Meta Ads',
+        dashboard: 'Meta Ads 대시보드',
+        serviceTypes: {
+          title: '메타 광고 서비스',
+          subtitle: '다양한 메타 광고 솔루션으로 최적의 소셜 마케팅 성과를 달성하세요',
+          facebook: {
+            title: '페이스북 광고',
+            description: '전 세계 최대 SNS 플랫폼에서 다양한 연령대와 관심사의 사용자에게 도달하는 광고입니다.',
+            features: ['뉴스피드 광고', '다양한 타겟팅', '비디오/이미지 광고', '전환 최적화']
+          },
+          instagram: {
+            title: '인스타그램 광고',
+            description: '시각적 콘텐츠에 최적화된 인스타그램에서 젊은 연령층과 브랜드 지향적 고객을 타겟합니다.',
+            features: ['스토리 광고', '리일 광고', '쇼핑 광고', '인플루언서 마케팅']
+          },
+          messenger: {
+            title: '메신저 광고',
+            description: '메신저를 통한 1:1 고객 소통으로 더욱 친밀한 고객 경험을 제공합니다.',
+            features: ['챗봇 자동화', '1:1 고객 상담', '맞춤형 메시지', '즉시 고객 지원']
+          },
+          audience: {
+            title: '오디언스 네트워크',
+            description: '메타 파트너 사이트와 앱에서 리타겟팅과 유사 오디언스 타겟팅을 진행합니다.',
+            features: ['리타겟팅 광고', '유사 오디언스', '사이트 외부 노출', '전환 추적']
+          }
+        },
+        benefits: {
+          title: '메타 광고의 장점',
+          global: {
+            title: '전 세계 네트워크',
+            description: '페이스북과 인스타그램을 통해 전 세계 38억 명의 사용자에게 도달할 수 있습니다.'
+          },
+          targeting: {
+            title: '정밀 타겟팅',
+            description: '사용자의 관심사, 행동 패턴, 인구통계학적 데이터를 기반으로 정밀한 타겟팅이 가능합니다.'
+          },
+          creative: {
+            title: '창의적 콘텐츠',
+            description: '시각적으로 매력적인 이미지와 비디오 콘텐츠로 높은 참여도를 달성합니다.'
+          },
+          engagement: {
+            title: '높은 참여도',
+            description: '좋아요, 댓글, 공유 등 다양한 인터랙션을 통해 브랜드 인지도를 높입니다.'
+          }
+        },
+        caseStudy: {
+          title: '성공 사례',
+          company: '패션 이커머스 C사',
+          challenge: '브랜드 인지도 향상과 온라인 매출 증대',
+          solution: '인스타그램 쇼핑 + 페이스북 리타겟팅 + 인플루언서 마케팅',
+          resultsTitle: '달성 결과'
+        }
       },
       kakaoAds: {
         title: '카카오 광고',
@@ -546,6 +597,57 @@ export const translations: Record<Language, Translations> = {
         heroTitle: '카카오 광고로 일상 속에서 고객을 만나세요',
         heroDescription: '4,700만 명이 매일 사용하는 카카오톡을 통해 고객과 더욱 친밀하게 소통하세요. 개인화된 메시지와 자연스러운 광고 노출로 높은 참여도를 달성합니다.',
         brandName: 'Kakao Ads',
+        dashboard: 'Kakao Ads 대시보드',
+        serviceTypes: {
+          title: '카카오 광고 서비스',
+          subtitle: '다양한 카카오 광고 솔루션으로 모바일 마케팅 성과를 극대화하세요',
+          talk: {
+            title: '카카오톡 비즈메시지',
+            description: '카카오톡 채널을 통해 고객에게 직접 메시지를 전송하여 1:1 맞춤 마케팅을 진행합니다.',
+            features: ['카카오톡 채널', '카카오톡 비즈보드', '열린채팅방', '지인 추천']
+          },
+          bizboard: {
+            title: '비즈보드 광고',
+            description: '카카오톡 채팅방 리스트 상단에 노출되는 광고로 높은 시인성을 보장합니다.',
+            features: ['채팅방 리스트 노출', '기업 정보 연동', '로컬 비즈니스', '상세 정보 제공']
+          },
+          display: {
+            title: '디스플레이 광고',
+            description: '카카오 서비스 내 다양한 영역에 노출되는 배너 광고로 브랜드 인지도를 높입니다.',
+            features: ['카카오톡 탭', '카카오스토리', '다음 메인', '모바일 웹']
+          },
+          shopping: {
+            title: '카카오 쇼핑',
+            description: '카카오 쇼핑 플랫폼에서 상품 판매와 마케팅을 동시에 진행합니다.',
+            features: ['상품 등록', '카카오톡 쇼핑하기', '리뷰 관리', '결제 연동']
+          }
+        },
+        benefits: {
+          title: '카카오 광고의 장점',
+          daily: {
+            title: '일상 속 소통',
+            description: '카카오톡은 한국인이 매일 사용하는 필수 앱으로 자연스러운 광고 노출이 가능합니다.'
+          },
+          messaging: {
+            title: '친밀한 메시지',
+            description: '1:1 대화 형태의 마케팅으로 고객과의 신뢰 관계를 구축하고 높은 참여도를 달성합니다.'
+          },
+          mobile: {
+            title: '모바일 최적화',
+            description: '모바일 환경에 최적화된 광고 형태로 모바일 사용자에게 효과적으로 도달합니다.'
+          },
+          local: {
+            title: '로컬 비즈니스',
+            description: '지역 기반 사업에 특화된 마케팅 도구로 주변 고객을 효과적으로 유치할 수 있습니다.'
+          }
+        },
+        caseStudy: {
+          title: '성공 사례',
+          company: '로컬 카페 D사',
+          challenge: '지역 고객 유치와 매장 방문 증대',
+          solution: '카카오톡 비즈메시지 + 비즈보드 + 위치 기반 타겟팅',
+          resultsTitle: '달성 결과'
+        }
       },
       learnMore: '자세히 보기',
       contactCta: '무료 상담 신청',
@@ -816,6 +918,57 @@ export const translations: Record<Language, Translations> = {
         heroTitle: 'Conquer Social Media with Meta Ads',
         heroDescription: 'Reach 3.8 billion global users through Facebook and Instagram. Accelerate your brand growth with creative content and precise targeting.',
         brandName: 'Meta Ads',
+        dashboard: 'Meta Ads Dashboard',
+        serviceTypes: {
+          title: 'Meta Advertising Services',
+          subtitle: 'Achieve optimal social marketing performance with various Meta advertising solutions',
+          facebook: {
+            title: 'Facebook Ads',
+            description: 'Reach users of various ages and interests on the world\'s largest social media platform.',
+            features: ['News Feed Ads', 'Diverse Targeting', 'Video/Image Ads', 'Conversion Optimization']
+          },
+          instagram: {
+            title: 'Instagram Ads',
+            description: 'Target young demographics and brand-oriented customers on visual content-optimized Instagram.',
+            features: ['Story Ads', 'Reel Ads', 'Shopping Ads', 'Influencer Marketing']
+          },
+          messenger: {
+            title: 'Messenger Ads',
+            description: 'Provide more intimate customer experiences through 1:1 customer communication via Messenger.',
+            features: ['Chatbot Automation', '1:1 Customer Support', 'Personalized Messages', 'Instant Customer Service']
+          },
+          audience: {
+            title: 'Audience Network',
+            description: 'Conduct retargeting and lookalike audience targeting on Meta partner sites and apps.',
+            features: ['Retargeting Ads', 'Lookalike Audiences', 'Off-site Exposure', 'Conversion Tracking']
+          }
+        },
+        benefits: {
+          title: 'Meta Ads Benefits',
+          global: {
+            title: 'Global Network',
+            description: 'Reach 3.8 billion users worldwide through Facebook and Instagram.'
+          },
+          targeting: {
+            title: 'Precise Targeting',
+            description: 'Enable precise targeting based on user interests, behavior patterns, and demographic data.'
+          },
+          creative: {
+            title: 'Creative Content',
+            description: 'Achieve high engagement with visually appealing images and video content.'
+          },
+          engagement: {
+            title: 'High Engagement',
+            description: 'Increase brand awareness through various interactions like likes, comments, and shares.'
+          }
+        },
+        caseStudy: {
+          title: 'Success Story',
+          company: 'Fashion E-commerce Company C',
+          challenge: 'Brand awareness improvement and online sales increase',
+          solution: 'Instagram Shopping + Facebook Retargeting + Influencer Marketing',
+          resultsTitle: 'Results Achieved'
+        }
       },
       kakaoAds: {
         title: 'Kakao Ads',
@@ -823,6 +976,57 @@ export const translations: Record<Language, Translations> = {
         heroTitle: 'Meet Customers in Daily Life with Kakao Ads',
         heroDescription: 'Communicate more intimately with customers through KakaoTalk, used daily by 47 million people. Achieve high engagement with personalized messages and natural ad exposure.',
         brandName: 'Kakao Ads',
+        dashboard: 'Kakao Ads Dashboard',
+        serviceTypes: {
+          title: 'Kakao Advertising Services',
+          subtitle: 'Maximize mobile marketing performance with various Kakao advertising solutions',
+          talk: {
+            title: 'KakaoTalk Biz Message',
+            description: 'Send direct messages to customers through KakaoTalk channels for 1:1 personalized marketing.',
+            features: ['KakaoTalk Channel', 'KakaoTalk BizBoard', 'Open Chat', 'Friend Recommendations']
+          },
+          bizboard: {
+            title: 'BizBoard Ads',
+            description: 'Ads displayed at the top of KakaoTalk chat room lists, ensuring high visibility.',
+            features: ['Chat Room List Exposure', 'Business Info Integration', 'Local Business', 'Detailed Information']
+          },
+          display: {
+            title: 'Display Ads',
+            description: 'Banner ads displayed in various areas within Kakao services to increase brand awareness.',
+            features: ['KakaoTalk Tab', 'KakaoStory', 'Daum Main', 'Mobile Web']
+          },
+          shopping: {
+            title: 'Kakao Shopping',
+            description: 'Simultaneously conduct product sales and marketing on the Kakao Shopping platform.',
+            features: ['Product Registration', 'KakaoTalk Shopping', 'Review Management', 'Payment Integration']
+          }
+        },
+        benefits: {
+          title: 'Kakao Ads Benefits',
+          daily: {
+            title: 'Daily Communication',
+            description: 'KakaoTalk is an essential app used daily by Koreans, enabling natural ad exposure.'
+          },
+          messaging: {
+            title: 'Intimate Messaging',
+            description: '1:1 conversational marketing builds trust relationships with customers and achieves high engagement.'
+          },
+          mobile: {
+            title: 'Mobile Optimization',
+            description: 'Effectively reach mobile users with ad formats optimized for mobile environments.'
+          },
+          local: {
+            title: 'Local Business',
+            description: 'Effectively attract nearby customers with marketing tools specialized for location-based businesses.'
+          }
+        },
+        caseStudy: {
+          title: 'Success Story',
+          company: 'Local Cafe D',
+          challenge: 'Regional customer acquisition and store visit increase',
+          solution: 'KakaoTalk Biz Message + BizBoard + Location-based Targeting',
+          resultsTitle: 'Results Achieved'
+        }
       },
       learnMore: 'Learn More',
       contactCta: 'Get Free Consultation',
