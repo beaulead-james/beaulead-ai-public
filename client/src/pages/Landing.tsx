@@ -145,69 +145,83 @@ export default function Landing() {
             </p>
           </div>
 
-          {/* Client Logos Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 mb-16">
-            {/* Row 1 */}
-            <div className="floating-card flex items-center justify-center p-6 group hover:bg-white/10 transition-all duration-300">
-              <div className="text-2xl font-bold text-white/80 group-hover:text-white transition-colors">
-                Samsung
+          {/* Client Logos Slider */}
+          <div className="logos-slider mb-16">
+            <div className="logos-track">
+              {/* First set of logos */}
+              <div className="logo-item">
+                <div className="logo-text">Samsung</div>
               </div>
-            </div>
-            <div className="floating-card flex items-center justify-center p-6 group hover:bg-white/10 transition-all duration-300">
-              <div className="text-2xl font-bold text-white/80 group-hover:text-white transition-colors">
-                LG
+              <div className="logo-item">
+                <div className="logo-text">LG</div>
               </div>
-            </div>
-            <div className="floating-card flex items-center justify-center p-6 group hover:bg-white/10 transition-all duration-300">
-              <div className="text-2xl font-bold text-white/80 group-hover:text-white transition-colors">
-                SK
+              <div className="logo-item">
+                <div className="logo-text">SK</div>
               </div>
-            </div>
-            <div className="floating-card flex items-center justify-center p-6 group hover:bg-white/10 transition-all duration-300">
-              <div className="text-2xl font-bold text-white/80 group-hover:text-white transition-colors">
-                Hyundai
+              <div className="logo-item">
+                <div className="logo-text">Hyundai</div>
               </div>
-            </div>
-            <div className="floating-card flex items-center justify-center p-6 group hover:bg-white/10 transition-all duration-300">
-              <div className="text-2xl font-bold text-white/80 group-hover:text-white transition-colors">
-                Lotte
+              <div className="logo-item">
+                <div className="logo-text">Lotte</div>
               </div>
-            </div>
-            <div className="floating-card flex items-center justify-center p-6 group hover:bg-white/10 transition-all duration-300">
-              <div className="text-2xl font-bold text-white/80 group-hover:text-white transition-colors">
-                CJ
+              <div className="logo-item">
+                <div className="logo-text">CJ</div>
               </div>
-            </div>
-            
-            {/* Row 2 */}
-            <div className="floating-card flex items-center justify-center p-6 group hover:bg-white/10 transition-all duration-300">
-              <div className="text-2xl font-bold text-white/80 group-hover:text-white transition-colors">
-                Naver
+              <div className="logo-item">
+                <div className="logo-text">Naver</div>
               </div>
-            </div>
-            <div className="floating-card flex items-center justify-center p-6 group hover:bg-white/10 transition-all duration-300">
-              <div className="text-2xl font-bold text-white/80 group-hover:text-white transition-colors">
-                Kakao
+              <div className="logo-item">
+                <div className="logo-text">Kakao</div>
               </div>
-            </div>
-            <div className="floating-card flex items-center justify-center p-6 group hover:bg-white/10 transition-all duration-300">
-              <div className="text-2xl font-bold text-white/80 group-hover:text-white transition-colors">
-                Coupang
+              <div className="logo-item">
+                <div className="logo-text">Coupang</div>
               </div>
-            </div>
-            <div className="floating-card flex items-center justify-center p-6 group hover:bg-white/10 transition-all duration-300">
-              <div className="text-2xl font-bold text-white/80 group-hover:text-white transition-colors">
-                Toss
+              <div className="logo-item">
+                <div className="logo-text">Toss</div>
               </div>
-            </div>
-            <div className="floating-card flex items-center justify-center p-6 group hover:bg-white/10 transition-all duration-300">
-              <div className="text-2xl font-bold text-white/80 group-hover:text-white transition-colors">
-                Baemin
+              <div className="logo-item">
+                <div className="logo-text">Baemin</div>
               </div>
-            </div>
-            <div className="floating-card flex items-center justify-center p-6 group hover:bg-white/10 transition-all duration-300">
-              <div className="text-2xl font-bold text-white/80 group-hover:text-white transition-colors">
-                Yogiyo
+              <div className="logo-item">
+                <div className="logo-text">Yogiyo</div>
+              </div>
+              
+              {/* Duplicate set for seamless loop */}
+              <div className="logo-item">
+                <div className="logo-text">Samsung</div>
+              </div>
+              <div className="logo-item">
+                <div className="logo-text">LG</div>
+              </div>
+              <div className="logo-item">
+                <div className="logo-text">SK</div>
+              </div>
+              <div className="logo-item">
+                <div className="logo-text">Hyundai</div>
+              </div>
+              <div className="logo-item">
+                <div className="logo-text">Lotte</div>
+              </div>
+              <div className="logo-item">
+                <div className="logo-text">CJ</div>
+              </div>
+              <div className="logo-item">
+                <div className="logo-text">Naver</div>
+              </div>
+              <div className="logo-item">
+                <div className="logo-text">Kakao</div>
+              </div>
+              <div className="logo-item">
+                <div className="logo-text">Coupang</div>
+              </div>
+              <div className="logo-item">
+                <div className="logo-text">Toss</div>
+              </div>
+              <div className="logo-item">
+                <div className="logo-text">Baemin</div>
+              </div>
+              <div className="logo-item">
+                <div className="logo-text">Yogiyo</div>
               </div>
             </div>
           </div>
