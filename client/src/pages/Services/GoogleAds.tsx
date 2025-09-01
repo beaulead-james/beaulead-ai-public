@@ -95,14 +95,13 @@ export default function GoogleAds() {
                       <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                     </svg>
                   </div>
-                  <span className="text-xl font-semibold text-white/90">Google Ads</span>
+                  <span className="text-xl font-semibold text-white/90">{t.services.googleAds.brandName}</span>
                 </div>
                 <h1 className="text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight" data-testid="text-page-title">
-                  구글 광고로 더 많은 고객을 만나보세요
+                  {t.services.googleAds.heroTitle}
                 </h1>
                 <p className="text-xl text-white/80 mb-8 leading-relaxed">
-                  전 세계 90억 명이 사용하는 구글에서 정확한 타겟 고객에게 도달하세요. 
-                  검색, 디스플레이, 쇼핑, YouTube까지 모든 구글 광고 솔루션을 제공합니다.
+                  {t.services.googleAds.heroDescription}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Link 
@@ -110,14 +109,14 @@ export default function GoogleAds() {
                     className="modern-btn text-center"
                     data-testid="button-contact-cta"
                   >
-                    무료 상담 신청
+                    {t.services.contactCta}
                   </Link>
                   <Link 
                     href="/portfolio" 
                     className="modern-btn-outline text-center"
                     data-testid="button-portfolio-cta"
                   >
-                    성공 사례 보기
+                    {t.services.portfolioCta}
                   </Link>
                 </div>
               </div>

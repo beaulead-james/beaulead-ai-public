@@ -90,14 +90,13 @@ export default function KakaoAds() {
                   <div className="w-16 h-16 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-2xl flex items-center justify-center mr-4 shadow-lg">
                     <span className="text-white font-bold text-xl">K</span>
                   </div>
-                  <span className="text-xl font-semibold text-white/90">Kakao Ads</span>
+                  <span className="text-xl font-semibold text-white/90">{t.services.kakaoAds.brandName}</span>
                 </div>
                 <h1 className="text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight" data-testid="text-page-title">
-                  카카오 광고로 일상 속에서 고객을 만나세요
+                  {t.services.kakaoAds.heroTitle}
                 </h1>
                 <p className="text-xl text-white/80 mb-8 leading-relaxed">
-                  4,700만 명이 매일 사용하는 카카오톡을 통해 고객과 더욱 친밀하게 소통하세요. 
-                  개인화된 메시지와 자연스러운 광고 노출로 높은 참여도를 달성합니다.
+                  {t.services.kakaoAds.heroDescription}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Link 
@@ -105,14 +104,14 @@ export default function KakaoAds() {
                     className="modern-btn text-center"
                     data-testid="button-contact-cta"
                   >
-                    무료 상담 신청
+                    {t.services.contactCta}
                   </Link>
                   <Link 
                     href="/portfolio" 
                     className="modern-btn-outline text-center"
                     data-testid="button-portfolio-cta"
                   >
-                    성공 사례 보기
+                    {t.services.portfolioCta}
                   </Link>
                 </div>
               </div>
