@@ -268,22 +268,22 @@ export default function KakaoAds() {
         {/* Kakao Statistics */}
         <section className="py-16 lg:py-24">
           <div className="container max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-12">카카오의 영향력</h2>
+            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-12">{language === 'ko' ? '카카오의 영향력' : 'Kakao\'s Influence'}</h2>
             <div className="grid md:grid-cols-3 gap-8 mb-12">
               <div className="stats-card">
                 <div className="text-3xl font-bold text-white mb-2">4,700만</div>
-                <div className="text-white font-semibold mb-1">카카오톡 사용자</div>
-                <div className="text-sm text-white/70">국내 인구의 91%</div>
+                <div className="text-white font-semibold mb-1">{language === 'ko' ? '카카오톡 사용자' : 'KakaoTalk Users'}</div>
+                <div className="text-sm text-white/70">{language === 'ko' ? '국내 인구의 91%' : '91% of domestic population'}</div>
               </div>
               <div className="stats-card">
                 <div className="text-3xl font-bold text-white mb-2">57분</div>
-                <div className="text-white font-semibold mb-1">일평균 이용시간</div>
-                <div className="text-sm text-white/70">압도적 사용시간</div>
+                <div className="text-white font-semibold mb-1">{language === 'ko' ? '일평균 이용시간' : 'Daily Average Usage'}</div>
+                <div className="text-sm text-white/70">{language === 'ko' ? '압도적 사용시간' : 'Overwhelming usage time'}</div>
               </div>
               <div className="stats-card">
                 <div className="text-3xl font-bold text-white mb-2">95%</div>
-                <div className="text-white font-semibold mb-1">메시지 읽음률</div>
-                <div className="text-sm text-white/70">즉시 확인하는 메시지</div>
+                <div className="text-white font-semibold mb-1">{language === 'ko' ? '메시지 읽음률' : 'Message Read Rate'}</div>
+                <div className="text-sm text-white/70">{language === 'ko' ? '즉시 확인하는 메시지' : 'Messages checked instantly'}</div>
               </div>
             </div>
           </div>
@@ -293,16 +293,16 @@ export default function KakaoAds() {
         <section className="py-16 lg:py-24">
           <div className="container max-w-4xl mx-auto text-center">
             <div className="floating-card">
-              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">카카오 광고를 시작해보세요</h2>
+              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">{language === 'ko' ? '카카오 광고를 시작해보세요' : 'Start with Kakao Ads'}</h2>
               <p className="text-xl text-white/80 mb-8 leading-relaxed">
-                카카오 플랫폼 전문가와의 무료 상담을 통해 모바일 마케팅 전략을 수립하세요
+                {language === 'ko' ? '카카오 플랫폼 전문가와의 무료 상담을 통해 모바일 마케팅 전략을 수립하세요' : 'Develop your mobile marketing strategy through free consultation with Kakao platform experts'}
               </p>
               <Link 
                 href="/contact" 
                 className="modern-btn"
                 data-testid="button-final-cta"
               >
-                무료 상담 신청하기
+{t.services.contactCta}
               </Link>
             </div>
           </div>
