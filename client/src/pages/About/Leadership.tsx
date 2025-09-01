@@ -2,12 +2,19 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import SEO from '../../components/UI/SEO';
 import Header from '../../components/Layout/Header';
 import Footer from '../../components/Layout/Footer';
+import '../../styles/hero.css';
 
 export default function Leadership() {
   const { t } = useLanguage();
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Background orbs */}
+      <div className="bg-orb">
+        <div className="orb orb-a"></div>
+        <div className="orb orb-b"></div>
+      </div>
+      
       <SEO 
         title={`${t.nav.leadership} | 뷰리드AI`}
         description="뷰리드AI의 경영진과 리더십 팀을 소개합니다"
@@ -16,50 +23,50 @@ export default function Leadership() {
       
       <Header />
 
-      <main className="py-12 lg:py-20">
+      <main className="py-20 lg:py-32 relative z-10">
         {/* Hero Section */}
-        <section className="container max-w-7xl mx-auto px-6 mb-16">
+        <section className="container max-w-7xl mx-auto mb-20">
           <div className="text-center">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full mb-8 shadow-xl">
+            <div className="inline-flex items-center justify-center modern-icon mb-8">
               <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
               </svg>
             </div>
-            <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6" data-testid="text-page-title">
+            <h1 className="hero-title text-4xl lg:text-6xl font-black mb-6" data-testid="text-page-title">
               대표인사
             </h1>
-            <p className="text-xl lg:text-2xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
+            <p className="text-xl lg:text-2xl text-white/80 max-w-4xl mx-auto leading-relaxed">
               데이터와 혁신으로 고객의 성공을 만들어가는 뷰리드AI의 리더십
             </p>
           </div>
         </section>
 
         {/* Inspirational Quote */}
-        <section className="container max-w-5xl mx-auto px-6 mb-20">
-          <div className="bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-800 dark:via-gray-800 dark:to-gray-800 rounded-3xl p-8 lg:p-12 text-center border border-gray-200 dark:border-gray-700 shadow-xl">
-            <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-8 shadow-lg">
+        <section className="container max-w-5xl mx-auto mb-20">
+          <div className="floating-card text-center">
+            <div className="contact-icon mx-auto mb-8">
               <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M14,17H17L19,13V7H13V13H16M6,17H9L11,13V7H5V13H8L6,17Z"/>
               </svg>
             </div>
-            <blockquote className="text-2xl lg:text-3xl font-semibold text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+            <blockquote className="text-2xl lg:text-3xl font-semibold text-white leading-relaxed mb-6">
               "데이터는 진실을 말하고, 실행력은 성과를 만듭니다."
             </blockquote>
-            <p className="text-lg text-gray-600 dark:text-gray-400">
+            <p className="text-lg text-white/80">
               뷰리드AI는 고객의 성공을 위해 끊임없이 도전하고 혁신합니다.
             </p>
           </div>
         </section>
 
         {/* Leadership Team */}
-        <section className="container max-w-7xl mx-auto px-6">
+        <section className="container max-w-7xl mx-auto">
           <div className="space-y-12">
             
             {/* CEO Card */}
             <div className="group">
-              <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 dark:border-gray-700">
+              <div className="service-card animate-fade-in-up">
                 <div className="grid lg:grid-cols-5 gap-0">
-                  <div className="lg:col-span-2 p-8 lg:p-12 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-700 dark:to-gray-800">
+                  <div className="lg:col-span-2 p-8 lg:p-12">
                     <div className="text-center h-full flex flex-col justify-center">
                       <div className="relative inline-block mb-6">
                         <img 
@@ -83,17 +90,17 @@ export default function Leadership() {
                   </div>
                   <div className="lg:col-span-3 p-8 lg:p-12 lg:pl-0 flex flex-col justify-center">
                     <div className="mb-8">
-                      <h3 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-3" data-testid="text-ceo-name">
+                      <h3 className="text-4xl lg:text-5xl font-bold text-white mb-3" data-testid="text-ceo-name">
                         박현구
                       </h3>
-                      <p className="text-xl lg:text-2xl text-blue-600 dark:text-blue-400 font-semibold mb-6" data-testid="text-ceo-title">
+                      <p className="text-xl lg:text-2xl text-blue-400 font-semibold mb-6" data-testid="text-ceo-title">
                         대표이사 · CEO
                       </p>
                       <div className="w-20 h-1.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
                     </div>
                     
-                    <div className="space-y-5 text-gray-600 dark:text-gray-300 leading-relaxed">
-                      <p className="text-lg lg:text-xl font-medium text-gray-900 dark:text-white">
+                    <div className="space-y-5 text-white/80 leading-relaxed">
+                      <p className="text-lg lg:text-xl font-medium text-white">
                         안녕하세요. 뷰리드AI 대표이사 박현구입니다.
                       </p>
                       <p className="text-base lg:text-lg">
@@ -110,21 +117,21 @@ export default function Leadership() {
 
             {/* VP Card */}
             <div className="group">
-              <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 dark:border-gray-700">
+              <div className="service-card animate-fade-in-up animate-delay-100">
                 <div className="grid lg:grid-cols-5 gap-0">
                   <div className="lg:col-span-3 p-8 lg:p-12 lg:pr-0 flex flex-col justify-center">
                     <div className="mb-8">
-                      <h3 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-3" data-testid="text-vp-name">
+                      <h3 className="text-4xl lg:text-5xl font-bold text-white mb-3" data-testid="text-vp-name">
                         김수진
                       </h3>
-                      <p className="text-xl lg:text-2xl text-purple-600 dark:text-purple-400 font-semibold mb-6" data-testid="text-vp-title">
+                      <p className="text-xl lg:text-2xl text-purple-400 font-semibold mb-6" data-testid="text-vp-title">
                         부사장 · VP of Operations
                       </p>
                       <div className="w-20 h-1.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
                     </div>
                     
-                    <div className="space-y-5 text-gray-600 dark:text-gray-300 leading-relaxed">
-                      <p className="text-lg lg:text-xl font-medium text-gray-900 dark:text-white">
+                    <div className="space-y-5 text-white/80 leading-relaxed">
+                      <p className="text-lg lg:text-xl font-medium text-white">
                         뷰리드AI의 운영 전반을 책임지고 있는 김수진 부사장입니다.
                       </p>
                       <p className="text-base lg:text-lg">
@@ -135,7 +142,7 @@ export default function Leadership() {
                       </p>
                     </div>
                   </div>
-                  <div className="lg:col-span-2 p-8 lg:p-12 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-700 dark:to-gray-800">
+                  <div className="lg:col-span-2 p-8 lg:p-12">
                     <div className="text-center h-full flex flex-col justify-center">
                       <div className="relative inline-block mb-6">
                         <img 
@@ -162,7 +169,7 @@ export default function Leadership() {
 
             {/* CTO Card */}
             <div className="group">
-              <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 dark:border-gray-700">
+              <div className="service-card animate-fade-in-up animate-delay-200">
                 <div className="grid lg:grid-cols-5 gap-0">
                   <div className="lg:col-span-2 p-8 lg:p-12 bg-gradient-to-br from-green-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800">
                     <div className="text-center h-full flex flex-col justify-center">
@@ -277,18 +284,18 @@ export default function Leadership() {
         </section>
 
         {/* Call to Action */}
-        <section className="container max-w-5xl mx-auto px-6 mt-20">
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-8 lg:p-12 text-center shadow-2xl">
-            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">
+        <section className="container max-w-5xl mx-auto mt-20">
+          <div className="floating-card text-center">
+            <h2 className="hero-title text-3xl lg:text-4xl font-black mb-6">
               함께 성장할 준비가 되셨나요?
             </h2>
-            <p className="text-lg lg:text-xl text-blue-100 mb-8 leading-relaxed max-w-3xl mx-auto">
+            <p className="text-lg lg:text-xl text-white/80 mb-8 leading-relaxed max-w-3xl mx-auto">
               뷰리드AI와 함께 데이터 기반의 혁신적인 마케팅 여정을 시작하세요
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
               <a 
                 href="/contact" 
-                className="bg-white text-blue-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-50 transition-colors shadow-lg inline-flex items-center justify-center space-x-2"
+                className="modern-btn"
                 data-testid="button-contact-cta"
               >
                 <span>무료 상담 받기</span>
@@ -298,10 +305,14 @@ export default function Leadership() {
               </a>
               <a 
                 href="/portfolio" 
-                className="bg-transparent text-white border-2 border-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-blue-600 transition-colors"
+                className="modern-btn-outline"
                 data-testid="button-portfolio-cta"
               >
-                포트폴리오 보기
+                <span>포트폴리오 보기</span>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
               </a>
             </div>
           </div>
