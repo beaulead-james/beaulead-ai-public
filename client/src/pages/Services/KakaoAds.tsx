@@ -127,17 +127,17 @@ export default function KakaoAds() {
                   <div className="grid grid-cols-2 gap-4 mb-6">
                     <div className="stats-card">
                       <div className="text-sm text-white/70 font-medium">메시지 전송</div>
-                      <div className="text-2xl font-bold text-white">23,560</div>
-                      <div className="text-xs text-green-400">+42% 증가</div>
+                      <div className="text-2xl font-bold text-white font-data">23,560</div>
+                      <div className="text-xs text-green-400 font-data">+42% 증가</div>
                     </div>
                     <div className="stats-card">
                       <div className="text-sm text-white/70 font-medium">친구 추가</div>
-                      <div className="text-2xl font-bold text-white">1,240</div>
-                      <div className="text-xs text-green-400">+35% 증가</div>
+                      <div className="text-2xl font-bold text-white font-data">1,240</div>
+                      <div className="text-xs text-green-400 font-data">+35% 증가</div>
                     </div>
                   </div>
                   <div className="text-center stats-card">
-                    <div className="text-3xl font-bold text-white mb-1">390%</div>
+                    <div className="text-3xl font-bold text-white mb-1 font-data">390%</div>
                     <div className="text-sm text-white/70">평균 ROAS</div>
                   </div>
                 </div>

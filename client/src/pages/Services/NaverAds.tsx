@@ -127,17 +127,17 @@ export default function NaverAds() {
                   <div className="grid grid-cols-2 gap-4 mb-6">
                     <div className="stats-card">
                       <div className="text-sm text-white/70 font-medium">노출수</div>
-                      <div className="text-2xl font-bold text-white">45,820</div>
-                      <div className="text-xs text-green-400">+32% 증가</div>
+                      <div className="text-2xl font-bold text-white font-data">45,820</div>
+                      <div className="text-xs text-green-400 font-data">+32% 증가</div>
                     </div>
                     <div className="stats-card">
                       <div className="text-sm text-white/70 font-medium">클릭률</div>
-                      <div className="text-2xl font-bold text-white">4.2%</div>
-                      <div className="text-xs text-green-400">+15% 증가</div>
+                      <div className="text-2xl font-bold text-white font-data">4.2%</div>
+                      <div className="text-xs text-green-400 font-data">+15% 증가</div>
                     </div>
                   </div>
                   <div className="text-center stats-card">
-                    <div className="text-3xl font-bold text-white mb-1">480%</div>
+                    <div className="text-3xl font-bold text-white mb-1 font-data">480%</div>
                     <div className="text-sm text-white/70">평균 ROAS</div>
                   </div>
                 </div>

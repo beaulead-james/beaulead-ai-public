@@ -86,10 +86,10 @@ export default function Landing() {
                     <div className="text-sm text-blue-300 font-semibold mb-2" data-testid="text-metric-revenue-label">
                       월 매출액
                     </div>
-                    <div className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent" data-testid="text-metric-revenue-value">
+                    <div className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent font-data" data-testid="text-metric-revenue-value">
                       ₩15.2M
                     </div>
-                    <div className="text-sm text-green-400 font-medium" data-testid="text-metric-revenue-change">
+                    <div className="text-sm text-green-400 font-medium font-data" data-testid="text-metric-revenue-change">
                       ↗ +32% 성장
                     </div>
                   </div>
@@ -97,10 +97,10 @@ export default function Landing() {
                     <div className="text-sm text-purple-300 font-semibold mb-2" data-testid="text-metric-roas-label">
                       평균 ROAS
                     </div>
-                    <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent" data-testid="text-metric-roas-value">
+                    <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent font-data" data-testid="text-metric-roas-value">
                       524%
                     </div>
-                    <div className="text-sm text-green-400 font-medium" data-testid="text-metric-roas-change">
+                    <div className="text-sm text-green-400 font-medium font-data" data-testid="text-metric-roas-change">
                       ↗ +18% 향상
                     </div>
                   </div>
