@@ -164,7 +164,7 @@ export default function Landing() {
                   </div>
                   <div className="bg-gradient-to-br from-purple-500/20 to-pink-600/20 p-5 rounded-2xl border border-purple-400/30">
                     <div className="text-sm text-purple-300 font-semibold mb-2" data-testid="text-metric-roas-label">
-                      평균 ROAS
+                      {t.stats.roas}
                     </div>
                     <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent font-data" data-testid="text-metric-roas-value">
                       524%
@@ -206,11 +206,11 @@ export default function Landing() {
               <span className="text-sm font-semibold text-white">🏆 성공 사례</span>
             </div>
             <h2 className="text-3xl lg:text-5xl font-headline font-bold text-white mb-6 leading-tight" data-testid="text-portfolio-title">
-              도대체 무슨 자신감으로?<br />
-              <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">오직 결과로 증명하겠습니다.</span>
+              {t.portfolio.clients.title}<br />
+              <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">{t.portfolio.clients.subtitle}</span>
             </h2>
             <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed" data-testid="text-portfolio-subtitle">
-              다양한 업종의 기업들과 함께 성장한 성공 사례들을 확인해보세요
+              {t.portfolio.clients.description}
             </p>
           </div>
 
@@ -301,19 +301,19 @@ export default function Landing() {
               <div className="text-4xl font-bold text-white mb-2 font-data" data-testid="text-client-count">
                 120+
               </div>
-              <p className="text-white/70 text-lg">성공한 클라이언트</p>
+              <p className="text-white/70 text-lg">{t.portfolio.clients.successfulClients}</p>
             </div>
             <div className="service-card text-center">
               <div className="text-4xl font-bold text-white mb-2 font-data" data-testid="text-campaign-count">
                 500+
               </div>
-              <p className="text-white/70 text-lg">성공한 캠페인</p>
+              <p className="text-white/70 text-lg">{t.portfolio.clients.successfulCampaigns}</p>
             </div>
             <div className="service-card text-center">
               <div className="text-4xl font-bold text-white mb-2 font-data" data-testid="text-avg-growth">
                 287%
               </div>
-              <p className="text-white/70 text-lg">평균 매출 성장률</p>
+              <p className="text-white/70 text-lg">{t.portfolio.clients.averageGrowth}</p>
             </div>
           </div>
 
@@ -324,7 +324,7 @@ export default function Landing() {
               className="modern-btn text-center inline-flex items-center"
               data-testid="button-portfolio-cta"
             >
-              <span>성공 사례 더 보기</span>
+              <span>{t.portfolio.clients.viewMore}</span>
               <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
@@ -452,11 +452,11 @@ export default function Landing() {
               <span className="text-sm font-semibold text-white">📊 뛰어난 성과</span>
             </div>
             <h2 className="text-3xl lg:text-5xl font-headline font-bold text-white mb-6 leading-tight" data-testid="text-stats-title">
-              뛰어난 성과로<br />
+              {t.stats.title.split('입증된 전문성')[0]}<br />
               <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">입증된 전문성</span>
             </h2>
             <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed" data-testid="text-stats-subtitle">
-              숫자로 증명하는 우리의 역량과 고객들의 성공 스토리
+              {t.stats.subtitle}
             </p>
           </div>
 
@@ -471,7 +471,7 @@ export default function Landing() {
                 200+
               </div>
               <div className="text-white/70 text-lg font-medium" data-testid="text-stat-projects-label">
-                성공한 프로젝트
+                {t.stats.projects}
               </div>
             </div>
             
@@ -485,7 +485,7 @@ export default function Landing() {
                 487%
               </div>
               <div className="text-white/70 text-lg font-medium" data-testid="text-stat-roas-label">
-                평균 ROAS
+                {t.stats.roas}
               </div>
             </div>
             
@@ -499,7 +499,7 @@ export default function Landing() {
                 ₩12.5B
               </div>
               <div className="text-white/70 text-lg font-medium" data-testid="text-stat-revenue-label">
-                누적 매출 성과
+                {t.stats.revenue}
               </div>
             </div>
             
@@ -513,7 +513,7 @@ export default function Landing() {
                 98%
               </div>
               <div className="text-white/70 text-lg font-medium" data-testid="text-stat-satisfaction-label">
-                고객 만족도
+                {t.stats.satisfaction}
               </div>
             </div>
           </div>
@@ -535,11 +535,11 @@ export default function Landing() {
               <span className="text-sm font-semibold text-white">📖 마케팅 인사이트</span>
             </div>
             <h2 className="text-3xl lg:text-5xl font-headline font-bold text-white mb-6 leading-tight" data-testid="text-blog-title">
-              최신 마케팅 트렌드와<br />
-              <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">실전 노하우를 공유합니다</span>
+              {t.blog.insights?.title || t.blog.title}<br />
+              <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">{t.blog.insights?.subtitle || t.blog.subtitle}</span>
             </h2>
             <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed" data-testid="text-blog-subtitle">
-              디지털 마케팅의 최신 동향과 성공 사례를 통해 더 나은 성과를 만들어보세요
+              {t.blog.insights?.description || t.blog.subtitle}
             </p>
           </div>
 
@@ -553,7 +553,7 @@ export default function Landing() {
               className="modern-btn text-center inline-flex items-center"
               data-testid="button-blog-cta"
             >
-              <span>마케팅 인사이트 더보기</span>
+              <span>{t.blog.insights?.viewMore || t.blog.viewAll}</span>
               <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
