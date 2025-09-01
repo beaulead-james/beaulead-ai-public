@@ -219,8 +219,8 @@ export default function NaverAds() {
         <section className="py-16 lg:py-24">
           <div className="container max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">성공 사례</h2>
-              <p className="text-xl text-white/80">실제 고객사의 네이버 광고 성과를 확인해보세요</p>
+              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">{t.services.naverAds.caseStudy.title}</h2>
+              <p className="text-xl text-white/80">{language === 'ko' ? '실제 고객사의 네이버 광고 성과를 확인해보세요' : 'Check out the actual results of Naver advertising from our clients'}</p>
             </div>
 
             <div className="floating-card">
@@ -232,18 +232,18 @@ export default function NaverAds() {
                     </h3>
                     <div className="space-y-6">
                       <div>
-                        <h4 className="font-semibold text-white mb-2">도전 과제:</h4>
+                        <h4 className="font-semibold text-white mb-2">{language === 'ko' ? '도전 과제:' : 'Challenge:'}</h4>
                         <p className="text-white/80 leading-relaxed" data-testid="text-case-challenge">{caseStudy.challenge}</p>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-white mb-2">해결책:</h4>
+                        <h4 className="font-semibold text-white mb-2">{language === 'ko' ? '해결책:' : 'Solution:'}</h4>
                         <p className="text-white/80 leading-relaxed" data-testid="text-case-solution">{caseStudy.solution}</p>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-white mb-6 text-center">6개월 후 결과:</h4>
+                  <h4 className="font-semibold text-white mb-6 text-center">{t.services.naverAds.caseStudy.resultsTitle}</h4>
                   <div className="grid grid-cols-2 gap-4">
                     {caseStudy.results.map((result, index) => (
                       <div key={index} className="stats-card">
@@ -268,22 +268,22 @@ export default function NaverAds() {
         {/* Why Naver Section */}
         <section className="py-16 lg:py-24">
           <div className="container max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-12">왜 네이버 광고인가?</h2>
+            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-12">{language === 'ko' ? '왜 네이버 광고인가?' : 'Why Naver Ads?'}</h2>
             <div className="grid md:grid-cols-3 gap-8 mb-12">
               <div className="stats-card">
                 <div className="text-3xl font-bold text-white mb-2">75%</div>
-                <div className="text-white font-semibold mb-1">국내 검색 점유율</div>
-                <div className="text-sm text-white/70">한국인이 가장 많이 사용</div>
+                <div className="text-white font-semibold mb-1">{language === 'ko' ? '국내 검색 점유율' : 'Domestic Search Share'}</div>
+                <div className="text-sm text-white/70">{language === 'ko' ? '한국인이 가장 많이 사용' : 'Most used by Koreans'}</div>
               </div>
               <div className="stats-card">
                 <div className="text-3xl font-bold text-white mb-2">4,700만</div>
-                <div className="text-white font-semibold mb-1">월간 활성 사용자</div>
-                <div className="text-sm text-white/70">압도적인 사용자 수</div>
+                <div className="text-white font-semibold mb-1">{language === 'ko' ? '월간 활성 사용자' : 'Monthly Active Users'}</div>
+                <div className="text-sm text-white/70">{language === 'ko' ? '압도적인 사용자 수' : 'Overwhelming user base'}</div>
               </div>
               <div className="stats-card">
                 <div className="text-3xl font-bold text-white mb-2">85%</div>
-                <div className="text-white font-semibold mb-1">모바일 이용률</div>
-                <div className="text-sm text-white/70">모바일 최적화 필수</div>
+                <div className="text-white font-semibold mb-1">{language === 'ko' ? '모바일 이용률' : 'Mobile Usage Rate'}</div>
+                <div className="text-sm text-white/70">{language === 'ko' ? '모바일 최적화 필수' : 'Mobile optimization essential'}</div>
               </div>
             </div>
           </div>
@@ -293,16 +293,16 @@ export default function NaverAds() {
         <section className="py-16 lg:py-24">
           <div className="container max-w-4xl mx-auto text-center">
             <div className="floating-card">
-              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">네이버 광고를 시작해보세요</h2>
+              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">{language === 'ko' ? '네이버 광고를 시작해보세요' : 'Start with Naver Ads'}</h2>
               <p className="text-xl text-white/80 mb-8 leading-relaxed">
-                한국 시장 전문가와의 무료 상담을 통해 네이버 광고 전략을 수립하세요
+                {language === 'ko' ? '한국 시장 전문가와의 무료 상담을 통해 네이버 광고 전략을 수립하세요' : 'Develop your Naver advertising strategy through free consultation with Korean market experts'}
               </p>
               <Link 
                 href="/contact" 
                 className="modern-btn"
                 data-testid="button-final-cta"
               >
-                무료 상담 신청하기
+{t.services.contactCta}
               </Link>
             </div>
           </div>
