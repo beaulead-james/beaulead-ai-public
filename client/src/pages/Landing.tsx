@@ -452,8 +452,8 @@ export default function Landing() {
               <span className="text-sm font-semibold text-white">📊 {t.stats.title.includes('뛰어난') ? '뷰리드.AI 성과' : 'BeauLead.AI Performance'}</span>
             </div>
             <h2 className="text-3xl lg:text-5xl font-headline font-bold text-white mb-6 leading-tight" data-testid="text-stats-title">
-              {t.stats.title.split('입증된 전문성')[0]}<br />
-              <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">말보다 결과로 증명합니다</span>
+              우리는 광고를 하지 않습니다<br />
+              <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">뷰리드는 성과를 설계합니다</span>
             </h2>
             <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed" data-testid="text-stats-subtitle">
               {t.stats.subtitle}
