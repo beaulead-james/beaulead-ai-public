@@ -61,6 +61,15 @@ export interface Translations {
     subtitle: string;
     viewAll: string;
     viewCase: string;
+    clients: {
+      title: string;
+      subtitle: string;
+      description: string;
+      successfulClients: string;
+      successfulCampaigns: string;
+      averageGrowth: string;
+      viewMore: string;
+    };
   };
   about: {
     title: string;
@@ -84,6 +93,12 @@ export interface Translations {
     subtitle: string;
     viewAll: string;
     readMore: string;
+    insights: {
+      title: string;
+      subtitle: string;
+      description: string;
+      viewMore: string;
+    };
   };
   contact: {
     title: string;
@@ -215,6 +230,15 @@ export const translations: Record<Language, Translations> = {
       subtitle: '다양한 업종의 고객사와 함께한 성공적인 마케팅 캠페인 사례를 확인하세요',
       viewAll: '모든 포트폴리오 보기',
       viewCase: '사례 보기',
+      clients: {
+        title: '도대체 무슨 자신감으로?',
+        subtitle: '오직 결과로 증명하겠습니다.',
+        description: '다양한 업종의 기업들과 함께 성장한 성공 사례들을 확인해보세요',
+        successfulClients: '성공한 클라이언트',
+        successfulCampaigns: '성공한 캠페인',
+        averageGrowth: '평균 매출 성장률',
+        viewMore: '성공 사례 더 보기',
+      },
     },
     about: {
       title: '데이터로 증명하는\n마케팅 파트너십',
@@ -367,6 +391,15 @@ export const translations: Record<Language, Translations> = {
       subtitle: 'Check out successful marketing campaign cases with clients from various industries',
       viewAll: 'View All Portfolio',
       viewCase: 'View Case',
+      clients: {
+        title: 'What gives us such confidence?',
+        subtitle: 'We will prove it only with results.',
+        description: 'Check out our success stories growing together with companies from various industries',
+        successfulClients: 'Successful Clients',
+        successfulCampaigns: 'Successful Campaigns',
+        averageGrowth: 'Average Revenue Growth',
+        viewMore: 'View More Success Stories',
+      },
     },
     about: {
       title: 'Marketing Partnership\nProven by Data',
