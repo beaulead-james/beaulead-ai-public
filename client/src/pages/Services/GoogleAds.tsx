@@ -5,63 +5,63 @@ import Header from '../../components/Layout/Header';
 import Footer from '../../components/Layout/Footer';
 
 export default function GoogleAds() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const serviceTypes = [
     {
-      title: '검색 광고 (Search Ads)',
-      description: '구글 검색결과 상단에 노출되는 텍스트 광고로, 구매 의도가 높은 고객을 타겟팅합니다.',
-      features: ['키워드 타겟팅', '광고 확장', '자동 입찰', '품질평가 최적화']
+      title: t.services.googleAds.serviceTypes.search.title,
+      description: t.services.googleAds.serviceTypes.search.description,
+      features: t.services.googleAds.serviceTypes.search.features
     },
     {
-      title: '디스플레이 광고 (Display Ads)',
-      description: '구글 파트너 사이트와 YouTube에 표시되는 이미지/동영상 광고입니다.',
-      features: ['시각적 크리에이티브', '리타겟팅', '인구통계 타겟팅', '플레이스먼트 선택']
+      title: t.services.googleAds.serviceTypes.display.title,
+      description: t.services.googleAds.serviceTypes.display.description,
+      features: t.services.googleAds.serviceTypes.display.features
     },
     {
-      title: '쇼핑 광고 (Shopping Ads)',
-      description: '제품 이미지와 가격이 포함된 광고로 이커머스에 최적화되어 있습니다.',
-      features: ['제품 피드 관리', '가격 비교', '시각적 어필', '직접 구매 유도']
+      title: t.services.googleAds.serviceTypes.shopping.title,
+      description: t.services.googleAds.serviceTypes.shopping.description,
+      features: t.services.googleAds.serviceTypes.shopping.features
     },
     {
-      title: '유튜브 광고 (YouTube Ads)',
-      description: '세계 2위 검색엔진인 YouTube에서 동영상 콘텐츠로 브랜드를 알립니다.',
-      features: ['영상 콘텐츠', '스키퍼블/논스키퍼블', '인플루언서 협업', '브랜드 인지도']
+      title: t.services.googleAds.serviceTypes.youtube.title,
+      description: t.services.googleAds.serviceTypes.youtube.description,
+      features: t.services.googleAds.serviceTypes.youtube.features
     }
   ];
 
   const benefits = [
     {
       icon: 'fas fa-target',
-      title: '정확한 타겟팅',
-      description: '검색 키워드, 위치, 연령, 관심사 등 다양한 기준으로 정확한 고객을 타겟팅합니다.'
+      title: t.services.googleAds.benefits.targeting.title,
+      description: t.services.googleAds.benefits.targeting.description
     },
     {
       icon: 'fas fa-chart-line',
-      title: '실시간 성과 측정',
-      description: '클릭, 노출, 전환율 등 모든 지표를 실시간으로 확인하고 최적화할 수 있습니다.'
+      title: t.services.googleAds.benefits.realtime.title,
+      description: t.services.googleAds.benefits.realtime.description
     },
     {
       icon: 'fas fa-coins',
-      title: '비용 효율성',
-      description: '설정한 예산 내에서 최대 성과를 낼 수 있도록 자동 입찰 시스템이 최적화됩니다.'
+      title: t.services.googleAds.benefits.costEffective.title,
+      description: t.services.googleAds.benefits.costEffective.description
     },
     {
       icon: 'fas fa-globe',
-      title: '글로벌 도달',
-      description: '전 세계 90억 명의 구글 사용자에게 광고를 노출할 수 있습니다.'
+      title: t.services.googleAds.benefits.global.title,
+      description: t.services.googleAds.benefits.global.description
     }
   ];
 
   const caseStudy = {
-    company: '패션 이커머스 A사',
-    challenge: '신규 고객 획득과 매출 증대',
-    solution: '검색광고 + 쇼핑광고 + 리마케팅 통합 전략',
+    company: t.services.googleAds.caseStudy.company,
+    challenge: t.services.googleAds.caseStudy.challenge,
+    solution: t.services.googleAds.caseStudy.solution,
     results: [
       { metric: 'ROAS', value: '650%', change: '+180%' },
-      { metric: '전환율', value: '3.2%', change: '+120%' },
-      { metric: 'CPA', value: '₩15,000', change: '-45%' },
-      { metric: '매출', value: '₩2.1억', change: '+400%' }
+      { metric: language === 'ko' ? '전환율' : 'Conversion Rate', value: '3.2%', change: '+120%' },
+      { metric: 'CPA', value: language === 'ko' ? '₩15,000' : '$12', change: '-45%' },
+      { metric: language === 'ko' ? '매출' : 'Revenue', value: language === 'ko' ? '₩2.1억' : '$160K', change: '+400%' }
     ]
   };
 
@@ -123,7 +123,7 @@ export default function GoogleAds() {
               <div className="relative">
                 <div className="floating-card">
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-bold text-white">Google Ads 대시보드</h3>
+                    <h3 className="text-xl font-bold text-white">{t.services.googleAds.dashboard}</h3>
                     <div className="contact-icon">
                       <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -159,8 +159,8 @@ export default function GoogleAds() {
         <section className="py-16 lg:py-24">
           <div className="container max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">구글 광고 서비스</h2>
-              <p className="text-xl text-white/80">다양한 형태의 구글 광고로 최적의 마케팅 효과를 달성합니다</p>
+              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">{t.services.googleAds.serviceTypes.title}</h2>
+              <p className="text-xl text-white/80">{t.services.googleAds.serviceTypes.subtitle}</p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-8">
@@ -190,8 +190,8 @@ export default function GoogleAds() {
         <section className="py-16 lg:py-24">
           <div className="container max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">구글 광고의 장점</h2>
-              <p className="text-xl text-white/80">왜 전 세계 기업들이 구글 광고를 선택하는지 알아보세요</p>
+              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">{t.services.googleAds.benefits.title}</h2>
+              <p className="text-xl text-white/80">{language === 'ko' ? '왜 전 세계 기업들이 구글 광고를 선택하는지 알아보세요' : 'Discover why businesses worldwide choose Google Ads'}</p>
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -229,8 +229,8 @@ export default function GoogleAds() {
         <section className="py-16 lg:py-24">
           <div className="container max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">성공 사례</h2>
-              <p className="text-xl text-white/80">실제 고객사의 구글 광고 성과를 확인해보세요</p>
+              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">{t.services.googleAds.caseStudy.title}</h2>
+              <p className="text-xl text-white/80">{language === 'ko' ? '실제 고객사의 구글 광고 성과를 확인해보세요' : 'See actual Google Ads performance from our clients'}</p>
             </div>
 
             <div className="floating-card">
@@ -242,18 +242,18 @@ export default function GoogleAds() {
                     </h3>
                     <div className="space-y-6">
                       <div>
-                        <h4 className="font-semibold text-white mb-2">도전 과제:</h4>
+                        <h4 className="font-semibold text-white mb-2">{language === 'ko' ? '도전 과제:' : 'Challenge:'}</h4>
                         <p className="text-white/80 leading-relaxed" data-testid="text-case-challenge">{caseStudy.challenge}</p>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-white mb-2">해결책:</h4>
+                        <h4 className="font-semibold text-white mb-2">{language === 'ko' ? '해결책:' : 'Solution:'}</h4>
                         <p className="text-white/80 leading-relaxed" data-testid="text-case-solution">{caseStudy.solution}</p>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-white mb-6 text-center">3개월 후 결과:</h4>
+                  <h4 className="font-semibold text-white mb-6 text-center">{language === 'ko' ? '3개월 후 결과:' : 'Results after 3 months:'}</h4>
                   <div className="grid grid-cols-2 gap-4">
                     {caseStudy.results.map((result, index) => (
                       <div key={index} className="stats-card">
@@ -279,16 +279,16 @@ export default function GoogleAds() {
         <section className="py-16 lg:py-24">
           <div className="container max-w-4xl mx-auto text-center">
             <div className="floating-card">
-              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">구글 광고를 시작해보세요</h2>
+              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">{language === 'ko' ? '구글 광고를 시작해보세요' : 'Start Your Google Ads Journey'}</h2>
               <p className="text-xl text-white/80 mb-8 leading-relaxed">
-                전문가와의 무료 상담을 통해 맞춤형 구글 광고 전략을 수립하세요
+                {language === 'ko' ? '전문가와의 무료 상담을 통해 맞춤형 구글 광고 전략을 수립하세요' : 'Get a customized Google Ads strategy through a free consultation with our experts'}
               </p>
               <Link 
                 href="/contact" 
                 className="modern-btn"
                 data-testid="button-final-cta"
               >
-                무료 상담 신청하기
+{language === 'ko' ? '무료 상담 신청하기' : 'Request Free Consultation'}
               </Link>
             </div>
           </div>

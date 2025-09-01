@@ -36,6 +36,57 @@ export interface Translations {
       heroTitle: string;
       heroDescription: string;
       brandName: string;
+      dashboard: string;
+      serviceTypes: {
+        title: string;
+        subtitle: string;
+        search: {
+          title: string;
+          description: string;
+          features: string[];
+        };
+        display: {
+          title: string;
+          description: string;
+          features: string[];
+        };
+        shopping: {
+          title: string;
+          description: string;
+          features: string[];
+        };
+        youtube: {
+          title: string;
+          description: string;
+          features: string[];
+        };
+      };
+      benefits: {
+        title: string;
+        targeting: {
+          title: string;
+          description: string;
+        };
+        realtime: {
+          title: string;
+          description: string;
+        };
+        costEffective: {
+          title: string;
+          description: string;
+        };
+        global: {
+          title: string;
+          description: string;
+        };
+      };
+      caseStudy: {
+        title: string;
+        company: string;
+        challenge: string;
+        solution: string;
+        resultsTitle: string;
+      };
     };
     naverAds: {
       title: string;
@@ -219,6 +270,57 @@ export const translations: Record<Language, Translations> = {
         heroTitle: '구글 광고로 더 많은 고객을 만나보세요',
         heroDescription: '전 세계 90억 명이 사용하는 구글에서 정확한 타겟 고객에게 도달하세요. 검색, 디스플레이, 쇼핑, YouTube까지 모든 구글 광고 솔루션을 제공합니다.',
         brandName: 'Google Ads',
+        dashboard: 'Google Ads 대시보드',
+        serviceTypes: {
+          title: '구글 광고 서비스',
+          subtitle: '다양한 구글 광고 솔루션으로 최적의 마케팅 성과를 달성하세요',
+          search: {
+            title: '검색 광고 (Search Ads)',
+            description: '구글 검색결과 상단에 노출되는 텍스트 광고로, 구매 의도가 높은 고객을 타겟팅합니다.',
+            features: ['키워드 타겟팅', '광고 확장', '자동 입찰', '품질평가 최적화']
+          },
+          display: {
+            title: '디스플레이 광고 (Display Ads)',
+            description: '구글 파트너 사이트와 YouTube에 표시되는 이미지/동영상 광고입니다.',
+            features: ['시각적 크리에이티브', '리타겟팅', '인구통계 타겟팅', '플레이스먼트 선택']
+          },
+          shopping: {
+            title: '쇼핑 광고 (Shopping Ads)',
+            description: '제품 이미지와 가격이 포함된 광고로 이커머스에 최적화되어 있습니다.',
+            features: ['제품 피드 관리', '가격 비교', '시각적 어필', '직접 구매 유도']
+          },
+          youtube: {
+            title: '유튜브 광고 (YouTube Ads)',
+            description: '세계 2위 검색엔진인 YouTube에서 동영상 콘텐츠로 브랜드를 알립니다.',
+            features: ['영상 콘텐츠', '스키퍼블/논스키퍼블', '인플루언서 협업', '브랜드 인지도']
+          }
+        },
+        benefits: {
+          title: '구글 광고의 장점',
+          targeting: {
+            title: '정확한 타겟팅',
+            description: '검색 키워드, 위치, 연령, 관심사 등 다양한 기준으로 정확한 고객을 타겟팅합니다.'
+          },
+          realtime: {
+            title: '실시간 성과 측정',
+            description: '클릭, 노출, 전환율 등 모든 지표를 실시간으로 확인하고 최적화할 수 있습니다.'
+          },
+          costEffective: {
+            title: '비용 효율성',
+            description: '설정한 예산 내에서 최대 성과를 낼 수 있도록 자동 입찰 시스템이 최적화됩니다.'
+          },
+          global: {
+            title: '글로벌 도달',
+            description: '전 세계 90억 명의 구글 사용자에게 광고를 노출할 수 있습니다.'
+          }
+        },
+        caseStudy: {
+          title: '성공 사례',
+          company: '패션 이커머스 A사',
+          challenge: '신규 고객 획득과 매출 증대',
+          solution: '검색광고 + 쇼핑광고 + 리마케팅 통합 전략',
+          resultsTitle: '달성 결과'
+        }
       },
       naverAds: {
         title: '네이버 광고',
@@ -394,6 +496,57 @@ export const translations: Record<Language, Translations> = {
         heroTitle: 'Reach More Customers with Google Ads',
         heroDescription: 'Reach your precise target audience on Google, used by 9 billion people worldwide. We provide all Google advertising solutions including Search, Display, Shopping, and YouTube.',
         brandName: 'Google Ads',
+        dashboard: 'Google Ads Dashboard',
+        serviceTypes: {
+          title: 'Google Advertising Services',
+          subtitle: 'Achieve optimal marketing performance with various Google advertising solutions',
+          search: {
+            title: 'Search Ads',
+            description: 'Text ads that appear at the top of Google search results, targeting customers with high purchase intent.',
+            features: ['Keyword Targeting', 'Ad Extensions', 'Automated Bidding', 'Quality Score Optimization']
+          },
+          display: {
+            title: 'Display Ads',
+            description: 'Image and video ads displayed on Google partner sites and YouTube.',
+            features: ['Visual Creative', 'Retargeting', 'Demographic Targeting', 'Placement Selection']
+          },
+          shopping: {
+            title: 'Shopping Ads',
+            description: 'Product ads with images and prices, optimized for e-commerce.',
+            features: ['Product Feed Management', 'Price Comparison', 'Visual Appeal', 'Direct Purchase Drive']
+          },
+          youtube: {
+            title: 'YouTube Ads',
+            description: 'Promote your brand with video content on YouTube, the world\'s second-largest search engine.',
+            features: ['Video Content', 'Skippable/Non-skippable', 'Influencer Collaboration', 'Brand Awareness']
+          }
+        },
+        benefits: {
+          title: 'Google Ads Benefits',
+          targeting: {
+            title: 'Precise Targeting',
+            description: 'Target exact customers based on search keywords, location, age, interests, and various other criteria.'
+          },
+          realtime: {
+            title: 'Real-time Performance Tracking',
+            description: 'Monitor and optimize all metrics including clicks, impressions, and conversion rates in real-time.'
+          },
+          costEffective: {
+            title: 'Cost Efficiency',
+            description: 'Automated bidding system optimizes to achieve maximum performance within your set budget.'
+          },
+          global: {
+            title: 'Global Reach',
+            description: 'Expose your ads to 9 billion Google users worldwide.'
+          }
+        },
+        caseStudy: {
+          title: 'Success Story',
+          company: 'Fashion E-commerce Company A',
+          challenge: 'New customer acquisition and revenue growth',
+          solution: 'Integrated strategy of Search Ads + Shopping Ads + Remarketing',
+          resultsTitle: 'Results Achieved'
+        }
       },
       naverAds: {
         title: 'Naver Ads',
