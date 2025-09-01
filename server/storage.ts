@@ -16,6 +16,7 @@ export interface IStorage {
   // User operations - mandatory for Replit Auth
   getUser(id: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
+  getUserCount(): Promise<number>;
   
   // Blog operations
   getBlogs(published?: boolean): Promise<Blog[]>;
@@ -54,6 +55,11 @@ export class DatabaseStorage implements IStorage {
       })
       .returning();
     return user;
+  }
+
+  async getUserCount(): Promise<number> {
+    const result = await db.select().from(users);
+    return result.length;
   }
 
   // Blog operations
