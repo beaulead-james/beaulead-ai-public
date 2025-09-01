@@ -159,7 +159,7 @@ export const translations: Record<Language, Translations> = {
       home: '홈',
       about: '회사소개',
       philosophy: '기업철학',
-      leadership: '대표인사',
+      leadership: '회사인사말',
       profile: '회사소개',
       location: '위치안내',
       history: '연혁',
@@ -282,7 +282,7 @@ export const translations: Record<Language, Translations> = {
         title: '회사',
         about: '회사소개',
         philosophy: '기업철학',
-        leadership: '대표인사',
+        leadership: '회사인사말',
         careers: '채용정보',
       },
       services: {
