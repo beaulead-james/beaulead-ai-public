@@ -129,19 +129,19 @@ export default function MetaAds() {
                   </div>
                   <div className="grid grid-cols-2 gap-4 mb-6">
                     <div className="stats-card">
-                      <div className="text-sm text-white/70 font-medium">도달수</div>
+                      <div className="text-sm text-white/70 font-medium">{language === 'ko' ? '도달수' : 'Reach'}</div>
                       <div className="text-2xl font-bold text-white font-data">89,340</div>
-                      <div className="text-xs text-green-400 font-data">+28% 증가</div>
+                      <div className="text-xs text-green-400 font-data">{language === 'ko' ? '+28% 증가' : '+28% increase'}</div>
                     </div>
                     <div className="stats-card">
-                      <div className="text-sm text-white/70 font-medium">참여율</div>
+                      <div className="text-sm text-white/70 font-medium">{language === 'ko' ? '참여율' : 'Engagement'}</div>
                       <div className="text-2xl font-bold text-white font-data">5.8%</div>
-                      <div className="text-xs text-green-400 font-data">+22% 증가</div>
+                      <div className="text-xs text-green-400 font-data">{language === 'ko' ? '+22% 증가' : '+22% increase'}</div>
                     </div>
                   </div>
                   <div className="text-center stats-card">
                     <div className="text-3xl font-bold text-white mb-1 font-data">410%</div>
-                    <div className="text-sm text-white/70">평균 ROAS</div>
+                    <div className="text-sm text-white/70">{language === 'ko' ? '평균 ROAS' : 'Average ROAS'}</div>
                   </div>
                 </div>
               </div>
@@ -153,8 +153,8 @@ export default function MetaAds() {
         <section className="py-16 lg:py-24">
           <div className="container max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">메타 광고 서비스</h2>
-              <p className="text-xl text-white/80">페이스북과 인스타그램을 활용한 통합 소셜미디어 마케팅</p>
+              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">{t.services.metaAds.serviceTypes.title}</h2>
+              <p className="text-xl text-white/80">{t.services.metaAds.serviceTypes.subtitle}</p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-8">
@@ -184,8 +184,8 @@ export default function MetaAds() {
         <section className="py-16 lg:py-24">
           <div className="container max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">메타 광고의 장점</h2>
-              <p className="text-xl text-white/80">소셜미디어 마케팅의 강력한 도구들을 활용하세요</p>
+              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">{t.services.metaAds.benefits.title}</h2>
+              <p className="text-xl text-white/80">{language === 'ko' ? '소셜미디어 마케팅의 강력한 도구들을 활용하세요' : 'Leverage powerful social media marketing tools'}</p>
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -223,8 +223,8 @@ export default function MetaAds() {
         <section className="py-16 lg:py-24">
           <div className="container max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">성공 사례</h2>
-              <p className="text-xl text-white/80">실제 고객사의 메타 광고 성과를 확인해보세요</p>
+              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">{t.services.metaAds.caseStudy.title}</h2>
+              <p className="text-xl text-white/80">{language === 'ko' ? '실제 고객사의 메타 광고 성과를 확인해보세요' : 'Check out the actual results of Meta advertising from our clients'}</p>
             </div>
 
             <div className="floating-card">
@@ -236,18 +236,18 @@ export default function MetaAds() {
                     </h3>
                     <div className="space-y-6">
                       <div>
-                        <h4 className="font-semibold text-white mb-2">도전 과제:</h4>
+                        <h4 className="font-semibold text-white mb-2">{language === 'ko' ? '도전 과제:' : 'Challenge:'}</h4>
                         <p className="text-white/80 leading-relaxed" data-testid="text-case-challenge">{caseStudy.challenge}</p>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-white mb-2">해결책:</h4>
+                        <h4 className="font-semibold text-white mb-2">{language === 'ko' ? '해결책:' : 'Solution:'}</h4>
                         <p className="text-white/80 leading-relaxed" data-testid="text-case-solution">{caseStudy.solution}</p>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-white mb-6 text-center">4개월 후 결과:</h4>
+                  <h4 className="font-semibold text-white mb-6 text-center">{t.services.metaAds.caseStudy.resultsTitle}</h4>
                   <div className="grid grid-cols-2 gap-4">
                     {caseStudy.results.map((result, index) => (
                       <div key={index} className="stats-card">
