@@ -521,13 +521,8 @@ export default function Landing() {
       </section>
 
       {/* Blog Section */}
-      <section className="py-20 lg:py-32 relative overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900"></div>
-          <div className="bg-orb"></div>
-        </div>
-        
-        <div className="container max-w-7xl mx-auto relative z-10">
+      <section className="py-20 lg:py-32">
+        <div className="container max-w-7xl mx-auto">
           <div className="text-center mb-20">
             <div className="inline-flex items-center bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full border border-white/20 mb-8">
               <span className="text-sm font-semibold text-white">📖 {t.blog.title.includes('마케팅') ? '마케팅 인사이트' : 'Marketing Insights'}</span>
@@ -561,13 +556,8 @@ export default function Landing() {
       </section>
 
       {/* Contact Section */}
-      <section className="py-20 lg:py-32 relative overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900"></div>
-          <div className="bg-orb"></div>
-        </div>
-        
-        <div className="container max-w-7xl mx-auto relative z-10">
+      <section className="py-20 lg:py-32">
+        <div className="container max-w-7xl mx-auto">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-20">
               <h2 className="hero-title text-4xl lg:text-6xl font-black mb-6" data-testid="text-contact-title">
