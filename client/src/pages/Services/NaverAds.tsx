@@ -5,63 +5,63 @@ import Header from '../../components/Layout/Header';
 import Footer from '../../components/Layout/Footer';
 
 export default function NaverAds() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const serviceTypes = [
     {
-      title: '검색광고 (파워링크)',
-      description: '네이버 검색결과 상단과 우측에 노출되는 키워드 광고로 높은 전환율을 보장합니다.',
-      features: ['키워드 광고', 'PC/모바일 최적화', '지역 타겟팅', '시간대별 노출 조절']
+      title: t.services.naverAds.serviceTypes.powerlink.title,
+      description: t.services.naverAds.serviceTypes.powerlink.description,
+      features: t.services.naverAds.serviceTypes.powerlink.features
     },
     {
-      title: '브랜드검색 광고',
-      description: '브랜드명 검색 시 상단에 노출되는 프리미엄 광고 영역입니다.',
-      features: ['브랜드 보호', '이미지/동영상 소재', '높은 CTR', '브랜드 인지도 향상']
+      title: t.services.naverAds.serviceTypes.brand.title,
+      description: t.services.naverAds.serviceTypes.brand.description,
+      features: t.services.naverAds.serviceTypes.brand.features
     },
     {
-      title: '쇼핑검색 광고',
-      description: '네이버 쇼핑에서 상품 검색 시 상단에 노출되는 이커머스 전용 광고입니다.',
-      features: ['상품 등록', '가격 비교', '쇼핑몰 연동', '구매 전환 최적화']
+      title: t.services.naverAds.serviceTypes.shopping.title,
+      description: t.services.naverAds.serviceTypes.shopping.description,
+      features: t.services.naverAds.serviceTypes.shopping.features
     },
     {
-      title: '디스플레이 광고',
-      description: '네이버 메인과 각종 서비스에 노출되는 배너 광고로 브랜드 인지도를 높입니다.',
-      features: ['배너 광고', '네이티브 광고', '동영상 광고', '타겟 오디언스']
+      title: t.services.naverAds.serviceTypes.display.title,
+      description: t.services.naverAds.serviceTypes.display.description,
+      features: t.services.naverAds.serviceTypes.display.features
     }
   ];
 
   const benefits = [
     {
       icon: 'fas fa-search',
-      title: '국내 검색 1위',
-      description: '한국인이 가장 많이 사용하는 검색엔진에서 높은 노출과 클릭률을 보장합니다.'
+      title: t.services.naverAds.benefits.domestic.title,
+      description: t.services.naverAds.benefits.domestic.description
     },
     {
       icon: 'fas fa-users',
-      title: '정확한 한국인 타겟팅',
-      description: '한국 사용자의 검색 패턴과 소비 행동을 정확히 분석한 타겟팅이 가능합니다.'
+      title: t.services.naverAds.benefits.korean.title,
+      description: t.services.naverAds.benefits.korean.description
     },
     {
       icon: 'fas fa-mobile-alt',
-      title: '모바일 최적화',
-      description: '모바일 사용자가 많은 네이버 환경에 최적화된 광고 전략을 제공합니다.'
+      title: t.services.naverAds.benefits.platform.title,
+      description: t.services.naverAds.benefits.platform.description
     },
     {
       icon: 'fas fa-chart-bar',
-      title: '상세한 리포팅',
-      description: '네이버 애널리틱스와 연동하여 상세한 성과 분석과 리포팅을 제공합니다.'
+      title: t.services.naverAds.benefits.content.title,
+      description: t.services.naverAds.benefits.content.description
     }
   ];
 
   const caseStudy = {
-    company: '로컬 교육업체 B사',
-    challenge: '지역 고객 유치와 온라인 수강생 증대',
-    solution: '지역 키워드 + 브랜드검색 + 네이버 블로그 마케팅 통합',
+    company: t.services.naverAds.caseStudy.company,
+    challenge: t.services.naverAds.caseStudy.challenge,
+    solution: t.services.naverAds.caseStudy.solution,
     results: [
       { metric: 'ROAS', value: '480%', change: '+150%' },
-      { metric: '지역 노출', value: '85%', change: '+200%' },
-      { metric: '수강 신청', value: '320건', change: '+250%' },
-      { metric: 'CPA', value: '₩25,000', change: '-40%' }
+      { metric: language === 'ko' ? '지역 노출' : 'Regional Exposure', value: '85%', change: '+200%' },
+      { metric: language === 'ko' ? '수강 신청' : 'Course Applications', value: language === 'ko' ? '320건' : '320', change: '+250%' },
+      { metric: 'CPA', value: language === 'ko' ? '₩25,000' : '$20', change: '-40%' }
     ]
   };
 
@@ -118,7 +118,7 @@ export default function NaverAds() {
               <div className="relative">
                 <div className="floating-card">
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-bold text-white">네이버 광고 대시보드</h3>
+                    <h3 className="text-xl font-bold text-white">{t.services.naverAds.dashboard}</h3>
                     <div className="contact-icon">
                       <span className="text-white font-bold text-xl">N</span>
                     </div>
@@ -149,8 +149,8 @@ export default function NaverAds() {
         <section className="py-16 lg:py-24">
           <div className="container max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">네이버 광고 서비스</h2>
-              <p className="text-xl text-white/80">네이버 생태계 전반에서 최적의 광고 성과를 창출합니다</p>
+              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">{t.services.naverAds.serviceTypes.title}</h2>
+              <p className="text-xl text-white/80">{t.services.naverAds.serviceTypes.subtitle}</p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-8">
@@ -180,8 +180,8 @@ export default function NaverAds() {
         <section className="py-16 lg:py-24">
           <div className="container max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">네이버 광고의 장점</h2>
-              <p className="text-xl text-white/80">한국 시장에서 네이버 광고가 필수인 이유</p>
+              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">{t.services.naverAds.benefits.title}</h2>
+              <p className="text-xl text-white/80">{language === 'ko' ? '한국 시장에서 네이버 광고가 필수인 이유' : 'Why Naver Ads is essential in the Korean market'}</p>
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">

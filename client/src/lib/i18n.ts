@@ -94,6 +94,57 @@ export interface Translations {
       heroTitle: string;
       heroDescription: string;
       brandName: string;
+      dashboard: string;
+      serviceTypes: {
+        title: string;
+        subtitle: string;
+        powerlink: {
+          title: string;
+          description: string;
+          features: string[];
+        };
+        brand: {
+          title: string;
+          description: string;
+          features: string[];
+        };
+        shopping: {
+          title: string;
+          description: string;
+          features: string[];
+        };
+        display: {
+          title: string;
+          description: string;
+          features: string[];
+        };
+      };
+      benefits: {
+        title: string;
+        domestic: {
+          title: string;
+          description: string;
+        };
+        korean: {
+          title: string;
+          description: string;
+        };
+        platform: {
+          title: string;
+          description: string;
+        };
+        content: {
+          title: string;
+          description: string;
+        };
+      };
+      caseStudy: {
+        title: string;
+        company: string;
+        challenge: string;
+        solution: string;
+        resultsTitle: string;
+      };
     };
     metaAds: {
       title: string;
@@ -101,6 +152,57 @@ export interface Translations {
       heroTitle: string;
       heroDescription: string;
       brandName: string;
+      dashboard: string;
+      serviceTypes: {
+        title: string;
+        subtitle: string;
+        facebook: {
+          title: string;
+          description: string;
+          features: string[];
+        };
+        instagram: {
+          title: string;
+          description: string;
+          features: string[];
+        };
+        messenger: {
+          title: string;
+          description: string;
+          features: string[];
+        };
+        audience: {
+          title: string;
+          description: string;
+          features: string[];
+        };
+      };
+      benefits: {
+        title: string;
+        global: {
+          title: string;
+          description: string;
+        };
+        targeting: {
+          title: string;
+          description: string;
+        };
+        creative: {
+          title: string;
+          description: string;
+        };
+        engagement: {
+          title: string;
+          description: string;
+        };
+      };
+      caseStudy: {
+        title: string;
+        company: string;
+        challenge: string;
+        solution: string;
+        resultsTitle: string;
+      };
     };
     kakaoAds: {
       title: string;
@@ -108,6 +210,57 @@ export interface Translations {
       heroTitle: string;
       heroDescription: string;
       brandName: string;
+      dashboard: string;
+      serviceTypes: {
+        title: string;
+        subtitle: string;
+        talk: {
+          title: string;
+          description: string;
+          features: string[];
+        };
+        bizboard: {
+          title: string;
+          description: string;
+          features: string[];
+        };
+        display: {
+          title: string;
+          description: string;
+          features: string[];
+        };
+        shopping: {
+          title: string;
+          description: string;
+          features: string[];
+        };
+      };
+      benefits: {
+        title: string;
+        daily: {
+          title: string;
+          description: string;
+        };
+        messaging: {
+          title: string;
+          description: string;
+        };
+        mobile: {
+          title: string;
+          description: string;
+        };
+        local: {
+          title: string;
+          description: string;
+        };
+      };
+      caseStudy: {
+        title: string;
+        company: string;
+        challenge: string;
+        solution: string;
+        resultsTitle: string;
+      };
     };
     learnMore: string;
     contactCta: string;
@@ -328,6 +481,57 @@ export const translations: Record<Language, Translations> = {
         heroTitle: '네이버 광고로 국내 고객을 정확히 공략하세요',
         heroDescription: '국내 검색 점유율 1위 네이버에서 한국 고객에게 최적화된 마케팅을 진행하세요. 파워링크, 브랜드검색, 쇼핑검색까지 모든 네이버 광고 솔루션을 제공합니다.',
         brandName: 'Naver Ads',
+        dashboard: 'Naver Ads 대시보드',
+        serviceTypes: {
+          title: '네이버 광고 서비스',
+          subtitle: '다양한 네이버 광고 솔루션으로 최적의 마케팅 성과를 달성하세요',
+          powerlink: {
+            title: '검색광고 (파워링크)',
+            description: '네이버 검색결과 상단과 우측에 노출되는 키워드 광고로 높은 전환율을 보장합니다.',
+            features: ['키워드 광고', 'PC/모바일 최적화', '지역 타겟팅', '시간대별 노출 조절']
+          },
+          brand: {
+            title: '브랜드검색 광고',
+            description: '브랜드명 검색 시 상단에 노출되는 프리미엄 광고 영역입니다.',
+            features: ['브랜드 보호', '이미지/동영상 소재', '높은 CTR', '브랜드 인지도 향상']
+          },
+          shopping: {
+            title: '쇼핑검색 광고',
+            description: '네이버 쇼핑에서 상품 검색 시 상단에 노출되는 이커머스 전용 광고입니다.',
+            features: ['상품 등록', '가격 비교', '쇼핑몰 연동', '구매 전환 최적화']
+          },
+          display: {
+            title: '디스플레이 광고',
+            description: '네이버 메인과 각종 서비스에 노출되는 배너 광고로 브랜드 인지도를 높입니다.',
+            features: ['배너 광고', '네이티브 광고', '동영상 광고', '타겟 오디언스']
+          }
+        },
+        benefits: {
+          title: '네이버 광고의 장점',
+          domestic: {
+            title: '국내 검색 1위',
+            description: '한국인이 가장 많이 사용하는 검색엔진에서 높은 노출과 클릭률을 보장합니다.'
+          },
+          korean: {
+            title: '정확한 한국인 타겟팅',
+            description: '한국 사용자의 검색 패턴과 소비 행동을 정확히 분석한 타겟팅이 가능합니다.'
+          },
+          platform: {
+            title: '모바일 최적화',
+            description: '모바일 사용자가 많은 네이버 환경에 최적화된 광고 전략을 제공합니다.'
+          },
+          content: {
+            title: '상세한 리포팅',
+            description: '네이버 애널리틱스와 연동하여 상세한 성과 분석과 리포팅을 제공합니다.'
+          }
+        },
+        caseStudy: {
+          title: '성공 사례',
+          company: '로컬 교육업체 B사',
+          challenge: '지역 고객 유치와 온라인 수강생 증대',
+          solution: '지역 키워드 + 브랜드검색 + 네이버 블로그 마케팅 통합',
+          resultsTitle: '달성 결과'
+        }
       },
       metaAds: {
         title: '메타 광고',
@@ -554,6 +758,57 @@ export const translations: Record<Language, Translations> = {
         heroTitle: 'Target Korean Customers Precisely with Naver Ads',
         heroDescription: 'Execute marketing optimized for Korean customers on Naver, Korea\'s #1 search engine. We provide all Naver advertising solutions including PowerLink, Brand Search, and Shopping Search.',
         brandName: 'Naver Ads',
+        dashboard: 'Naver Ads Dashboard',
+        serviceTypes: {
+          title: 'Naver Advertising Services',
+          subtitle: 'Achieve optimal marketing performance with various Naver advertising solutions',
+          powerlink: {
+            title: 'Search Ads (PowerLink)',
+            description: 'Keyword ads displayed at the top and right of Naver search results, ensuring high conversion rates.',
+            features: ['Keyword Advertising', 'PC/Mobile Optimization', 'Regional Targeting', 'Time-based Exposure Control']
+          },
+          brand: {
+            title: 'Brand Search Ads',
+            description: 'Premium advertising space displayed at the top when searching for brand names.',
+            features: ['Brand Protection', 'Image/Video Materials', 'High CTR', 'Brand Awareness Enhancement']
+          },
+          shopping: {
+            title: 'Shopping Search Ads',
+            description: 'E-commerce dedicated ads displayed at the top when searching for products on Naver Shopping.',
+            features: ['Product Registration', 'Price Comparison', 'Shopping Mall Integration', 'Purchase Conversion Optimization']
+          },
+          display: {
+            title: 'Display Ads',
+            description: 'Banner ads displayed on Naver main page and various services to increase brand awareness.',
+            features: ['Banner Ads', 'Native Ads', 'Video Ads', 'Target Audience']
+          }
+        },
+        benefits: {
+          title: 'Naver Ads Benefits',
+          domestic: {
+            title: 'Korea\'s #1 Search Engine',
+            description: 'Guarantee high exposure and click-through rates on the search engine most used by Koreans.'
+          },
+          korean: {
+            title: 'Precise Korean User Targeting',
+            description: 'Enable precise targeting by accurately analyzing Korean users\' search patterns and consumption behaviors.'
+          },
+          platform: {
+            title: 'Mobile Optimization',
+            description: 'Provide advertising strategies optimized for the Naver environment with many mobile users.'
+          },
+          content: {
+            title: 'Detailed Reporting',
+            description: 'Provide detailed performance analysis and reporting by integrating with Naver Analytics.'
+          }
+        },
+        caseStudy: {
+          title: 'Success Story',
+          company: 'Local Education Company B',
+          challenge: 'Regional customer acquisition and online student enrollment increase',
+          solution: 'Integrated regional keywords + brand search + Naver blog marketing',
+          resultsTitle: 'Results Achieved'
+        }
       },
       metaAds: {
         title: 'Meta Ads',
