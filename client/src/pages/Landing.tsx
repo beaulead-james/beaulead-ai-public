@@ -446,54 +446,74 @@ export default function Landing() {
 
       {/* Stats Section */}
       <section className="py-20 lg:py-32 relative overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900"></div>
-          <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-          <div className="absolute top-40 right-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-          <div className="absolute bottom-20 left-20 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
-        </div>
-        
         <div className="container max-w-7xl mx-auto relative z-10">
           <div className="text-center mb-20">
-            <h2 className="hero-title text-4xl lg:text-6xl font-black mb-6" data-testid="text-stats-title">
-              {t.stats.title}
+            <div className="inline-flex items-center bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full border border-white/20 mb-8">
+              <span className="text-sm font-semibold text-white">📊 뛰어난 성과</span>
+            </div>
+            <h2 className="text-3xl lg:text-5xl font-headline font-bold text-white mb-6 leading-tight" data-testid="text-stats-title">
+              뛰어난 성과로<br />
+              <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">입증된 전문성</span>
             </h2>
-            <p className="text-xl lg:text-2xl text-white/80 max-w-4xl mx-auto leading-relaxed" data-testid="text-stats-subtitle">
-              {t.stats.subtitle}
+            <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed" data-testid="text-stats-subtitle">
+              숫자로 증명하는 우리의 역량과 고객들의 성공 스토리
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="stats-card group animate-fade-in-up">
-              <div className="text-5xl lg:text-7xl font-black bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent mb-4" data-testid="text-stat-projects-value">
+            <div className="service-card text-center group">
+              <div className="modern-icon bg-gradient-to-r from-blue-500 to-blue-600 mb-6">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+              <div className="text-4xl lg:text-5xl font-bold text-white mb-3 font-data" data-testid="text-stat-projects-value">
                 200+
               </div>
-              <div className="text-white/90 font-semibold text-lg" data-testid="text-stat-projects-label">
-                {t.stats.projects}
+              <div className="text-white/70 text-lg font-medium" data-testid="text-stat-projects-label">
+                성공한 프로젝트
               </div>
             </div>
-            <div className="stats-card group animate-fade-in-up animate-delay-100">
-              <div className="text-5xl lg:text-7xl font-black bg-gradient-to-r from-green-400 via-emerald-400 to-green-400 bg-clip-text text-transparent mb-4" data-testid="text-stat-roas-value">
+            
+            <div className="service-card text-center group">
+              <div className="modern-icon bg-gradient-to-r from-green-500 to-emerald-600 mb-6">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+              </div>
+              <div className="text-4xl lg:text-5xl font-bold text-white mb-3 font-data" data-testid="text-stat-roas-value">
                 487%
               </div>
-              <div className="text-white/90 font-semibold text-lg" data-testid="text-stat-roas-label">
-                {t.stats.roas}
+              <div className="text-white/70 text-lg font-medium" data-testid="text-stat-roas-label">
+                평균 ROAS
               </div>
             </div>
-            <div className="stats-card group animate-fade-in-up animate-delay-200">
-              <div className="text-5xl lg:text-7xl font-black bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-400 bg-clip-text text-transparent mb-4" data-testid="text-stat-revenue-value">
+            
+            <div className="service-card text-center group">
+              <div className="modern-icon bg-gradient-to-r from-yellow-500 to-orange-600 mb-6">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                </svg>
+              </div>
+              <div className="text-4xl lg:text-5xl font-bold text-white mb-3 font-data" data-testid="text-stat-revenue-value">
                 ₩12.5B
               </div>
-              <div className="text-white/90 font-semibold text-lg" data-testid="text-stat-revenue-label">
-                {t.stats.revenue}
+              <div className="text-white/70 text-lg font-medium" data-testid="text-stat-revenue-label">
+                누적 매출 성과
               </div>
             </div>
-            <div className="stats-card group animate-fade-in-up animate-delay-300">
-              <div className="text-5xl lg:text-7xl font-black bg-gradient-to-r from-pink-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-4" data-testid="text-stat-satisfaction-value">
+            
+            <div className="service-card text-center group">
+              <div className="modern-icon bg-gradient-to-r from-pink-500 to-purple-600 mb-6">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+              </div>
+              <div className="text-4xl lg:text-5xl font-bold text-white mb-3 font-data" data-testid="text-stat-satisfaction-value">
                 98%
               </div>
-              <div className="text-white/90 font-semibold text-lg" data-testid="text-stat-satisfaction-label">
-                {t.stats.satisfaction}
+              <div className="text-white/70 text-lg font-medium" data-testid="text-stat-satisfaction-label">
+                고객 만족도
               </div>
             </div>
           </div>
