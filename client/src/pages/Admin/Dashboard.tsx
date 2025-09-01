@@ -25,16 +25,14 @@ export default function AdminDashboard() {
 
   // Redirect if not authenticated or not admin
   useEffect(() => {
-    // 임시로 인증 체크 건너뛰기 (개발 중)
-    const skipAuth = true;
-    if (!skipAuth && !isLoading && (!isAuthenticated || user?.role !== 'ADMIN')) {
+    if (!isLoading && (!isAuthenticated || user?.role !== 'ADMIN')) {
       toast({
         title: "Unauthorized",
         description: "관리자 권한이 필요합니다.",
         variant: "destructive",
       });
       setTimeout(() => {
-        window.location.href = "/api/login";
+        window.location.href = "/login";
       }, 500);
       return;
     }
@@ -46,9 +44,7 @@ export default function AdminDashboard() {
     enabled: false // 임시로 비활성화 (개발 중)
   });
 
-  // 임시로 인증 체크 건너뛰기 (개발 중)
-  const skipAuth = true;
-  if (!skipAuth && (isLoading || !isAuthenticated || user?.role !== 'ADMIN')) {
+  if (isLoading || !isAuthenticated || user?.role !== 'ADMIN') {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />

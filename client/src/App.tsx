@@ -45,6 +45,7 @@ import BlogManagement from "./pages/Admin/BlogManagement";
 import PortfolioManagement from "./pages/Admin/PortfolioManagement";
 import Analytics from "./pages/Admin/Analytics";
 import Users from "./pages/Admin/Users";
+import Login from "./pages/Login";
 
 // Client Dashboard
 import ClientDashboard from "./pages/ClientDashboard";
@@ -84,6 +85,9 @@ function Router() {
       {/* Contact & Careers */}
       <Route path="/contact" component={Contact} />
       <Route path="/careers" component={Careers} />
+      
+      {/* Auth Routes */}
+      <Route path="/login" component={Login} />
       
       {/* Protected Routes - Admin */}
       <Route path="/admin" component={AdminDashboard} />
