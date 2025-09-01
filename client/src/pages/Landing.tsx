@@ -4,7 +4,76 @@ import SEO from '../components/UI/SEO';
 import Header from '../components/Layout/Header';
 import Footer from '../components/Layout/Footer';
 import ContactForm from '../components/Forms/ContactForm';
+import { useQuery } from '@tanstack/react-query';
+import type { Blog } from '../../../shared/schema';
 import '../styles/hero.css';
+
+function BlogPosts() {
+  const { data: blogs = [], isLoading } = useQuery({
+    queryKey: ['/api/blogs'],
+    queryFn: async () => {
+      const response = await fetch('/api/blogs?published=true');
+      if (!response.ok) throw new Error('Failed to fetch blogs');
+      return await response.json() as Blog[];
+    }
+  });
+
+  if (isLoading) {
+    return (
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {[...Array(6)].map((_, i) => (
+          <div key={i} className="service-card animate-pulse">
+            <div className="h-48 bg-white/10 rounded-lg mb-6"></div>
+            <div className="h-6 bg-white/10 rounded mb-4"></div>
+            <div className="h-4 bg-white/10 rounded mb-2"></div>
+            <div className="h-4 bg-white/10 rounded w-3/4"></div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  const displayBlogs = blogs.slice(0, 6);
+
+  return (
+    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {displayBlogs.map((blog, index) => (
+        <Link 
+          key={blog.id} 
+          href={`/blog/${blog.slug}`}
+          className="service-card group hover:bg-white/10 transition-all duration-300 cursor-pointer"
+          data-testid={`blog-card-${index}`}
+        >
+          {blog.coverUrl && (
+            <div className="h-48 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg mb-6 overflow-hidden">
+              <img 
+                src={blog.coverUrl} 
+                alt={blog.titleKo}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+          )}
+          {!blog.coverUrl && (
+            <div className="h-48 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg mb-6 flex items-center justify-center">
+              <svg className="w-16 h-16 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+          )}
+          <h3 className="text-xl font-bold text-white mb-3 group-hover:text-blue-300 transition-colors" data-testid={`blog-title-${index}`}>
+            {blog.titleKo}
+          </h3>
+          <p className="text-white/70 mb-4 line-clamp-3" data-testid={`blog-excerpt-${index}`}>
+            {blog.excerptKo || blog.contentKo.substring(0, 120) + '...'}
+          </p>
+          <div className="text-sm text-white/50">
+            {new Date(blog.createdAt).toLocaleDateString('ko-KR')}
+          </div>
+        </Link>
+      ))}
+    </div>
+  );
+}
 
 export default function Landing() {
   const { t } = useLanguage();
@@ -427,6 +496,48 @@ export default function Landing() {
                 {t.stats.satisfaction}
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Blog Section */}
+      <section className="py-20 lg:py-32 relative overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900"></div>
+          <div className="absolute top-20 left-10 w-72 h-72 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+          <div className="absolute top-40 right-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+          <div className="absolute bottom-20 left-20 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+        </div>
+        
+        <div className="container max-w-7xl mx-auto relative z-10">
+          <div className="text-center mb-20">
+            <div className="inline-flex items-center bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full border border-white/20 mb-8">
+              <span className="text-sm font-semibold text-white">📖 마케팅 인사이트</span>
+            </div>
+            <h2 className="text-3xl lg:text-5xl font-headline font-bold text-white mb-6 leading-tight" data-testid="text-blog-title">
+              최신 마케팅 트렌드와<br />
+              <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">실전 노하우를 공유합니다</span>
+            </h2>
+            <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed" data-testid="text-blog-subtitle">
+              디지털 마케팅의 최신 동향과 성공 사례를 통해 더 나은 성과를 만들어보세요
+            </p>
+          </div>
+
+          {/* Blog Posts Grid */}
+          <BlogPosts />
+
+          {/* CTA */}
+          <div className="text-center mt-16">
+            <Link 
+              href="/blog" 
+              className="modern-btn text-center inline-flex items-center"
+              data-testid="button-blog-cta"
+            >
+              <span>마케팅 인사이트 더보기</span>
+              <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </Link>
           </div>
         </div>
       </section>
