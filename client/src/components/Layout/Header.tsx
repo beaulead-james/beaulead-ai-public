@@ -119,14 +119,21 @@ export default function Header() {
                         {t.nav.dashboard}
                       </Link>
                     )}
-                    <a href="/api/logout" className="modern-nav-link" data-testid="link-logout">
+                    <button 
+                      onClick={() => {
+                        localStorage.removeItem('user');
+                        window.location.href = '/';
+                      }}
+                      className="modern-nav-link" 
+                      data-testid="link-logout"
+                    >
                       Logout
-                    </a>
+                    </button>
                   </>
                 ) : (
-                  <a href="/api/login" className="modern-cta-btn" data-testid="link-signin">
+                  <Link href="/login" className="modern-cta-btn" data-testid="link-signin">
                     {t.nav.signIn}
-                  </a>
+                  </Link>
                 )}
               </div>
 
