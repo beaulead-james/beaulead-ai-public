@@ -110,9 +110,15 @@ export default function Header() {
               <div className="hidden sm:flex items-center space-x-3">
                 {isAuthenticated ? (
                   <>
-                    <Link href="/dashboard" className="modern-cta-btn" data-testid="link-dashboard">
-                      {t.nav.dashboard}
-                    </Link>
+                    {user?.role === 'ADMIN' ? (
+                      <Link href="/admin" className="modern-cta-btn" data-testid="link-admin">
+                        관리자 대시보드
+                      </Link>
+                    ) : (
+                      <Link href="/dashboard" className="modern-cta-btn" data-testid="link-dashboard">
+                        {t.nav.dashboard}
+                      </Link>
+                    )}
                     <a href="/api/logout" className="modern-nav-link" data-testid="link-logout">
                       Logout
                     </a>
