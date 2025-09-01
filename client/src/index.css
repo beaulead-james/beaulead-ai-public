@@ -166,26 +166,3 @@
   @apply mx-auto px-4 sm:px-6 lg:px-8;
 }
 
-/* Modern dropdown menu styles */
-.dropdown-menu {
-  @apply bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl min-w-48 py-2;
-  background: linear-gradient(135deg, rgba(17, 25, 40, 0.9), rgba(17, 25, 40, 0.95));
-  box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.6),
-    0 0 0 1px rgba(255, 255, 255, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-}
-
-.dropdown-item {
-  @apply block px-4 py-3 text-white/90 hover:text-white hover:bg-white/5 transition-all duration-200 text-sm font-medium;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.dropdown-item:last-child {
-  border-bottom: none;
-}
-
-.dropdown-item:hover {
-  background: linear-gradient(90deg, rgba(10, 132, 255, 0.1), rgba(0, 184, 148, 0.1));
-  transform: translateX(2px);
-}
