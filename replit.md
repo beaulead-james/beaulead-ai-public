@@ -6,6 +6,16 @@ This is a modern full-stack web application for BeauLeadAI (뷰리드AI), a Kore
 
 Preferred communication style: Simple, everyday language.
 
+# Recent Changes
+
+## December 31, 2024 - Complete Website Design Theme Integration
+- ✓ Integrated modern dark theme with glassmorphism effects across all service pages (Google Ads, Naver Ads, Meta Ads, Kakao Ads)
+- ✓ Applied consistent design components: service-card, floating-card, stats-card, contact-card with backdrop-filter blur effects
+- ✓ Unified gradient backgrounds and bg-orb animations across all pages for visual consistency
+- ✓ Maintained existing content while modernizing visual design throughout the website
+- ✓ Preserved service-specific brand colors (Google-blue, Naver-green, Meta-blue/purple, Kakao-yellow) within the dark theme
+- ✓ Implemented glassmorphism styling with semi-transparent cards and modern button designs
+
 # System Architecture
 
 ## Frontend Architecture
@@ -13,6 +23,7 @@ The client-side application is built with **React 18** using **Vite** as the bui
 
 - **Routing**: Uses Wouter for lightweight client-side routing instead of React Router to minimize bundle size
 - **Styling**: Implements Tailwind CSS with shadcn/ui component library for consistent design system and rapid development
+- **Design Theme**: Modern dark theme with glassmorphism effects, gradient backgrounds, and unified visual components
 - **State Management**: Leverages TanStack Query (React Query) for server state management, eliminating need for complex global state solutions
 - **Form Handling**: Uses React Hook Form with Zod validation for type-safe form validation and better developer experience
 - **Internationalization**: Custom context-based i18n solution supporting Korean and English languages with localStorage persistence
