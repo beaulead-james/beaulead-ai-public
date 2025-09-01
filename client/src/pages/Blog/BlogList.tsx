@@ -30,7 +30,7 @@ export default function BlogList() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <SEO 
         title={`${t.nav.blog} | 뷰리드AI`}
         description="최신 마케팅 트렌드와 실무 노하우를 공유하는 뷰리드AI 블로그"
@@ -38,14 +38,20 @@ export default function BlogList() {
       />
       <Header />
 
-      <main className="py-16 lg:py-24">
+      {/* Background Effects */}
+      <div className="bg-orb">
+        <div className="orb orb-a"></div>
+        <div className="orb orb-b"></div>
+      </div>
+
+      <main className="relative z-10 pt-32 pb-20 lg:pb-32">
         <div className="container max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-16">
-            <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6" data-testid="text-page-title">
+            <h1 className="text-3xl lg:text-4xl font-bold text-white mb-6" data-testid="text-page-title">
               {t.blog.title}
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto" data-testid="text-page-subtitle">
+            <p className="text-xl text-white/80 max-w-3xl mx-auto" data-testid="text-page-subtitle">
               {t.blog.subtitle}
             </p>
           </div>
@@ -54,7 +60,7 @@ export default function BlogList() {
           {isLoading && (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {[...Array(6)].map((_, index) => (
-                <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div key={index} className="service-card overflow-hidden">
                   <Skeleton className="w-full h-48" />
                   <div className="p-6">
                     <Skeleton className="h-4 w-24 mb-3" />
@@ -71,10 +77,14 @@ export default function BlogList() {
           {/* Error State */}
           {error && (
             <div className="text-center py-16">
-              <div className="bg-white rounded-xl p-8 shadow-sm border border-red-200">
-                <i className="fas fa-exclamation-triangle text-red-500 text-4xl mb-4"></i>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">블로그 로딩 오류</h3>
-                <p className="text-gray-600">블로그 포스트를 불러오는 중 오류가 발생했습니다.</p>
+              <div className="floating-card">
+                <div className="contact-icon mb-6">
+                  <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-white mb-2">블로그 로딩 오류</h3>
+                <p className="text-white/70">블로그 포스트를 불러오는 중 오류가 발생했습니다.</p>
               </div>
             </div>
           )}
@@ -82,10 +92,14 @@ export default function BlogList() {
           {/* Empty State */}
           {blogs && blogs.length === 0 && (
             <div className="text-center py-16">
-              <div className="bg-white rounded-xl p-8 shadow-sm">
-                <i className="fas fa-blog text-gray-400 text-6xl mb-6"></i>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">아직 블로그 포스트가 없습니다</h3>
-                <p className="text-gray-600">곧 유익한 마케팅 인사이트를 공유해드릴 예정입니다.</p>
+              <div className="floating-card">
+                <div className="contact-icon mb-6">
+                  <svg className="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-white mb-2">아직 블로그 포스트가 없습니다</h3>
+                <p className="text-white/70">곧 유익한 마케팅 인사이트를 공유해드릴 예정입니다.</p>
               </div>
             </div>
           )}
@@ -96,7 +110,7 @@ export default function BlogList() {
               {blogs.map((blog, index) => {
                 const content = getBlogContent(blog);
                 return (
-                  <article key={blog.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                  <article key={blog.id} className="service-card overflow-hidden hover:bg-white/10 transition-all duration-300">
                     {blog.coverUrl && (
                       <img 
                         src={blog.coverUrl}
@@ -106,23 +120,27 @@ export default function BlogList() {
                       />
                     )}
                     {!blog.coverUrl && (
-                      <div className="w-full h-48 bg-gradient-to-br from-primary-100 to-blue-100 flex items-center justify-center">
-                        <i className="fas fa-blog text-primary-600 text-3xl"></i>
+                      <div className="w-full h-48 bg-gradient-to-br from-white/20 to-white/10 flex items-center justify-center">
+                        <div className="contact-icon">
+                          <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                          </svg>
+                        </div>
                       </div>
                     )}
                     <div className="p-6">
                       <div className="flex items-center mb-3">
-                        <time className="text-sm text-primary-600 font-medium" data-testid={`text-blog-date-${index}`}>
+                        <time className="text-sm text-white/80 font-medium" data-testid={`text-blog-date-${index}`}>
                           {formatDate(blog.createdAt)}
                         </time>
                       </div>
-                      <h3 className="text-xl font-semibold text-gray-900 mb-3 hover:text-primary-600 transition-colors" data-testid={`text-blog-title-${index}`}>
+                      <h3 className="text-xl font-semibold text-white mb-3 hover:text-white/80 transition-colors" data-testid={`text-blog-title-${index}`}>
                         <Link href={`/blog/${blog.slug}`}>
                           {content.title}
                         </Link>
                       </h3>
                       {content.excerpt && (
-                        <p className="text-gray-600 mb-4 leading-relaxed" data-testid={`text-blog-excerpt-${index}`}>
+                        <p className="text-white/70 mb-4 leading-relaxed" data-testid={`text-blog-excerpt-${index}`}>
                           {content.excerpt.length > 120 
                             ? `${content.excerpt.substring(0, 120)}...` 
                             : content.excerpt
@@ -131,10 +149,13 @@ export default function BlogList() {
                       )}
                       <Link 
                         href={`/blog/${blog.slug}`}
-                        className="text-primary-600 font-medium hover:text-primary-700 transition-colors inline-flex items-center"
+                        className="text-white font-medium hover:text-white/80 transition-colors inline-flex items-center"
                         data-testid={`link-blog-read-${index}`}
                       >
-                        {t.blog.readMore} <i className="fas fa-arrow-right ml-1 text-sm"></i>
+                        {t.blog.readMore} 
+                        <svg className="w-4 h-4 ml-2" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                        </svg>
                       </Link>
                     </div>
                   </article>
@@ -145,26 +166,28 @@ export default function BlogList() {
 
           {/* Newsletter Signup */}
           {blogs && blogs.length > 0 && (
-            <section className="mt-20 bg-primary-600 rounded-2xl p-8 lg:p-12 text-center">
-              <h2 className="text-2xl lg:text-3xl font-bold text-white mb-4">
-                마케팅 인사이트를 놓치지 마세요
-              </h2>
-              <p className="text-primary-100 mb-8 max-w-2xl mx-auto">
-                새로운 블로그 포스트와 마케팅 트렌드를 이메일로 받아보세요
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
-                <input 
-                  type="email" 
-                  placeholder="이메일 주소" 
-                  className="px-4 py-3 rounded-lg border-0 flex-1 focus:ring-2 focus:ring-primary-200 focus:outline-none"
-                  data-testid="input-newsletter-email"
-                />
-                <button 
-                  className="bg-white text-primary-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors whitespace-nowrap"
-                  data-testid="button-newsletter-subscribe"
-                >
-                  구독하기
-                </button>
+            <section className="mt-20">
+              <div className="floating-card text-center">
+                <h2 className="text-2xl lg:text-3xl font-bold text-white mb-4">
+                  마케팅 인사이트를 놓치지 마세요
+                </h2>
+                <p className="text-white/80 mb-8 max-w-2xl mx-auto">
+                  새로운 블로그 포스트와 마케팅 트렌드를 이메일로 받아보세요
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
+                  <input 
+                    type="email" 
+                    placeholder="이메일 주소" 
+                    className="px-4 py-3 rounded-lg border-0 flex-1 bg-white/10 text-white placeholder-white/60 focus:ring-2 focus:ring-white/30 focus:outline-none"
+                    data-testid="input-newsletter-email"
+                  />
+                  <button 
+                    className="modern-btn whitespace-nowrap"
+                    data-testid="button-newsletter-subscribe"
+                  >
+                    구독하기
+                  </button>
+                </div>
               </div>
             </section>
           )}
