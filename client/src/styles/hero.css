@@ -191,7 +191,7 @@
 }
 
 .hero-title:hover {
-  animation: glitch 0.3s ease-in-out;
+  /* 흔들림 효과 제거 - 마우스 오버 시 아무 효과 없음 */
 }
 
 /* 현대적인 헤더 스타일 - 포커 플레이어 벤치마킹 */
