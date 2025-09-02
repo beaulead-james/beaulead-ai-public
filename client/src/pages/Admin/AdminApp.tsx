@@ -20,19 +20,29 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Toggle } from '@/components/ui/toggle'
+import { Progress } from '@/components/ui/progress'
 import {
   BarChart3, LayoutDashboard, Users, Settings,
-  Menu, Globe, Sun, Moon, FileText, Briefcase, MailSearch
+  Menu, Globe, Sun, Moon, FileText, Briefcase, MailSearch,
+  TrendingUp, TrendingDown, Eye, MousePointer, Clock,
+  DollarSign, Target, Zap, Calendar
 } from 'lucide-react'
-import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip } from 'recharts'
+import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, LineChart, Line, BarChart, Bar } from 'recharts'
 
 // ---------------------- 데이터 샘플 ----------------------
 const kpiSeries = [
-  { d: '08-01', revenue: 120, cvr: 2.1 },
-  { d: '08-08', revenue: 180, cvr: 2.3 },
-  { d: '08-15', revenue: 160, cvr: 2.0 },
-  { d: '08-22', revenue: 220, cvr: 2.8 },
-  { d: '08-29', revenue: 260, cvr: 3.1 },
+  { d: '08-01', revenue: 120, cvr: 2.1, sessions: 1450, clicks: 890 },
+  { d: '08-08', revenue: 180, cvr: 2.3, sessions: 1680, clicks: 1020 },
+  { d: '08-15', revenue: 160, cvr: 2.0, sessions: 1520, clicks: 930 },
+  { d: '08-22', revenue: 220, cvr: 2.8, sessions: 1890, clicks: 1180 },
+  { d: '08-29', revenue: 260, cvr: 3.1, sessions: 2100, clicks: 1340 },
+]
+
+const recentActivity = [
+  { type: 'lead', message: '새로운 프로젝트 문의', time: '2분 전' },
+  { type: 'blog', message: '블로그 글 발행됨', time: '15분 전' },
+  { type: 'user', message: '새 사용자 등록', time: '1시간 전' },
+  { type: 'portfolio', message: '포트폴리오 업데이트', time: '3시간 전' },
 ]
 
 const users = [
@@ -75,25 +85,35 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
   const { isDark, setIsDark } = useDarkMode()
   return (
     <div className="min-h-screen w-full bg-background text-foreground">
-      <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
-        <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
-          <div className="flex items-center gap-2">
+      {/* Modern Header */}
+      <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur-md shadow-sm">
+        <div className="flex h-16 items-center justify-between px-6">
+          <div className="flex items-center gap-4">
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="lg:hidden"><Menu className="h-5 w-5" /></Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-64 p-0"><Sidebar /></SheetContent>
+              <SheetContent side="left" className="w-72 p-0"><Sidebar /></SheetContent>
             </Sheet>
-            <Link href="/admin"><a className="font-semibold">Beaulead AI • Admin</a></Link>
-            <Badge variant="secondary" className="ml-2">internal</Badge>
+            <div className="flex items-center gap-3">
+              <div className="h-8 w-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm">BL</span>
+              </div>
+              <div>
+                <Link href="/admin"><a className="font-bold text-lg">BeauLead AI</a></Link>
+                <Badge variant="secondary" className="ml-2 text-xs">관리자</Badge>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Toggle aria-label="toggle-dark" pressed={isDark} onPressedChange={setIsDark}>
+          <div className="flex items-center gap-3">
+            <Toggle aria-label="toggle-dark" pressed={isDark} onPressedChange={setIsDark} className="h-9 w-9">
               {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </Toggle>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="gap-2"><Globe className="h-4 w-4" /> KR</Button>
+                <Button variant="outline" size="sm" className="gap-2 h-9">
+                  <Globe className="h-4 w-4" /> 한국어
+                </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem>한국어</DropdownMenuItem>
@@ -102,13 +122,18 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
             </DropdownMenu>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="px-2">
-                  <Avatar className="h-7 w-7"><AvatarFallback>BL</AvatarFallback></Avatar>
+                <Button variant="ghost" className="h-9 w-9 p-0">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback className="bg-gradient-to-br from-purple-600 to-blue-600 text-white font-semibold">관리</AvatarFallback>
+                  </Avatar>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuItem asChild>
-                  <Link href="/admin/settings"><a className="flex items-center gap-2"><Settings className="h-4 w-4"/>설정</a></Link>
+                  <Link href="/admin/settings"><a className="flex items-center gap-2"><Settings className="h-4 w-4"/>계정 설정</a></Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/"><a className="flex items-center gap-2"><Globe className="h-4 w-4"/>사이트 보기</a></Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -116,9 +141,15 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-4 py-6 lg:grid-cols-[220px_1fr]">
-        <aside className="hidden lg:block"><Sidebar /></aside>
-        <main>{children}</main>
+      <div className="flex h-[calc(100vh-4rem)]">
+        <aside className="hidden lg:block w-72 border-r bg-muted/20">
+          <Sidebar />
+        </aside>
+        <main className="flex-1 overflow-auto">
+          <div className="p-6">
+            {children}
+          </div>
+        </main>
       </div>
     </div>
   )
@@ -126,27 +157,56 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
 
 function Sidebar() {
   return (
-    <nav className="sticky top-20 flex flex-col gap-1 p-2">
-      <NavGroup title="Overview">
-        <NavItem href="/admin" icon={LayoutDashboard} label="대시보드" />
-      </NavGroup>
-      <NavGroup title="운영">
-        <NavItem href="/admin/users" icon={Users} label="사용자관리" />
-        <NavItem href="/admin/analytics" icon={BarChart3} label="접속통계" />
-        <NavItem href="/admin/blog" icon={FileText} label="블로그관리" />
-        <NavItem href="/admin/portfolio" icon={Briefcase} label="포트폴리오관리" />
-        <NavItem href="/admin/leads" icon={MailSearch} label="프로젝트문의" />
-      </NavGroup>
-      <NavGroup title="설정"><NavItem href="/admin/settings" icon={Settings} label="설정" /></NavGroup>
-    </nav>
+    <div className="flex h-full flex-col">
+      {/* Sidebar Header */}
+      <div className="p-6 border-b">
+        <h2 className="text-lg font-semibold text-foreground">관리 패널</h2>
+        <p className="text-sm text-muted-foreground mt-1">BeauLead AI 관리 시스템</p>
+      </div>
+      
+      {/* Navigation */}
+      <nav className="flex-1 p-4 space-y-2">
+        <NavGroup title="대시보드">
+          <NavItem href="/admin" icon={LayoutDashboard} label="홈 대시보드" />
+          <NavItem href="/admin/analytics" icon={BarChart3} label="통계 분석" />
+        </NavGroup>
+        
+        <NavGroup title="콘텐츠 관리">
+          <NavItem href="/admin/blog" icon={FileText} label="블로그" />
+          <NavItem href="/admin/portfolio" icon={Briefcase} label="포트폴리오" />
+        </NavGroup>
+        
+        <NavGroup title="고객 관리">
+          <NavItem href="/admin/leads" icon={MailSearch} label="프로젝트 문의" />
+          <NavItem href="/admin/users" icon={Users} label="사용자" />
+        </NavGroup>
+        
+        <NavGroup title="시스템">
+          <NavItem href="/admin/settings" icon={Settings} label="설정" />
+        </NavGroup>
+      </nav>
+      
+      {/* Sidebar Footer */}
+      <div className="p-4 border-t">
+        <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+          <div className="h-8 w-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
+            <span className="text-white font-bold text-xs">BL</span>
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium truncate">관리자</p>
+            <p className="text-xs text-muted-foreground truncate">admin@beaulead.ai</p>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }
 
 function NavGroup({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="mb-4">
-      <div className="px-3 text-xs font-medium text-muted-foreground">{title}</div>
-      <div className="mt-2 flex flex-col gap-1">{children}</div>
+    <div className="mb-6">
+      <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{title}</div>
+      <div className="mt-2 space-y-1">{children}</div>
     </div>
   )
 }
@@ -156,8 +216,14 @@ function NavItem({ href, icon: Icon, label }: { href: string; icon: any; label: 
   const active = location === href
   return (
     <Link href={href}>
-      <a className={clsx('flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition', active ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted')}>
-        <Icon className="h-4 w-4" /> {label}
+      <a className={clsx(
+        'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200',
+        active 
+          ? 'bg-gradient-to-r from-purple-600/10 to-blue-600/10 text-primary border-l-4 border-primary shadow-sm' 
+          : 'text-muted-foreground hover:bg-muted hover:text-foreground hover:translate-x-1'
+      )}>
+        <Icon className={clsx('h-4 w-4', active ? 'text-primary' : '')} /> 
+        {label}
       </a>
     </Link>
   )
@@ -166,38 +232,193 @@ function NavItem({ href, icon: Icon, label }: { href: string; icon: any; label: 
 // ---------------------- 페이지 ----------------------
 function DashboardPage() {
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">대시보드</h1>
-        <div className="flex items-center gap-2">
-          <Button size="sm" variant="outline" className="gap-2"><BarChart3 className="h-4 w-4"/>내보내기</Button>
-          <Button size="sm">새 보고서</Button>
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">대시보드</h1>
+          <p className="text-muted-foreground">오늘 {new Date().toLocaleDateString('ko-KR')} • 전체 비즈니스 현황을 한눈에</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Button variant="outline" className="gap-2">
+            <Calendar className="h-4 w-4"/>지난 30일
+          </Button>
+          <Button className="gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
+            <BarChart3 className="h-4 w-4"/>리포트 생성
+          </Button>
         </div>
       </div>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <StatCard title="월 매출" value="₩ 52,400,000" subtitle="+12.3% vs. 전월" />
-        <StatCard title="신규 리드" value="184" subtitle="+8.1%" />
-        <StatCard title="평균 CPA" value="₩ 18,700" subtitle="-5.2%" />
+
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <ModernStatCard 
+          title="월 매출" 
+          value="₩ 52,400,000" 
+          change="+12.3%" 
+          trend="up"
+          icon={DollarSign}
+          description="전월 대비 12.3% 증가"
+        />
+        <ModernStatCard 
+          title="신규 리드" 
+          value="184" 
+          change="+8.1%" 
+          trend="up"
+          icon={Target}
+          description="이월 대비 15건 증가"
+        />
+        <ModernStatCard 
+          title="평균 CPA" 
+          value="₩ 18,700" 
+          change="-5.2%" 
+          trend="down"
+          icon={Zap}
+          description="전월 대비 개선"
+        />
+        <ModernStatCard 
+          title="웹사이트 방문" 
+          value="12,847" 
+          change="+18.2%" 
+          trend="up"
+          icon={Eye}
+          description="주간 세션 수"
+        />
       </div>
-      <Card>
-        <CardHeader><CardTitle>퍼포먼스 추이 (최근 5주)</CardTitle></CardHeader>
-        <CardContent className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={kpiSeries} margin={{ left: 8, right: 8, top: 10, bottom: 0 }}>
-              <defs>
-                <linearGradient id="rev" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopOpacity={0.25} />
-                  <stop offset="100%" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <XAxis dataKey="d" tickLine={false} axisLine={false} />
-              <YAxis tickLine={false} axisLine={false} />
-              <Tooltip />
-              <Area type="monotone" dataKey="revenue" strokeWidth={2} fillOpacity={1} fill="url(#rev)" />
-            </AreaChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
+
+      {/* Charts Grid */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        {/* Revenue Chart */}
+        <Card className="col-span-1">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-green-500" />
+              매출 추이
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={kpiSeries}>
+                  <defs>
+                    <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="d" tickLine={false} axisLine={false} className="text-xs" />
+                  <YAxis tickLine={false} axisLine={false} className="text-xs" />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'hsl(var(--card))', 
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px'
+                    }}
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="revenue" 
+                    stroke="#8b5cf6" 
+                    strokeWidth={3}
+                    fill="url(#revenueGradient)" 
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* CVR Chart */}
+        <Card className="col-span-1">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <MousePointer className="h-5 w-5 text-blue-500" />
+              전환율 추이
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={kpiSeries}>
+                  <XAxis dataKey="d" tickLine={false} axisLine={false} className="text-xs" />
+                  <YAxis tickLine={false} axisLine={false} className="text-xs" />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'hsl(var(--card))', 
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px'
+                    }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="cvr" 
+                    stroke="#0ea5e9" 
+                    strokeWidth={3}
+                    dot={{ fill: '#0ea5e9', strokeWidth: 2, r: 4 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Recent Activity & Quick Actions */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        {/* Recent Activity */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Clock className="h-5 w-5 text-orange-500" />
+              최근 활동
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {recentActivity.map((activity, index) => (
+                <div key={index} className="flex items-center gap-4 p-3 rounded-lg bg-muted/50">
+                  <div className={clsx(
+                    'h-8 w-8 rounded-full flex items-center justify-center text-white text-xs font-semibold',
+                    activity.type === 'lead' && 'bg-green-500',
+                    activity.type === 'blog' && 'bg-blue-500',
+                    activity.type === 'user' && 'bg-purple-500',
+                    activity.type === 'portfolio' && 'bg-orange-500'
+                  )}>
+                    {activity.type === 'lead' && <MailSearch className="h-4 w-4" />}
+                    {activity.type === 'blog' && <FileText className="h-4 w-4" />}
+                    {activity.type === 'user' && <Users className="h-4 w-4" />}
+                    {activity.type === 'portfolio' && <Briefcase className="h-4 w-4" />}
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">{activity.message}</p>
+                    <p className="text-xs text-muted-foreground">{activity.time}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Quick Actions */}
+        <Card>
+          <CardHeader>
+            <CardTitle>빠른 작업</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Button className="w-full justify-start gap-2" variant="outline">
+              <FileText className="h-4 w-4" />새 블로그 작성
+            </Button>
+            <Button className="w-full justify-start gap-2" variant="outline">
+              <Briefcase className="h-4 w-4" />포트폴리오 추가
+            </Button>
+            <Button className="w-full justify-start gap-2" variant="outline">
+              <Users className="h-4 w-4" />사용자 초대
+            </Button>
+            <Button className="w-full justify-start gap-2" variant="outline">
+              <BarChart3 className="h-4 w-4" />리포트 생성
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }
@@ -448,6 +669,60 @@ function StatCard({ title, value, subtitle }: { title: string; value: string; su
       <CardContent>
         <div className="text-2xl font-semibold">{value}</div>
         {subtitle && <div className="text-xs text-muted-foreground mt-1">{subtitle}</div>}
+      </CardContent>
+    </Card>
+  )
+}
+
+function ModernStatCard({ 
+  title, 
+  value, 
+  change, 
+  trend, 
+  icon: Icon, 
+  description 
+}: { 
+  title: string; 
+  value: string; 
+  change: string; 
+  trend: 'up' | 'down'; 
+  icon: any; 
+  description: string;
+}) {
+  return (
+    <Card className="relative overflow-hidden">
+      <CardContent className="p-6">
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-muted-foreground">{title}</p>
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-bold">{value}</span>
+              <span className={clsx(
+                'text-sm font-medium flex items-center gap-1',
+                trend === 'up' ? 'text-green-600' : 'text-red-600'
+              )}>
+                {trend === 'up' ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                {change}
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground">{description}</p>
+          </div>
+          <div className={clsx(
+            'h-12 w-12 rounded-lg flex items-center justify-center',
+            trend === 'up' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'
+          )}>
+            <Icon className="h-6 w-6" />
+          </div>
+        </div>
+        <div className="mt-4">
+          <Progress 
+            value={trend === 'up' ? 75 : 45} 
+            className={clsx(
+              'h-2',
+              trend === 'up' ? '[&>div]:bg-green-500' : '[&>div]:bg-red-500'
+            )}
+          />
+        </div>
       </CardContent>
     </Card>
   )
