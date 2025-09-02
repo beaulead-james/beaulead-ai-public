@@ -12,25 +12,29 @@ export default function Profile() {
       icon: 'fas fa-search',
       title: '검색 마케팅',
       description: '구글과 네이버 검색 엔진에서의 유료 광고(SEM)와 자연 검색 최적화(SEO)를 통해 타겟 고객에게 정확히 도달합니다.',
-      services: ['구글 애즈', '네이버 검색광고', 'SEO 최적화', '키워드 전략']
+      services: ['구글 애즈', '네이버 검색광고', 'SEO 최적화', '키워드 전략'],
+      bgColor: 'from-blue-500/20 to-purple-600/20'
     },
     {
       icon: 'fas fa-users',
       title: '소셜미디어 마케팅',
       description: '페이스북, 인스타그램, 카카오톡 등 소셜 플랫폼을 활용해 브랜드 인지도를 높이고 고객과의 소통을 강화합니다.',
-      services: ['메타 광고', '카카오 광고', '인플루언서 마케팅', '콘텐츠 마케팅']
+      services: ['메타 광고', '카카오 광고', '인플루언서 마케팅', '콘텐츠 마케팅'],
+      bgColor: 'from-purple-500/20 to-pink-500/20'
     },
     {
-      icon: 'fas fa-chart-line',
+      icon: 'fas fa-chart-bar',
       title: '데이터 분석 및 최적화',
       description: 'Google Analytics, 광고 플랫폼 데이터를 종합 분석하여 마케팅 성과를 지속적으로 개선합니다.',
-      services: ['성과 분석', 'A/B 테스팅', '전환율 최적화', '대시보드 구축']
+      services: ['성과 분석', 'A/B 테스팅', '전환율 최적화', '대시보드 구축'],
+      bgColor: 'from-green-500/20 to-blue-500/20'
     },
     {
-      icon: 'fas fa-cog',
+      icon: 'fas fa-robot',
       title: '마케팅 자동화',
       description: 'AI와 머신러닝 기술을 활용해 마케팅 프로세스를 자동화하고 효율성을 극대화합니다.',
-      services: ['자동 입찰 시스템', '개인화 추천', '리타겟팅', '고객 세그멘테이션']
+      services: ['자동 입찰 시스템', '개인화 추천', '리타겟팅', '고객 세그멘테이션'],
+      bgColor: 'from-indigo-500/20 to-purple-500/20'
     }
   ];
 
@@ -116,7 +120,7 @@ export default function Profile() {
               {businessAreas.map((area, index) => (
                 <div key={index} className="service-card animate-fade-in-up" style={{animationDelay: `${index * 100}ms`}}>
                   <div className="flex items-center mb-6">
-                    <div className="w-16 h-16 bg-gradient-to-r from-purple-500/20 to-blue-500/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mr-4 shrink-0">
+                    <div className={`w-16 h-16 bg-gradient-to-r ${area.bgColor} backdrop-blur-sm rounded-2xl flex items-center justify-center mr-4 shrink-0`}>
                       <i className={`${area.icon} text-white text-2xl`}></i>
                     </div>
                     <h3 className="text-2xl font-bold text-white" data-testid={`text-area-title-${index}`}>
