@@ -3,7 +3,7 @@
 // wouter 라우팅 기반. shadcn/ui + lucide-react + recharts 사용.
 
 import React from 'react'
-import { Route, Switch, Link, useLocation } from 'wouter'
+import { Route, Switch, Link, useLocation, Router } from 'wouter'
 import {
   Card, CardHeader, CardTitle, CardContent,
 } from '@/components/ui/card'
@@ -977,19 +977,21 @@ export default function AdminApp() {
   
   return (
     <AdminLayout>
-      <Switch>
-        <Route path="/admin" component={DashboardPage} />
-        <Route path="/admin/users" component={UsersPage} />
-        <Route path="/admin/analytics" component={AnalyticsPage} />
-        <Route path="/admin/blog/new" component={() => <BlogEditorPage />} />
-        <Route path="/admin/blog/edit/:id">
-          {(params) => <BlogEditorPage blogId={params.id} />}
-        </Route>
-        <Route path="/admin/blog" component={BlogPage} />
-        <Route path="/admin/portfolio" component={PortfolioPage} />
-        <Route path="/admin/leads" component={LeadsPage} />
-        <Route path="/admin/settings" component={SettingsPage} />
-      </Switch>
+      <Router base="/admin">
+        <Switch>
+          <Route path="/" component={DashboardPage} />
+          <Route path="/users" component={UsersPage} />
+          <Route path="/analytics" component={AnalyticsPage} />
+          <Route path="/blog/new" component={() => <BlogEditorPage />} />
+          <Route path="/blog/edit/:id">
+            {(params) => <BlogEditorPage blogId={params.id} />}
+          </Route>
+          <Route path="/blog" component={BlogPage} />
+          <Route path="/portfolio" component={PortfolioPage} />
+          <Route path="/leads" component={LeadsPage} />
+          <Route path="/settings" component={SettingsPage} />
+        </Switch>
+      </Router>
     </AdminLayout>
   )
 }
