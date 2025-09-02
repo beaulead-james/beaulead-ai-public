@@ -39,13 +39,9 @@ import PortfolioItem from "./pages/Portfolio/PortfolioItem";
 // Careers
 import Careers from "./pages/Careers";
 
-// Admin pages
-import AdminDashboard from "./pages/Admin/Dashboard";
-import BlogManagement from "./pages/Admin/BlogManagement";
-import PortfolioManagement from "./pages/Admin/PortfolioManagement";
-import Analytics from "./pages/Admin/Analytics";
-import Users from "./pages/Admin/Users";
+// Auth & Admin
 import Login from "./pages/Login";
+import AdminApp from "./pages/Admin/AdminApp";
 
 // Client Dashboard
 import ClientDashboard from "./pages/ClientDashboard";
@@ -89,12 +85,9 @@ function Router() {
       {/* Auth Routes */}
       <Route path="/login" component={Login} />
       
-      {/* Protected Routes - Admin */}
-      <Route path="/admin" component={AdminDashboard} />
-      <Route path="/admin/blog" component={BlogManagement} />
-      <Route path="/admin/portfolio" component={PortfolioManagement} />
-      <Route path="/admin/analytics" component={Analytics} />
-      <Route path="/admin/users" component={Users} />
+      {/* Admin Routes */}
+      <Route path="/admin/:rest*" component={AdminApp} />
+      <Route path="/admin" component={AdminApp} />
       
       {/* Protected Routes - Client Dashboard */}
       <Route path="/dashboard" component={ClientDashboard} />
