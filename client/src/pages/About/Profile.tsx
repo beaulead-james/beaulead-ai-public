@@ -185,12 +185,17 @@ export default function Profile() {
             <div className="grid md:grid-cols-2 gap-8">
               {/* 강남오피스 */}
               <div className="service-card animate-fade-in-up">
-                <div className="overflow-hidden rounded-2xl mb-6">
+                <div className="overflow-hidden rounded-2xl mb-6 bg-white/10">
                   <img 
-                    src="@assets/office-gangnam-Cl9q-pnp_1756806525732.png" 
+                    src="/attached_assets/office-gangnam-Cl9q-pnp_1756806525732.png" 
                     alt="강남오피스" 
                     className="w-full h-64 object-cover transition-transform duration-300 hover:scale-105"
                     data-testid="img-office-gangnam"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.parentElement.style.minHeight = '16rem';
+                      e.currentTarget.parentElement.innerHTML = '<div class="flex items-center justify-center h-64 text-white/60"><div class="text-center"><i class="fas fa-building text-4xl mb-2"></i><p>강남오피스 이미지</p></div></div>';
+                    }}
                   />
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-4" data-testid="text-office-gangnam-title">
@@ -208,12 +213,17 @@ export default function Profile() {
 
               {/* 동탄오피스 */}
               <div className="service-card animate-fade-in-up" style={{animationDelay: '100ms'}}>
-                <div className="overflow-hidden rounded-2xl mb-6">
+                <div className="overflow-hidden rounded-2xl mb-6 bg-white/10">
                   <img 
-                    src="@assets/office-dongtan-4S0mFDTP_1756806525732.png" 
+                    src="/attached_assets/office-dongtan-4S0mFDTP_1756806525732.png" 
                     alt="동탄오피스" 
                     className="w-full h-64 object-cover transition-transform duration-300 hover:scale-105"
                     data-testid="img-office-dongtan"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.parentElement.style.minHeight = '16rem';
+                      e.currentTarget.parentElement.innerHTML = '<div class="flex items-center justify-center h-64 text-white/60"><div class="text-center"><i class="fas fa-building text-4xl mb-2"></i><p>동탄오피스 이미지</p></div></div>';
+                    }}
                   />
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-4" data-testid="text-office-dongtan-title">
