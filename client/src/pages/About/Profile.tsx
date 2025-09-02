@@ -232,7 +232,7 @@ export default function Profile() {
                 <div className="space-y-2 text-white/80">
                   <p data-testid="text-office-dongtan-address">
                     경기도 화성시 동탄원천로17, 금강펜테리움지웨어 B동 3122호,<br/>
-                    3134호 ~ 3135호
+                    3134호 ~ 3136호
                   </p>
                   <p data-testid="text-office-dongtan-phone">
                     Tel 1544-5238 | Fax 070-8255-8396
