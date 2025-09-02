@@ -116,7 +116,7 @@ export default function Profile() {
               {businessAreas.map((area, index) => (
                 <div key={index} className="service-card animate-fade-in-up" style={{animationDelay: `${index * 100}ms`}}>
                   <div className="flex items-center mb-6">
-                    <div className="contact-icon mr-6">
+                    <div className="w-16 h-16 bg-gradient-to-r from-purple-500/20 to-blue-500/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mr-4 shrink-0">
                       <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
                         {index === 0 && <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>}
                         {index === 1 && <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63A1.5 1.5 0 0 0 18.5 7h-5c-.83 0-1.54.5-1.85 1.22L9.11 16H11.5v6h8.5z"/>}
