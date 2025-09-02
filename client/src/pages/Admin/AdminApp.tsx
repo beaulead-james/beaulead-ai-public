@@ -973,17 +973,19 @@ function ModernStatCard({
 
 // ---------------------- 루트 컴포넌트 ----------------------
 export default function AdminApp() {
+  const [location] = useLocation()
+  
   return (
     <AdminLayout>
       <Switch>
         <Route path="/admin" component={DashboardPage} />
         <Route path="/admin/users" component={UsersPage} />
         <Route path="/admin/analytics" component={AnalyticsPage} />
-        <Route path="/admin/blog" component={BlogPage} />
         <Route path="/admin/blog/new" component={() => <BlogEditorPage />} />
         <Route path="/admin/blog/edit/:id">
           {(params) => <BlogEditorPage blogId={params.id} />}
         </Route>
+        <Route path="/admin/blog" component={BlogPage} />
         <Route path="/admin/portfolio" component={PortfolioPage} />
         <Route path="/admin/leads" component={LeadsPage} />
         <Route path="/admin/settings" component={SettingsPage} />
