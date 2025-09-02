@@ -173,6 +173,65 @@ export default function Profile() {
             </div>
           </section>
 
+          {/* Office Locations */}
+          <section className="py-20" data-testid="section-office-locations">
+            <div className="text-center mb-16">
+              <h2 className="hero-title text-3xl lg:text-5xl font-black mb-6">우리가 일하는 곳</h2>
+              <p className="text-xl text-white/70 max-w-2xl mx-auto">
+                두 개의 오피스에서 최고의 팀이 함께 일하며 고객의 성공을 위해 노력합니다
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* 강남오피스 */}
+              <div className="service-card animate-fade-in-up">
+                <div className="overflow-hidden rounded-2xl mb-6">
+                  <img 
+                    src="@assets/office-gangnam-Cl9q-pnp_1756806525732.png" 
+                    alt="강남오피스" 
+                    className="w-full h-64 object-cover transition-transform duration-300 hover:scale-105"
+                    data-testid="img-office-gangnam"
+                  />
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-4" data-testid="text-office-gangnam-title">
+                  강남오피스
+                </h3>
+                <div className="space-y-2 text-white/80">
+                  <p data-testid="text-office-gangnam-address">
+                    서울 강남구 테헤란로10길 18 하나빌딩 8층
+                  </p>
+                  <p data-testid="text-office-gangnam-phone">
+                    Tel 0507-1396-6602
+                  </p>
+                </div>
+              </div>
+
+              {/* 동탄오피스 */}
+              <div className="service-card animate-fade-in-up" style={{animationDelay: '100ms'}}>
+                <div className="overflow-hidden rounded-2xl mb-6">
+                  <img 
+                    src="@assets/office-dongtan-4S0mFDTP_1756806525732.png" 
+                    alt="동탄오피스" 
+                    className="w-full h-64 object-cover transition-transform duration-300 hover:scale-105"
+                    data-testid="img-office-dongtan"
+                  />
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-4" data-testid="text-office-dongtan-title">
+                  동탄오피스
+                </h3>
+                <div className="space-y-2 text-white/80">
+                  <p data-testid="text-office-dongtan-address">
+                    경기도 화성시 동탄원천로17, 금강펜테리움지웨어 B동 3122호,<br/>
+                    3134호 ~ 3135호
+                  </p>
+                  <p data-testid="text-office-dongtan-phone">
+                    Tel 1544-5238 | Fax 070-8255-8396
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* Certifications & Awards */}
           <section className="service-card animate-fade-in-up animate-delay-300">
             <div className="text-center mb-12">
