@@ -21,11 +21,16 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Toggle } from '@/components/ui/toggle'
 import { Progress } from '@/components/ui/progress'
+import { Textarea } from '@/components/ui/textarea'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
 import {
   BarChart3, LayoutDashboard, Users, Settings,
   Menu, Globe, Sun, Moon, FileText, Briefcase, MailSearch,
   TrendingUp, TrendingDown, Eye, MousePointer, Clock,
-  DollarSign, Target, Zap, Calendar
+  DollarSign, Target, Zap, Calendar, Save, ArrowLeft
 } from 'lucide-react'
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, LineChart, Line, BarChart, Bar } from 'recharts'
 
@@ -44,6 +49,20 @@ const recentActivity = [
   { type: 'user', message: '새 사용자 등록', time: '1시간 전' },
   { type: 'portfolio', message: '포트폴리오 업데이트', time: '3시간 전' },
 ]
+
+// 블로그 폼 스키마
+const blogFormSchema = z.object({
+  titleKo: z.string().min(1, '한국어 제목을 입력해주세요'),
+  titleEn: z.string().min(1, '영어 제목을 입력해주세요'),
+  excerptKo: z.string().min(1, '한국어 요약을 입력해주세요'),
+  excerptEn: z.string().min(1, '영어 요약을 입력해주세요'),
+  contentKo: z.string().min(1, '한국어 내용을 입력해주세요'),
+  contentEn: z.string().min(1, '영어 내용을 입력해주세요'),
+  slug: z.string().min(1, 'URL 슬러그를 입력해주세요'),
+  published: z.boolean().default(false)
+})
+
+type BlogFormData = z.infer<typeof blogFormSchema>
 
 const users = [
   { id: 'U-001', name: '관리자', role: 'admin', email: 'admin@beaulead.ai', status: 'active' },
@@ -514,7 +533,11 @@ function BlogPage() {
         <h2 className="text-lg font-semibold">블로그관리</h2>
         <div className="flex gap-2">
           <Input placeholder="제목/저자 검색" className="w-56" />
-          <Button size="sm">새 글</Button>
+          <Link href="/admin/blog/new">
+            <Button size="sm" className="gap-2">
+              <FileText className="h-4 w-4" />새 글 작성
+            </Button>
+          </Link>
         </div>
       </div>
       <Card>
@@ -540,7 +563,9 @@ function BlogPage() {
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-2">
-                      <Button size="sm" variant="outline">편집</Button>
+                      <Link href={`/admin/blog/edit/${p.id}`}>
+                        <Button size="sm" variant="outline">편집</Button>
+                      </Link>
                       <Button size="sm" variant="destructive">삭제</Button>
                     </div>
                   </TableCell>
@@ -630,6 +655,224 @@ function LeadsPage() {
           </Table>
         </CardContent>
       </Card>
+    </div>
+  )
+}
+
+function BlogEditorPage({ blogId }: { blogId?: string }) {
+  const isEdit = !!blogId
+  
+  const form = useForm<BlogFormData>({
+    resolver: zodResolver(blogFormSchema),
+    defaultValues: {
+      titleKo: '',
+      titleEn: '',
+      excerptKo: '',
+      excerptEn: '',
+      contentKo: '',
+      contentEn: '',
+      slug: '',
+      published: false
+    }
+  })
+
+  const onSubmit = async (data: BlogFormData) => {
+    try {
+      const method = isEdit ? 'PUT' : 'POST'
+      const url = isEdit ? `/api/blogs/${blogId}` : '/api/blogs'
+      
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+
+      if (response.ok) {
+        window.location.href = '/admin/blog'
+      } else {
+        console.error('Failed to save blog post')
+      }
+    } catch (error) {
+      console.error('Error saving blog post:', error)
+    }
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Link href="/admin/blog">
+            <Button variant="ghost" size="sm" className="gap-2">
+              <ArrowLeft className="h-4 w-4" />뒤로가기
+            </Button>
+          </Link>
+          <div>
+            <h2 className="text-xl font-semibold">
+              {isEdit ? '블로그 편집' : '새 블로그 작성'}
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              한국어와 영어로 블로그 포스트를 작성하세요
+            </p>
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <Button 
+            type="button" 
+            variant="outline"
+            onClick={() => form.setValue('published', false)}
+          >
+            임시저장
+          </Button>
+          <Button 
+            type="submit" 
+            form="blog-form"
+            className="gap-2"
+            onClick={() => form.setValue('published', true)}
+          >
+            <Save className="h-4 w-4" />발행하기
+          </Button>
+        </div>
+      </div>
+
+      <Form {...form}>
+        <form id="blog-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* 한국어 섹션 */}
+            <Card>
+              <CardHeader>
+                <CardTitle>한국어 콘텐츠</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="titleKo"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>제목</FormLabel>
+                      <FormControl>
+                        <Input placeholder="블로그 제목을 입력하세요" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="excerptKo"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>요약</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="블로그 요약을 입력하세요" 
+                          className="min-h-[80px]"
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="contentKo"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>내용</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="블로그 내용을 입력하세요" 
+                          className="min-h-[300px]"
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+
+            {/* 영어 섹션 */}
+            <Card>
+              <CardHeader>
+                <CardTitle>English Content</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="titleEn"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Title</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter blog title" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="excerptEn"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Excerpt</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Enter blog excerpt" 
+                          className="min-h-[80px]"
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="contentEn"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Content</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Enter blog content" 
+                          className="min-h-[300px]"
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* 설정 섹션 */}
+          <Card>
+            <CardHeader>
+              <CardTitle>블로그 설정</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <FormField
+                control={form.control}
+                name="slug"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>URL 슬러그</FormLabel>
+                    <FormControl>
+                      <Input placeholder="blog-post-url-slug" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+        </form>
+      </Form>
     </div>
   )
 }
@@ -737,6 +980,10 @@ export default function AdminApp() {
         <Route path="/admin/users" component={UsersPage} />
         <Route path="/admin/analytics" component={AnalyticsPage} />
         <Route path="/admin/blog" component={BlogPage} />
+        <Route path="/admin/blog/new" component={() => <BlogEditorPage />} />
+        <Route path="/admin/blog/edit/:id">
+          {(params) => <BlogEditorPage blogId={params.id} />}
+        </Route>
         <Route path="/admin/portfolio" component={PortfolioPage} />
         <Route path="/admin/leads" component={LeadsPage} />
         <Route path="/admin/settings" component={SettingsPage} />
