@@ -117,9 +117,9 @@ export default function NaverAds() {
               </div>
               <div className="relative">
                 <div className="floating-card">
-                  <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-bold text-white">{t.services.naverAds.dashboard}</h3>
-                    <div className="contact-icon">
+                  <div className="flex items-center mb-6">
+                    <h3 className="text-xl font-bold text-white flex-1">{t.services.naverAds.dashboard}</h3>
+                    <div className="w-14 h-14 bg-gradient-to-r from-green-500/20 to-green-600/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
                       <span className="text-white font-bold text-xl">N</span>
                     </div>
                   </div>
