@@ -1,0 +1,26 @@
+.admin-editor-wrapper .ql-toolbar,
+.admin-editor-wrapper .ql-container {
+  border: 1px solid rgba(148,163,184,.25); /* slate-400/25 */
+}
+
+/* 다크 테마일 때(배경이 어두우면) */
+:root.dark .admin-editor-wrapper .ql-toolbar,
+:root.dark .admin-editor-wrapper .ql-container {
+  background: #0b1220; /* slate-950 근처 */
+  color: #e5e7eb;      /* slate-200 */
+}
+
+.admin-editor-wrapper .ql-editor {
+  min-height: 320px;
+  line-height: 1.7;
+  font-size: 15px;
+  padding-bottom: 24px;
+}
+
+/* 툴바 아이콘 대비 상승 */
+:root.dark .admin-editor-wrapper .ql-stroke { stroke: #cbd5e1; }
+:root.dark .admin-editor-wrapper .ql-fill   { fill:   #cbd5e1; }
+:root.dark .admin-editor-wrapper .ql-picker { color:  #e2e8f0; }
+
+/* 이미지/표시 요소가 부모 overflow에 잘리는 문제 방지 */
+.admin-editor-wrapper { position: relative; z-index: 0; }

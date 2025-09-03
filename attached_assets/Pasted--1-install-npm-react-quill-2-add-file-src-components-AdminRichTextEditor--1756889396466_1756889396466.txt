@@ -1,0 +1,91 @@
+# 1) 패키지 설치
+install npm: react-quill
+
+# 2) 에디터 컴포넌트 생성
+add file: src/components/AdminRichTextEditor.jsx
+with content:
+"import React from 'react';
+import ReactQuill from \"react-quill\";
+import \"react-quill/dist/quill.snow.css\";
+import \"../styles/editor.css\";
+
+export default function AdminRichTextEditor({ value, onChange, placeholder }) {
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, 3, false] }],
+      [{ font: [] }, { size: [] }],
+      ['bold','italic','underline','strike'],
+      [{ color: [] }, { background: [] }],
+      [{ list: 'ordered' }, { list: 'bullet' }, { align: [] }],
+      ['link','image','blockquote','code-block','clean'],
+    ],
+  };
+  const formats = [
+    'header','font','size','bold','italic','underline','strike',
+    'color','background','list','bullet','align','link','image','blockquote','code-block'
+  ];
+
+  return (
+    <div className=\"admin-editor-wrapper not-prose\">
+      <ReactQuill
+        theme=\"snow\"
+        value={value}
+        onChange={onChange}
+        modules={modules}
+        formats={formats}
+        placeholder={placeholder}
+      />
+    </div>
+  );
+}
+"
+
+# 3) 커스텀 스타일(다크/라이트 호환)
+add file: src/styles/editor.css
+with content:
+".admin-editor-wrapper .ql-toolbar,
+.admin-editor-wrapper .ql-container {
+  border: 1px solid rgba(148,163,184,.25); /* slate-400/25 */
+}
+
+/* 다크 테마일 때(배경이 어두우면) */
+:root.dark .admin-editor-wrapper .ql-toolbar,
+:root.dark .admin-editor-wrapper .ql-container {
+  background: #0b1220; /* slate-950 근처 */
+  color: #e5e7eb;      /* slate-200 */
+}
+
+.admin-editor-wrapper .ql-editor {
+  min-height: 320px;
+  line-height: 1.7;
+  font-size: 15px;
+  padding-bottom: 24px;
+}
+
+/* 툴바 아이콘 대비 상승 */
+:root.dark .admin-editor-wrapper .ql-stroke { stroke: #cbd5e1; }
+:root.dark .admin-editor-wrapper .ql-fill   { fill:   #cbd5e1; }
+:root.dark .admin-editor-wrapper .ql-picker { color:  #e2e8f0; }
+
+/* 이미지/표시 요소가 부모 overflow에 잘리는 문제 방지 */
+.admin-editor-wrapper { position: relative; z-index: 0; }"
+
+# 4) 새 글 작성/수정 페이지에 적용
+update file: src/pages/admin/blog/NewPost.jsx
+replace snippet /* TODO: editor */ with usage:
+"import AdminRichTextEditor from \"@/components/AdminRichTextEditor\";
+...
+const [contentKo, setContentKo] = useState(\"\");
+const [contentEn, setContentEn] = useState(\"\");
+...
+<section className=\"space-y-6\">
+  <label className=\"block text-sm font-medium\">본문 (한국어)</label>
+  <div className=\"rounded-xl bg-white text-slate-900 p-2 dark:bg-slate-900 dark:text-slate-100\">
+    <AdminRichTextEditor value={contentKo} onChange={setContentKo} placeholder=\"한국어 본문을 입력하세요...\" />
+  </div>
+
+  <label className=\"block text-sm font-medium\">본문 (영어)</label>
+  <div className=\"rounded-xl bg-white text-slate-900 p-2 dark:bg-slate-900 dark:text-slate-100\">
+    <AdminRichTextEditor value={contentEn} onChange={setContentEn} placeholder=\"Enter English content...\" />
+  </div>
+</section>"
