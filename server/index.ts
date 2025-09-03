@@ -3,11 +3,18 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import uploadRouter from './routes/upload';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Ensure uploads directory exists
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
 
 const app = express();
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -67,6 +74,8 @@ app.use((req, res, next) => {
   } else {
     // Serve attached assets in production as well
     app.use('/attached_assets', express.static('attached_assets'));
+    // Ensure uploads are served in production
+    app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
     serveStatic(app);
   }
 
