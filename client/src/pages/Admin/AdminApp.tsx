@@ -124,7 +124,7 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
                 <span className="text-white font-bold text-sm">BL</span>
               </div>
               <div>
-                <Link to="/admin"><a className="font-bold text-lg">BeauLead AI</a></Link>
+                <Link to="/admin" className="font-bold text-lg">BeauLead AI</Link>
                 <Badge variant="secondary" className="ml-2 text-xs">관리자</Badge>
               </div>
             </div>
@@ -154,10 +154,10 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuItem asChild>
-                  <Link to="/admin/settings"><a className="flex items-center gap-2"><Settings className="h-4 w-4"/>계정 설정</a></Link>
+                  <Link to="/admin/settings" className="flex items-center gap-2"><Settings className="h-4 w-4"/>계정 설정</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link to="/"><a className="flex items-center gap-2"><Globe className="h-4 w-4"/>사이트 보기</a></Link>
+                  <Link to="/" className="flex items-center gap-2"><Globe className="h-4 w-4"/>사이트 보기</Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -239,16 +239,17 @@ function NavItem({ to, icon: Icon, label }: { to: string; icon: any; label: stri
   const [location] = useLocation()
   const active = location === to
   return (
-    <Link to={to}>
-      <a className={clsx(
+    <Link 
+      to={to}
+      className={clsx(
         'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200',
         active 
           ? 'bg-gradient-to-r from-purple-600/10 to-blue-600/10 text-primary border-l-4 border-primary shadow-sm' 
           : 'text-muted-foreground hover:bg-muted hover:text-foreground hover:translate-x-1'
-      )}>
-        <Icon className={clsx('h-4 w-4', active ? 'text-primary' : '')} /> 
-        {label}
-      </a>
+      )}
+    >
+      <Icon className={clsx('h-4 w-4', active ? 'text-primary' : '')} /> 
+      {label}
     </Link>
   )
 }
