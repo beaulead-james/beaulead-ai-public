@@ -85,15 +85,7 @@ const users = [
   { id: 'U-003', name: '게스트', role: 'viewer', email: 'guest@beaulead.ai', status: 'disabled' },
 ]
 
-const posts = [
-  { id: 'B-101', title: '월간 성과 리포트 템플릿', author: '관리자', status: 'draft' },
-  { id: 'B-102', title: '구글 애즈 체크리스트', author: '마케터A', status: 'published' },
-]
-
-const portfolios = [
-  { id: 'P-001', title: '위담한방병원 퍼포먼스', tag: '의료/헬스', status: 'published' },
-  { id: 'P-002', title: 'U2 Sports D2C', tag: '이커머스', status: 'draft' },
-]
+// 실제 API 데이터 사용 - 목업 데이터 제거
 
 const leads = [
   { id: 'L-001', company: '본느', contact: '010-9130-9710', memo: 'SNS 배너/광고 소재 월고정 문의', status: 'new' },
@@ -542,6 +534,42 @@ function AnalyticsPage() {
 }
 
 function BlogPage() {
+  const { data: blogs = [], isLoading } = useQuery({
+    queryKey: ['/api/blogs'],
+    queryFn: async () => {
+      const response = await fetch('/api/blogs');
+      if (!response.ok) throw new Error('Failed to fetch blogs');
+      return await response.json();
+    }
+  });
+
+  if (isLoading) {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold">블로그관리</h2>
+          <div className="flex gap-2">
+            <Input placeholder="제목/저자 검색" className="w-56" />
+            <Link href="/admin/blog/new">
+              <Button size="sm" className="gap-2">
+                <FileText className="h-4 w-4" />새 글 작성
+              </Button>
+            </Link>
+          </div>
+        </div>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="animate-pulse space-y-4">
+              <div className="h-8 bg-gray-200 rounded"></div>
+              <div className="h-8 bg-gray-200 rounded"></div>
+              <div className="h-8 bg-gray-200 rounded"></div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -562,30 +590,42 @@ function BlogPage() {
               <TableRow>
                 <TableHead>ID</TableHead>
                 <TableHead>제목</TableHead>
-                <TableHead>작성자</TableHead>
                 <TableHead>상태</TableHead>
+                <TableHead>날짜</TableHead>
                 <TableHead>액션</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {posts.map(p => (
-                <TableRow key={p.id}>
-                  <TableCell>{p.id}</TableCell>
-                  <TableCell className="font-medium">{p.title}</TableCell>
-                  <TableCell>{p.author}</TableCell>
-                  <TableCell>
-                    <Badge variant={p.status === 'published' ? 'default' : 'outline'}>{p.status}</Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Link href={`/admin/blog/edit/${p.id}`}>
-                        <Button size="sm" variant="outline">편집</Button>
-                      </Link>
-                      <Button size="sm" variant="destructive">삭제</Button>
-                    </div>
+              {blogs.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                    아직 블로그 게시글이 없습니다. 첫 번째 글을 작성해보세요!
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                blogs.map(blog => (
+                  <TableRow key={blog.id}>
+                    <TableCell>{blog.id}</TableCell>
+                    <TableCell className="font-medium">{blog.titleKo || blog.titleEn}</TableCell>
+                    <TableCell>
+                      <Badge variant={blog.published ? 'default' : 'outline'}>
+                        {blog.published ? '발행' : '임시저장'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {new Date(blog.createdAt).toLocaleDateString('ko-KR')}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-2">
+                        <Link href={`/admin/blog/edit/${blog.id}`}>
+                          <Button size="sm" variant="outline">편집</Button>
+                        </Link>
+                        <Button size="sm" variant="destructive">삭제</Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </CardContent>
@@ -595,6 +635,42 @@ function BlogPage() {
 }
 
 function PortfolioPage() {
+  const { data: portfolios = [], isLoading } = useQuery({
+    queryKey: ['/api/portfolios'],
+    queryFn: async () => {
+      const response = await fetch('/api/portfolios');
+      if (!response.ok) throw new Error('Failed to fetch portfolios');
+      return await response.json();
+    }
+  });
+
+  if (isLoading) {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold">포트폴리오관리</h2>
+          <div className="flex gap-2">
+            <Input placeholder="제목/태그 검색" className="w-56" />
+            <Link href="/admin/portfolio/new">
+              <Button size="sm" className="gap-2">
+                <Briefcase className="h-4 w-4" />새 포트폴리오 작성
+              </Button>
+            </Link>
+          </div>
+        </div>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="animate-pulse space-y-4">
+              <div className="h-8 bg-gray-200 rounded"></div>
+              <div className="h-8 bg-gray-200 rounded"></div>
+              <div className="h-8 bg-gray-200 rounded"></div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -615,30 +691,46 @@ function PortfolioPage() {
               <TableRow>
                 <TableHead>ID</TableHead>
                 <TableHead>제목</TableHead>
-                <TableHead>태그</TableHead>
+                <TableHead>카테고리</TableHead>
                 <TableHead>상태</TableHead>
+                <TableHead>날짜</TableHead>
                 <TableHead>액션</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {portfolios.map(p => (
-                <TableRow key={p.id}>
-                  <TableCell>{p.id}</TableCell>
-                  <TableCell className="font-medium">{p.title}</TableCell>
-                  <TableCell><Badge variant="secondary">{p.tag}</Badge></TableCell>
-                  <TableCell>
-                    <Badge variant={p.status === 'published' ? 'default' : 'outline'}>{p.status}</Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Link href={`/admin/portfolio/edit/${p.id}`}>
-                        <Button size="sm" variant="outline">편집</Button>
-                      </Link>
-                      <Button size="sm" variant="destructive">삭제</Button>
-                    </div>
+              {portfolios.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                    아직 포트폴리오가 없습니다. 첫 번째 프로젝트를 추가해보세요!
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                portfolios.map(portfolio => (
+                  <TableRow key={portfolio.id}>
+                    <TableCell>{portfolio.id}</TableCell>
+                    <TableCell className="font-medium">{portfolio.titleKo || portfolio.titleEn}</TableCell>
+                    <TableCell>
+                      {portfolio.category && <Badge variant="secondary">{portfolio.category}</Badge>}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={portfolio.published ? 'default' : 'outline'}>
+                        {portfolio.published ? '발행' : '임시저장'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {new Date(portfolio.createdAt).toLocaleDateString('ko-KR')}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-2">
+                        <Link href={`/admin/portfolio/edit/${portfolio.id}`}>
+                          <Button size="sm" variant="outline">편집</Button>
+                        </Link>
+                        <Button size="sm" variant="destructive">삭제</Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </CardContent>
