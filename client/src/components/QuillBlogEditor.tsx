@@ -5,6 +5,7 @@ import * as z from 'zod'
 import { useLocation } from 'wouter'
 import { useQuery } from '@tanstack/react-query'
 import AdminRichTextEditor from './AdminRichTextEditor'
+import ThumbnailUploader from './ThumbnailUploader'
 import {
   Card, CardHeader, CardTitle, CardContent,
 } from '@/components/ui/card'
@@ -30,6 +31,7 @@ const blogFormSchema = z.object({
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
   metaKeywords: z.string().optional(),
+  thumbnailUrl: z.string().optional(),
   status: z.enum(["DRAFT", "PUBLISHED"]).default("DRAFT"),
 })
 
@@ -69,6 +71,7 @@ export function QuillBlogEditor({ mode, blogId, initialData }: QuillBlogEditorPr
       metaTitle: "",
       metaDescription: "",
       metaKeywords: "",
+      thumbnailUrl: "",
       status: "DRAFT",
     }
   })
@@ -88,6 +91,7 @@ export function QuillBlogEditor({ mode, blogId, initialData }: QuillBlogEditorPr
         metaTitle: existingBlog.metaTitle || "",
         metaDescription: existingBlog.metaDescription || "",
         metaKeywords: existingBlog.metaKeywords || "",
+        thumbnailUrl: existingBlog.thumbnailUrl || "",
         status: existingBlog.status || "DRAFT",
       });
     }
@@ -168,6 +172,26 @@ export function QuillBlogEditor({ mode, blogId, initialData }: QuillBlogEditorPr
       
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+          <Card>
+            <CardHeader>
+              <CardTitle>대표 이미지</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <FormField
+                control={form.control}
+                name="thumbnailUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <ThumbnailUploader value={field.value} onChange={field.onChange} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <CardTitle>기본 정보</CardTitle>
