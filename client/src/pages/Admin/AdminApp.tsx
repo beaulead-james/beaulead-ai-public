@@ -4,6 +4,7 @@
 
 import React from 'react'
 import { Route, Switch, Link, useLocation, Router } from 'wouter'
+import { useQuery } from '@tanstack/react-query'
 import {
   Card, CardHeader, CardTitle, CardContent,
 } from '@/components/ui/card'
@@ -603,7 +604,7 @@ function BlogPage() {
                   </TableCell>
                 </TableRow>
               ) : (
-                blogs.map(blog => (
+                blogs.map((blog: any) => (
                   <TableRow key={blog.id}>
                     <TableCell>{blog.id}</TableCell>
                     <TableCell className="font-medium">{blog.titleKo || blog.titleEn}</TableCell>
@@ -705,7 +706,7 @@ function PortfolioPage() {
                   </TableCell>
                 </TableRow>
               ) : (
-                portfolios.map(portfolio => (
+                portfolios.map((portfolio: any) => (
                   <TableRow key={portfolio.id}>
                     <TableCell>{portfolio.id}</TableCell>
                     <TableCell className="font-medium">{portfolio.titleKo || portfolio.titleEn}</TableCell>
