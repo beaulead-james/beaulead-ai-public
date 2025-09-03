@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupRegularAuth, requireAuth } from "./auth-regular";
 import { sendContactFormToSlack } from "./services/slack";
 import { ObjectStorageService } from "./objectStorage";
 import { z } from "zod";
@@ -15,8 +16,9 @@ const contactFormSchema = z.object({
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Auth middleware
+  // Auth middleware - both Replit Auth and regular login
   await setupAuth(app);
+  setupRegularAuth(app);
 
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
@@ -71,7 +73,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/blogs', isAuthenticated, async (req: any, res) => {
+  // Mixed auth middleware - supports both Replit Auth and JWT
+  const mixedAuth: any = async (req: any, res: any, next: any) => {
+    // JWT 토큰 확인
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      return requireAuth(req, res, next);
+    }
+    // Replit Auth 확인
+    return isAuthenticated(req, res, next);
+  };
+
+  app.post('/api/blogs', mixedAuth, async (req: any, res) => {
     try {
       const userRole = req.user.claims.role || 'USER';
       // ADMIN과 CONTENT_MANAGER 모두 블로그 작성 권한

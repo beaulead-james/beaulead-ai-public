@@ -41,6 +41,7 @@ import Careers from "./pages/Careers";
 
 // Auth & Admin
 import Login from "./pages/Login";
+import AdminLogin from "./pages/AdminLogin";
 import AdminApp from "./pages/Admin/AdminApp";
 
 // Client Dashboard
@@ -84,6 +85,7 @@ function Router() {
       
       {/* Auth Routes */}
       <Route path="/login" component={Login} />
+      <Route path="/admin-login" component={AdminLogin} />
       
       {/* Admin Routes - 더 구체적인 패턴을 먼저 설정 */}
       <Route path="/admin/blog/new" component={AdminApp} />

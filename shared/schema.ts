@@ -29,14 +29,16 @@ export const roleEnum = pgEnum("role", ["USER", "ADMIN", "CLIENT", "CONTENT_MANA
 // Blog status enum
 export const blogStatusEnum = pgEnum("blog_status", ["DRAFT", "PUBLISHED", "ARCHIVED"]);
 
-// User storage table - mandatory for Replit Auth
+// User storage table - supports both Replit Auth and regular login
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   email: varchar("email").unique(),
+  password: varchar("password"), // 일반 로그인용 패스워드 (해시됨)
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
   role: roleEnum("role").default("USER"),
+  isReplitUser: boolean("is_replit_user").default(false), // Replit 사용자 구분
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -75,7 +77,7 @@ export const blogs = pgTable("blogs", {
   // 작성자 정보
   authorId: varchar("author_id").references(() => users.id).notNull(),
   
-  // 카테고리
+  // 카테고리 (선택사항)
   categoryId: varchar("category_id").references(() => blogCategories.id),
   
   // 상태 관리
