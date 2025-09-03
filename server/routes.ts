@@ -112,6 +112,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ...req.body,
         authorId: req.user.claims.sub,
         published: req.body.status === 'PUBLISHED',
+        // 빈 문자열 categoryId를 null로 변환
+        categoryId: req.body.categoryId === '' ? null : req.body.categoryId,
       };
 
       const blog = await storage.createBlog(blogData);
@@ -134,6 +136,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ...req.body,
         published: req.body.status === 'PUBLISHED',
         publishedAt: req.body.status === 'PUBLISHED' ? new Date() : null,
+        // 빈 문자열 categoryId를 null로 변환
+        categoryId: req.body.categoryId === '' ? null : req.body.categoryId,
       };
 
       const blog = await storage.updateBlog(req.params.id, updateData);
