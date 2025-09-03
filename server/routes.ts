@@ -73,11 +73,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/blogs', isAuthenticated, async (req: any, res) => {
     try {
       const userRole = req.user.claims.role || 'USER';
-      if (userRole !== 'ADMIN') {
-        return res.status(403).json({ message: "Admin access required" });
+      // ADMIN과 CONTENT_MANAGER 모두 블로그 작성 권한
+      if (userRole !== 'ADMIN' && userRole !== 'CONTENT_MANAGER') {
+        return res.status(403).json({ message: "Content management access required" });
       }
 
-      const blog = await storage.createBlog(req.body);
+      // 작성자 ID를 추가
+      const blogData = {
+        ...req.body,
+        authorId: req.user.claims.sub,
+        published: req.body.status === 'PUBLISHED',
+      };
+
+      const blog = await storage.createBlog(blogData);
       res.status(201).json(blog);
     } catch (error) {
       console.error("Error creating blog:", error);
@@ -88,11 +96,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put('/api/blogs/:id', isAuthenticated, async (req: any, res) => {
     try {
       const userRole = req.user.claims.role || 'USER';
-      if (userRole !== 'ADMIN') {
-        return res.status(403).json({ message: "Admin access required" });
+      if (userRole !== 'ADMIN' && userRole !== 'CONTENT_MANAGER') {
+        return res.status(403).json({ message: "Content management access required" });
       }
 
-      const blog = await storage.updateBlog(req.params.id, req.body);
+      // 발행 상태 업데이트
+      const updateData = {
+        ...req.body,
+        published: req.body.status === 'PUBLISHED',
+        publishedAt: req.body.status === 'PUBLISHED' ? new Date() : null,
+      };
+
+      const blog = await storage.updateBlog(req.params.id, updateData);
       res.json(blog);
     } catch (error) {
       console.error("Error updating blog:", error);
@@ -103,8 +118,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete('/api/blogs/:id', isAuthenticated, async (req: any, res) => {
     try {
       const userRole = req.user.claims.role || 'USER';
-      if (userRole !== 'ADMIN') {
-        return res.status(403).json({ message: "Admin access required" });
+      if (userRole !== 'ADMIN' && userRole !== 'CONTENT_MANAGER') {
+        return res.status(403).json({ message: "Content management access required" });
       }
 
       await storage.deleteBlog(req.params.id);
@@ -182,6 +197,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting portfolio:", error);
       res.status(500).json({ message: "Failed to delete portfolio" });
+    }
+  });
+
+  // Contact/Leads routes
+  app.get('/api/contacts', isAuthenticated, async (req: any, res) => {
+    try {
+      const userRole = req.user.claims.role || 'USER';
+      if (userRole !== 'ADMIN' && userRole !== 'CONTENT_MANAGER') {
+        return res.status(403).json({ message: "Management access required" });
+      }
+
+      const contacts = await storage.getContacts();
+      res.json(contacts);
+    } catch (error) {
+      console.error("Error fetching contacts:", error);
+      res.status(500).json({ message: "Failed to fetch contacts" });
     }
   });
 

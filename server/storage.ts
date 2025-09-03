@@ -2,12 +2,16 @@ import {
   users,
   blogs,
   portfolios,
+  contacts,
   type User,
   type UpsertUser,
   type Blog,
   type InsertBlog,
   type Portfolio,
   type InsertPortfolio,
+  type Contact,
+  type InsertContact,
+  type BlogWithAuthor,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and } from "drizzle-orm";
@@ -19,9 +23,9 @@ export interface IStorage {
   getUserCount(): Promise<number>;
   
   // Blog operations
-  getBlogs(published?: boolean): Promise<Blog[]>;
-  getBlog(slug: string): Promise<Blog | undefined>;
-  getBlogById(id: string): Promise<Blog | undefined>;
+  getBlogs(published?: boolean): Promise<BlogWithAuthor[]>;
+  getBlog(slug: string): Promise<BlogWithAuthor | undefined>;
+  getBlogById(id: string): Promise<BlogWithAuthor | undefined>;
   createBlog(blog: InsertBlog): Promise<Blog>;
   updateBlog(id: string, blog: Partial<InsertBlog>): Promise<Blog>;
   deleteBlog(id: string): Promise<void>;
@@ -33,6 +37,10 @@ export interface IStorage {
   createPortfolio(portfolio: InsertPortfolio): Promise<Portfolio>;
   updatePortfolio(id: string, portfolio: Partial<InsertPortfolio>): Promise<Portfolio>;
   deletePortfolio(id: string): Promise<void>;
+  
+  // Contact operations
+  getContacts(): Promise<Contact[]>;
+  createContact(contact: InsertContact): Promise<Contact>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -62,25 +70,118 @@ export class DatabaseStorage implements IStorage {
     return result.length;
   }
 
-  // Blog operations
-  async getBlogs(published?: boolean): Promise<Blog[]> {
-    const query = db.select().from(blogs);
+  // Blog operations - 작성자 정보를 포함하여 조회
+  async getBlogs(published?: boolean): Promise<BlogWithAuthor[]> {
+    const query = db.select({
+      id: blogs.id,
+      slug: blogs.slug,
+      titleKo: blogs.titleKo,
+      titleEn: blogs.titleEn,
+      excerptKo: blogs.excerptKo,
+      excerptEn: blogs.excerptEn,
+      contentKo: blogs.contentKo,
+      contentEn: blogs.contentEn,
+      coverUrl: blogs.coverUrl,
+      authorId: blogs.authorId,
+      categoryId: blogs.categoryId,
+      status: blogs.status,
+      published: blogs.published,
+      publishedAt: blogs.publishedAt,
+      viewCount: blogs.viewCount,
+      metaTitle: blogs.metaTitle,
+      metaDescription: blogs.metaDescription,
+      metaKeywords: blogs.metaKeywords,
+      featuredImageUrl: blogs.featuredImageUrl,
+      galleryImages: blogs.galleryImages,
+      tags: blogs.tags,
+      isDraft: blogs.isDraft,
+      autoSaveContent: blogs.autoSaveContent,
+      lastAutoSave: blogs.lastAutoSave,
+      createdAt: blogs.createdAt,
+      updatedAt: blogs.updatedAt,
+      // 작성자 정보
+      author: users,
+    })
+    .from(blogs)
+    .leftJoin(users, eq(blogs.authorId, users.id));
     
     if (published !== undefined) {
-      return await query.where(eq(blogs.published, published)).orderBy(desc(blogs.createdAt));
+      return await query.where(eq(blogs.published, published)).orderBy(desc(blogs.createdAt)) as BlogWithAuthor[];
     }
     
-    return await query.orderBy(desc(blogs.createdAt));
+    return await query.orderBy(desc(blogs.createdAt)) as BlogWithAuthor[];
   }
 
-  async getBlog(slug: string): Promise<Blog | undefined> {
-    const [blog] = await db.select().from(blogs).where(eq(blogs.slug, slug));
-    return blog;
+  async getBlog(slug: string): Promise<BlogWithAuthor | undefined> {
+    const [blog] = await db.select({
+      id: blogs.id,
+      slug: blogs.slug,
+      titleKo: blogs.titleKo,
+      titleEn: blogs.titleEn,
+      excerptKo: blogs.excerptKo,
+      excerptEn: blogs.excerptEn,
+      contentKo: blogs.contentKo,
+      contentEn: blogs.contentEn,
+      coverUrl: blogs.coverUrl,
+      authorId: blogs.authorId,
+      categoryId: blogs.categoryId,
+      status: blogs.status,
+      published: blogs.published,
+      publishedAt: blogs.publishedAt,
+      viewCount: blogs.viewCount,
+      metaTitle: blogs.metaTitle,
+      metaDescription: blogs.metaDescription,
+      metaKeywords: blogs.metaKeywords,
+      featuredImageUrl: blogs.featuredImageUrl,
+      galleryImages: blogs.galleryImages,
+      tags: blogs.tags,
+      isDraft: blogs.isDraft,
+      autoSaveContent: blogs.autoSaveContent,
+      lastAutoSave: blogs.lastAutoSave,
+      createdAt: blogs.createdAt,
+      updatedAt: blogs.updatedAt,
+      author: users,
+    })
+    .from(blogs)
+    .leftJoin(users, eq(blogs.authorId, users.id))
+    .where(eq(blogs.slug, slug));
+    return blog as BlogWithAuthor | undefined;
   }
 
-  async getBlogById(id: string): Promise<Blog | undefined> {
-    const [blog] = await db.select().from(blogs).where(eq(blogs.id, id));
-    return blog;
+  async getBlogById(id: string): Promise<BlogWithAuthor | undefined> {
+    const [blog] = await db.select({
+      id: blogs.id,
+      slug: blogs.slug,
+      titleKo: blogs.titleKo,
+      titleEn: blogs.titleEn,
+      excerptKo: blogs.excerptKo,
+      excerptEn: blogs.excerptEn,
+      contentKo: blogs.contentKo,
+      contentEn: blogs.contentEn,
+      coverUrl: blogs.coverUrl,
+      authorId: blogs.authorId,
+      categoryId: blogs.categoryId,
+      status: blogs.status,
+      published: blogs.published,
+      publishedAt: blogs.publishedAt,
+      viewCount: blogs.viewCount,
+      metaTitle: blogs.metaTitle,
+      metaDescription: blogs.metaDescription,
+      metaKeywords: blogs.metaKeywords,
+      featuredImageUrl: blogs.featuredImageUrl,
+      galleryImages: blogs.galleryImages,
+      tags: blogs.tags,
+      isDraft: blogs.isDraft,
+      autoSaveContent: blogs.autoSaveContent,
+      lastAutoSave: blogs.lastAutoSave,
+      createdAt: blogs.createdAt,
+      updatedAt: blogs.updatedAt,
+      author: users,
+    })
+    .from(blogs)
+    .leftJoin(users, eq(blogs.authorId, users.id))
+    .where(eq(blogs.id, id));
+    return blog as BlogWithAuthor | undefined;
   }
 
   async createBlog(blog: InsertBlog): Promise<Blog> {
@@ -138,6 +239,16 @@ export class DatabaseStorage implements IStorage {
 
   async deletePortfolio(id: string): Promise<void> {
     await db.delete(portfolios).where(eq(portfolios.id, id));
+  }
+  
+  // Contact operations
+  async getContacts(): Promise<Contact[]> {
+    return await db.select().from(contacts).orderBy(desc(contacts.createdAt));
+  }
+
+  async createContact(contact: InsertContact): Promise<Contact> {
+    const [created] = await db.insert(contacts).values(contact).returning();
+    return created;
   }
 }
 

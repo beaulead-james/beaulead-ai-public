@@ -24,9 +24,13 @@ import { Toggle } from '@/components/ui/toggle'
 import { Progress } from '@/components/ui/progress'
 import { Textarea } from '@/components/ui/textarea'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { useToast } from '@/hooks/use-toast'
+import { apiRequest, queryClient } from '@/lib/queryClient'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
+import { useState } from 'react'
 import {
   BarChart3, LayoutDashboard, Users, Settings,
   Menu, Globe, Sun, Moon, FileText, Briefcase, MailSearch,
@@ -532,7 +536,699 @@ function AnalyticsPage() {
   )
 }
 
+// ---------------------- 새로운 블로그 시스템 컴포넌트 ----------------------
+
+// 블로그 작성 페이지
+function NewBlogPage() {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { toast } = useToast()
+  const [, setLocation] = useLocation()
+  
+  const form = useForm<any>({
+    resolver: zodResolver(z.object({
+      titleKo: z.string().min(1, "한국어 제목을 입력해주세요"),
+      titleEn: z.string().min(1, "영어 제목을 입력해주세요"),
+      excerptKo: z.string().optional(),
+      excerptEn: z.string().optional(),
+      contentKo: z.string().min(10, "한국어 본문을 최소 10자 이상 입력해주세요"),
+      contentEn: z.string().min(10, "영어 본문을 최소 10자 이상 입력해주세요"),
+      categoryId: z.string().optional(),
+      tags: z.array(z.string()).default([]),
+      metaTitle: z.string().optional(),
+      metaDescription: z.string().optional(),
+      metaKeywords: z.string().optional(),
+      status: z.enum(["DRAFT", "PUBLISHED"]).default("DRAFT"),
+    })),
+    defaultValues: {
+      titleKo: "",
+      titleEn: "",
+      excerptKo: "",
+      excerptEn: "",
+      contentKo: "",
+      contentEn: "",
+      categoryId: "",
+      tags: [],
+      metaTitle: "",
+      metaDescription: "",
+      metaKeywords: "",
+      status: "DRAFT",
+    }
+  })
+  
+  const handleSubmit = async (data: any) => {
+    setIsSubmitting(true)
+    try {
+      await apiRequest('POST', '/api/blogs', {
+        ...data,
+        slug: data.titleEn.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+      })
+      
+      toast({
+        title: "성공",
+        description: "블로그가 성공적으로 작성되었습니다.",
+      })
+      
+      setLocation('/admin/blog')
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "블로그 작성에 실패했습니다.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+  
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 data-testid="heading-new-blog" className="text-3xl font-bold tracking-tight">새 블로그 글 작성</h1>
+        <p className="text-muted-foreground">새로운 블로그 글을 작성하고 공유하세요.</p>
+      </div>
+      
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+          <Card>
+            <CardHeader>
+              <CardTitle>기본 정보</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="titleKo"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>제목 (한국어)</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="한국어 제목을 입력하세요" 
+                          {...field} 
+                          data-testid="input-title-ko"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="titleEn"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>제목 (영어)</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Enter English title" 
+                          {...field} 
+                          data-testid="input-title-en"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="excerptKo"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>요약 (한국어)</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="한국어 요약을 입력하세요" 
+                          {...field} 
+                          data-testid="textarea-excerpt-ko"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="excerptEn"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>요약 (영어)</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Enter English excerpt" 
+                          {...field} 
+                          data-testid="textarea-excerpt-en"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>본문 내용</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <FormField
+                control={form.control}
+                name="contentKo"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>본문 (한국어)</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="한국어 본문을 입력하세요" 
+                        className="min-h-[200px]"
+                        {...field} 
+                        data-testid="textarea-content-ko"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="contentEn"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>본문 (영어)</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="Enter English content" 
+                        className="min-h-[200px]"
+                        {...field} 
+                        data-testid="textarea-content-en"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>SEO 설정</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <FormField
+                control={form.control}
+                name="metaTitle"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>메타 제목</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="SEO를 위한 메타 제목" 
+                        {...field} 
+                        data-testid="input-meta-title"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="metaDescription"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>메타 설명</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="검색 결과에 표시될 설명" 
+                        {...field} 
+                        data-testid="textarea-meta-description"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="metaKeywords"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>메타 키워드</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="쉼표로 구분된 키워드" 
+                        {...field} 
+                        data-testid="input-meta-keywords"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>발행 설정</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>상태</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger data-testid="select-status">
+                          <SelectValue placeholder="상태를 선택하세요" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="DRAFT">초안</SelectItem>
+                        <SelectItem value="PUBLISHED">발행</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+          
+          <div className="flex justify-end space-x-4">
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => setLocation('/admin/blog')}
+              data-testid="button-cancel"
+            >
+              취소
+            </Button>
+            <Button 
+              type="submit" 
+              disabled={isSubmitting}
+              data-testid="button-submit"
+            >
+              {isSubmitting ? "저장 중..." : "저장"}
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </div>
+  )
+}
+
+// 블로그 수정 페이지
+function EditBlogPage({ blogId }: { blogId: string }) {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { toast } = useToast()
+  const [, setLocation] = useLocation()
+  
+  // 기존 블로그 데이터 로드
+  const { data: blog, isLoading } = useQuery({
+    queryKey: ['/api/blogs', blogId],
+    queryFn: async () => {
+      const response = await fetch(`/api/blogs/${blogId}`)
+      if (!response.ok) throw new Error('Failed to fetch blog')
+      return await response.json()
+    },
+    enabled: !!blogId,
+  })
+  
+  const form = useForm<any>({
+    resolver: zodResolver(z.object({
+      titleKo: z.string().min(1, "한국어 제목을 입력해주세요"),
+      titleEn: z.string().min(1, "영어 제목을 입력해주세요"),
+      excerptKo: z.string().optional(),
+      excerptEn: z.string().optional(),
+      contentKo: z.string().min(10, "한국어 본문을 최소 10자 이상 입력해주세요"),
+      contentEn: z.string().min(10, "영어 본문을 최소 10자 이상 입력해주세요"),
+      categoryId: z.string().optional(),
+      tags: z.array(z.string()).default([]),
+      metaTitle: z.string().optional(),
+      metaDescription: z.string().optional(),
+      metaKeywords: z.string().optional(),
+      status: z.enum(["DRAFT", "PUBLISHED"]).default("DRAFT"),
+    })),
+    defaultValues: {
+      titleKo: "",
+      titleEn: "",
+      excerptKo: "",
+      excerptEn: "",
+      contentKo: "",
+      contentEn: "",
+      categoryId: "",
+      tags: [],
+      metaTitle: "",
+      metaDescription: "",
+      metaKeywords: "",
+      status: "DRAFT",
+    }
+  })
+  
+  // 데이터가 로드되면 폼에 설정
+  React.useEffect(() => {
+    if (blog) {
+      form.reset({
+        titleKo: blog.titleKo || "",
+        titleEn: blog.titleEn || "",
+        excerptKo: blog.excerptKo || "",
+        excerptEn: blog.excerptEn || "",
+        contentKo: blog.contentKo || "",
+        contentEn: blog.contentEn || "",
+        categoryId: blog.categoryId || "",
+        tags: blog.tags || [],
+        metaTitle: blog.metaTitle || "",
+        metaDescription: blog.metaDescription || "",
+        metaKeywords: blog.metaKeywords || "",
+        status: blog.status || "DRAFT",
+      })
+    }
+  }, [blog, form])
+  
+  const handleSubmit = async (data: any) => {
+    setIsSubmitting(true)
+    try {
+      await apiRequest('PUT', `/api/blogs/${blogId}`, {
+        ...data,
+        slug: data.titleEn.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+      })
+      
+      toast({
+        title: "성공",
+        description: "블로그가 성공적으로 수정되었습니다.",
+      })
+      
+      setLocation('/admin/blog')
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "블로그 수정에 실패했습니다.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+  
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+        <div className="h-64 bg-gray-200 rounded animate-pulse"></div>
+      </div>
+    )
+  }
+  
+  if (!blog) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-muted-foreground">블로그 글을 찾을 수 없습니다.</p>
+        <Button onClick={() => setLocation('/admin/blog')} className="mt-4">
+          목록으로 돌아가기
+        </Button>
+      </div>
+    )
+  }
+  
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 data-testid="heading-edit-blog" className="text-3xl font-bold tracking-tight">블로그 글 수정</h1>
+          <p className="text-muted-foreground">기존 블로그 글을 수정하세요.</p>
+        </div>
+        <Button 
+          variant="outline" 
+          onClick={() => setLocation('/admin/blog')}
+          data-testid="button-back"
+        >
+          목록으로 돌아가기
+        </Button>
+      </div>
+      
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+          <Card>
+            <CardHeader>
+              <CardTitle>기본 정보</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="titleKo"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>제목 (한국어)</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="한국어 제목을 입력하세요" 
+                          {...field} 
+                          data-testid="input-title-ko"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="titleEn"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>제목 (영어)</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Enter English title" 
+                          {...field} 
+                          data-testid="input-title-en"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="excerptKo"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>요약 (한국어)</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="한국어 요약을 입력하세요" 
+                          {...field} 
+                          data-testid="textarea-excerpt-ko"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="excerptEn"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>요약 (영어)</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Enter English excerpt" 
+                          {...field} 
+                          data-testid="textarea-excerpt-en"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>본문 내용</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <FormField
+                control={form.control}
+                name="contentKo"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>본문 (한국어)</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="한국어 본문을 입력하세요" 
+                        className="min-h-[200px]"
+                        {...field} 
+                        data-testid="textarea-content-ko"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="contentEn"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>본문 (영어)</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="Enter English content" 
+                        className="min-h-[200px]"
+                        {...field} 
+                        data-testid="textarea-content-en"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>SEO 설정</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <FormField
+                control={form.control}
+                name="metaTitle"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>메타 제목</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="SEO를 위한 메타 제목" 
+                        {...field} 
+                        data-testid="input-meta-title"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="metaDescription"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>메타 설명</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="검색 결과에 표시될 설명" 
+                        {...field} 
+                        data-testid="textarea-meta-description"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="metaKeywords"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>메타 키워드</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="쉼표로 구분된 키워드" 
+                        {...field} 
+                        data-testid="input-meta-keywords"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>발행 설정</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>상태</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger data-testid="select-status">
+                          <SelectValue placeholder="상태를 선택하세요" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="DRAFT">초안</SelectItem>
+                        <SelectItem value="PUBLISHED">발행</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+          
+          <div className="flex justify-end space-x-4">
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => setLocation('/admin/blog')}
+              data-testid="button-cancel"
+            >
+              취소
+            </Button>
+            <Button 
+              type="submit" 
+              disabled={isSubmitting}
+              data-testid="button-update"
+            >
+              {isSubmitting ? "수정 중..." : "수정"}
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </div>
+  )
+}
+
+// 포트폴리오 작성 페이지
+function NewPortfolioPage() {
+  return (
+    <div className="p-8">
+      <h1 className="text-2xl font-bold">새 포트폴리오 작성</h1>
+      <p>포트폴리오 작성 페이지입니다.</p>
+    </div>
+  )
+}
+
+// 새로운 블로그 목록 페이지
 function BlogPage() {
+  const [searchQuery, setSearchQuery] = useState("")
+  const [statusFilter, setStatusFilter] = useState("all")
+  const { toast } = useToast()
+  const [, setLocation] = useLocation()
+  
   const { data: blogs = [], isLoading } = useQuery({
     queryKey: ['/api/blogs'],
     queryFn: async () => {
@@ -541,89 +1237,158 @@ function BlogPage() {
       return await response.json();
     }
   });
-
+  
+  const handleDeleteBlog = async (blogId: string) => {
+    if (!confirm('정말로 이 블로그 글을 삭제하시겠습니까?')) {
+      return
+    }
+    
+    try {
+      await apiRequest('DELETE', `/api/blogs/${blogId}`)
+      queryClient.invalidateQueries({ queryKey: ['/api/blogs'] })
+      toast({
+        title: "성공",
+        description: "블로그 글이 삭제되었습니다.",
+      })
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "블로그 삭제에 실패했습니다.",
+        variant: "destructive",
+      })
+    }
+  }
+  
+  // 필터링된 블로그 목록
+  const filteredBlogs = blogs.filter((blog: any) => {
+    const matchesSearch = searchQuery === "" || 
+      blog.titleKo?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      blog.titleEn?.toLowerCase().includes(searchQuery.toLowerCase())
+    
+    const matchesStatus = statusFilter === "all" || 
+      (statusFilter === "published" && blog.published) ||
+      (statusFilter === "draft" && !blog.published)
+    
+    return matchesSearch && matchesStatus
+  })
+  
   if (isLoading) {
     return (
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">블로그관리</h2>
-          <div className="flex gap-2">
-            <Input placeholder="제목/저자 검색" className="w-56" />
-            <Button 
-              size="sm" 
-              className="gap-2"
-              onClick={() => window.location.href = '/admin/blog/new'}
-            >
-              <FileText className="h-4 w-4" />새 글 작성
-            </Button>
-          </div>
-        </div>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="animate-pulse space-y-4">
-              <div className="h-8 bg-gray-200 rounded"></div>
-              <div className="h-8 bg-gray-200 rounded"></div>
-              <div className="h-8 bg-gray-200 rounded"></div>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+        <div className="h-64 bg-gray-200 rounded animate-pulse"></div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">블로그관리</h2>
-        <div className="flex gap-2">
-          <Input placeholder="제목/저자 검색" className="w-56" />
-          <Button 
-            size="sm" 
-            className="gap-2"
-            onClick={() => window.location.href = '/admin/blog/new'}
-          >
-            <FileText className="h-4 w-4" />새 글 작성
-          </Button>
+        <div>
+          <h1 data-testid="heading-blog-list" className="text-3xl font-bold tracking-tight">블로그 관리</h1>
+          <p className="text-muted-foreground">블로그 글을 작성하고 관리하세요</p>
         </div>
+        <Button 
+          onClick={() => setLocation('/admin/blog/new')}
+          data-testid="button-new-blog"
+          className="gap-2"
+        >
+          <FileText className="h-4 w-4" />
+          새 글 작성
+        </Button>
       </div>
+      
       <Card>
-        <CardContent className="pt-6">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle>블로그 글 목록</CardTitle>
+            <div className="flex gap-2">
+              <Input
+                placeholder="제목 검색..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-64"
+                data-testid="input-search"
+              />
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-32" data-testid="select-filter">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">전체</SelectItem>
+                  <SelectItem value="published">발행됨</SelectItem>
+                  <SelectItem value="draft">초안</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>ID</TableHead>
                 <TableHead>제목</TableHead>
+                <TableHead>작성자</TableHead>
                 <TableHead>상태</TableHead>
-                <TableHead>날짜</TableHead>
-                <TableHead>액션</TableHead>
+                <TableHead>조회수</TableHead>
+                <TableHead>작성일</TableHead>
+                <TableHead className="text-right">액션</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {blogs.length === 0 ? (
+              {filteredBlogs.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
-                    아직 블로그 게시글이 없습니다. 첫 번째 글을 작성해보세요!
+                  <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                    {searchQuery || statusFilter !== "all" 
+                      ? "검색 조건에 맞는 블로그 글이 없습니다."
+                      : "아직 블로그 글이 없습니다. 첫 번째 글을 작성해보세요!"
+                    }
                   </TableCell>
                 </TableRow>
               ) : (
-                blogs.map((blog: any) => (
-                  <TableRow key={blog.id}>
-                    <TableCell>{blog.id}</TableCell>
-                    <TableCell className="font-medium">{blog.titleKo || blog.titleEn}</TableCell>
+                filteredBlogs.map((blog: any) => (
+                  <TableRow key={blog.id} data-testid={`row-blog-${blog.id}`}>
                     <TableCell>
-                      <Badge variant={blog.published ? 'default' : 'outline'}>
-                        {blog.published ? '발행' : '임시저장'}
+                      <div>
+                        <div className="font-medium">{blog.titleKo}</div>
+                        <div className="text-sm text-muted-foreground">{blog.titleEn}</div>
+                      </div>
+                    </TableCell>
+                    <TableCell data-testid={`text-author-${blog.id}`}>
+                      {blog.author?.firstName} {blog.author?.lastName}
+                    </TableCell>
+                    <TableCell>
+                      <Badge 
+                        variant={blog.published ? 'default' : 'secondary'}
+                        data-testid={`badge-status-${blog.id}`}
+                      >
+                        {blog.status === 'PUBLISHED' ? '발행' : '초안'}
                       </Badge>
                     </TableCell>
-                    <TableCell>
+                    <TableCell data-testid={`text-views-${blog.id}`}>
+                      {blog.viewCount || '0'}
+                    </TableCell>
+                    <TableCell data-testid={`text-date-${blog.id}`}>
                       {new Date(blog.createdAt).toLocaleDateString('ko-KR')}
                     </TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        <Link to={`/admin/blog/edit/${blog.id}`}>
-                          <Button size="sm" variant="outline">편집</Button>
-                        </Link>
-                        <Button size="sm" variant="destructive">삭제</Button>
+                    <TableCell className="text-right">
+                      <div className="flex items-center gap-2 justify-end">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => setLocation(`/admin/blog/edit/${blog.id}`)}
+                          data-testid={`button-edit-${blog.id}`}
+                        >
+                          수정
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="destructive"
+                          onClick={() => handleDeleteBlog(blog.id)}
+                          data-testid={`button-delete-${blog.id}`}
+                        >
+                          삭제
+                        </Button>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -1402,16 +2167,16 @@ export default function AdminApp() {
     if (location === '/admin/users') return <UsersPage />
     if (location === '/admin/analytics') return <AnalyticsPage />
     if (location === '/admin/blog') return <BlogPage />
-    if (location === '/admin/blog/new') return <div className="p-8"><h1 className="text-2xl font-bold">블로그 작성 페이지</h1><p>정상적으로 로드되었습니다!</p></div>
+    if (location === '/admin/blog/new') return <NewBlogPage />
     if (location === '/admin/portfolio') return <PortfolioPage />
-    if (location === '/admin/portfolio/new') return <PortfolioEditorPage />
+    if (location === '/admin/portfolio/new') return <NewPortfolioPage />
     if (location === '/admin/leads') return <LeadsPage />
     if (location === '/admin/settings') return <SettingsPage />
     
     // 편집 페이지 처리
     if (location.startsWith('/admin/blog/edit/')) {
       const blogId = location.split('/admin/blog/edit/')[1]
-      return <BlogEditorPage blogId={blogId} />
+      return <EditBlogPage blogId={blogId} />
     }
     if (location.startsWith('/admin/portfolio/edit/')) {
       const portfolioId = location.split('/admin/portfolio/edit/')[1]
