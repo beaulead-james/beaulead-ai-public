@@ -88,10 +88,7 @@ const users = [
 
 // 실제 API 데이터 사용 - 목업 데이터 제거
 
-const leads = [
-  { id: 'L-001', company: '본느', contact: '010-9130-9710', memo: 'SNS 배너/광고 소재 월고정 문의', status: 'new' },
-  { id: 'L-002', company: 'Optimum Zone', contact: 'contact@ozpc.co.kr', memo: '네이버 플레이스/키워드', status: 'in-review' },
-]
+// 리드 데이터도 실제 API에서 가져옴
 
 // ---------------------- 유틸 ----------------------
 function clsx(...xs: Array<string | boolean | undefined>) { return xs.filter(Boolean).join(' ') }
@@ -741,6 +738,38 @@ function PortfolioPage() {
 }
 
 function LeadsPage() {
+  const { data: leads = [], isLoading } = useQuery({
+    queryKey: ['/api/contacts'],
+    queryFn: async () => {
+      const response = await fetch('/api/contacts');
+      if (!response.ok) throw new Error('Failed to fetch contacts');
+      return await response.json();
+    }
+  });
+
+  if (isLoading) {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold">프로젝트문의</h2>
+          <div className="flex gap-2">
+            <Input placeholder="회사/연락처/메모 검색" className="w-64" />
+            <Button size="sm">CSV 내보내기</Button>
+          </div>
+        </div>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="animate-pulse space-y-4">
+              <div className="h-8 bg-gray-200 rounded"></div>
+              <div className="h-8 bg-gray-200 rounded"></div>
+              <div className="h-8 bg-gray-200 rounded"></div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -756,22 +785,38 @@ function LeadsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>ID</TableHead>
-                <TableHead>회사</TableHead>
-                <TableHead>연락처</TableHead>
-                <TableHead>메모</TableHead>
+                <TableHead>회사/이름</TableHead>
+                <TableHead>이메일</TableHead>
+                <TableHead>전화번호</TableHead>
+                <TableHead>메시지</TableHead>
+                <TableHead>날짜</TableHead>
                 <TableHead>상태</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {leads.map(l => (
-                <TableRow key={l.id}>
-                  <TableCell>{l.id}</TableCell>
-                  <TableCell className="font-medium">{l.company}</TableCell>
-                  <TableCell>{l.contact}</TableCell>
-                  <TableCell className="max-w-[380px] truncate">{l.memo}</TableCell>
-                  <TableCell><Badge variant={l.status === 'new' ? 'default' : 'secondary'}>{l.status}</Badge></TableCell>
+              {leads.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+                    아직 연락 문의가 없습니다.
+                  </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                leads.map((lead: any) => (
+                  <TableRow key={lead.id}>
+                    <TableCell>{lead.id}</TableCell>
+                    <TableCell className="font-medium">{lead.company || lead.name}</TableCell>
+                    <TableCell>{lead.email}</TableCell>
+                    <TableCell>{lead.phone}</TableCell>
+                    <TableCell className="max-w-[300px] truncate">{lead.message}</TableCell>
+                    <TableCell>
+                      {new Date(lead.createdAt).toLocaleDateString('ko-KR')}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline">신규</Badge>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </CardContent>
