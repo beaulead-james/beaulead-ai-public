@@ -11,7 +11,7 @@ export default function PortfolioList() {
   const { t, language } = useLanguage();
 
   const { data: portfolios, isLoading, error } = useQuery<Portfolio[]>({
-    queryKey: ['/api/portfolios', { published: true }],
+    queryKey: ['/api/portfolios?published=true'],
   });
 
   const getPortfolioContent = (portfolio: Portfolio) => ({
