@@ -51,14 +51,25 @@ export class DatabaseStorage implements IStorage {
   }
 
   async upsertUser(userData: UpsertUser): Promise<User> {
+    // 첫 번째 사용자인지 확인
+    const userCount = await this.getUserCount();
+    const isFirstUser = userCount === 0;
+    
+    // 첫 번째 사용자에게는 ADMIN 권한 부여
+    const finalUserData = {
+      ...userData,
+      role: isFirstUser ? 'ADMIN' : userData.role || 'USER'
+    };
+
     const [user] = await db
       .insert(users)
-      .values(userData)
+      .values(finalUserData)
       .onConflictDoUpdate({
         target: users.id,
         set: {
           ...userData,
           updatedAt: new Date(),
+          // 기존 사용자의 경우 역할 변경하지 않음
         },
       })
       .returning();
