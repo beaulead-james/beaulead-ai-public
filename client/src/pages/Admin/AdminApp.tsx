@@ -1394,49 +1394,30 @@ function ModernStatCard({
 
 // ---------------------- 루트 컴포넌트 ----------------------
 export default function AdminApp() {
-  const [location] = useLocation()
-  
-  // 디버깅을 위한 로그
-  console.log('AdminApp location:', location)
-  
-  // 관리자 페이지 라우팅 처리
-  const renderAdminContent = () => {
-    switch (location) {
-      case '/admin':
-        return <DashboardPage />
-      case '/admin/users':
-        return <UsersPage />
-      case '/admin/analytics':
-        return <AnalyticsPage />
-      case '/admin/blog':
-        return <BlogPage />
-      case '/admin/blog/new':
-        return <BlogEditorPage />
-      case '/admin/portfolio':
-        return <PortfolioPage />
-      case '/admin/portfolio/new':
-        return <PortfolioEditorPage />
-      case '/admin/leads':
-        return <LeadsPage />
-      case '/admin/settings':
-        return <SettingsPage />
-      default:
-        // 편집 페이지 처리
-        if (location.startsWith('/admin/blog/edit/')) {
-          const blogId = location.split('/admin/blog/edit/')[1]
-          return <BlogEditorPage blogId={blogId} />
-        }
-        if (location.startsWith('/admin/portfolio/edit/')) {
-          const portfolioId = location.split('/admin/portfolio/edit/')[1]
-          return <PortfolioEditorPage portfolioId={portfolioId} />
-        }
-        return <DashboardPage />
-    }
-  }
-  
   return (
     <AdminLayout>
-      {renderAdminContent()}
+      <Switch>
+        <Route path="/admin" component={DashboardPage} />
+        <Route path="/admin/users" component={UsersPage} />
+        <Route path="/admin/analytics" component={AnalyticsPage} />
+        <Route path="/admin/blog" component={BlogPage} />
+        <Route path="/admin/blog/new" component={BlogEditorPage} />
+        <Route path="/admin/blog/edit/:id">
+          {(params) => <BlogEditorPage blogId={params.id} />}
+        </Route>
+        <Route path="/admin/portfolio" component={PortfolioPage} />
+        <Route path="/admin/portfolio/new" component={PortfolioEditorPage} />
+        <Route path="/admin/portfolio/edit/:id">
+          {(params) => <PortfolioEditorPage portfolioId={params.id} />}
+        </Route>
+        <Route path="/admin/leads" component={LeadsPage} />
+        <Route path="/admin/settings" component={SettingsPage} />
+        <Route>
+          <div className="flex items-center justify-center h-96">
+            <p className="text-muted-foreground">페이지를 찾을 수 없습니다.</p>
+          </div>
+        </Route>
+      </Switch>
     </AdminLayout>
   )
 }

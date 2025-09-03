@@ -86,8 +86,8 @@ function Router() {
       <Route path="/login" component={Login} />
       
       {/* Admin Routes */}
-      <Route path="/admin/:rest*" component={AdminApp} />
       <Route path="/admin" component={AdminApp} />
+      <Route path="/admin/:rest*" component={AdminApp} />
       
       {/* Protected Routes - Client Dashboard */}
       <Route path="/dashboard" component={ClientDashboard} />
