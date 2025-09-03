@@ -449,7 +449,7 @@ export default function Landing() {
         <div className="container max-w-7xl mx-auto relative z-10">
           <div className="text-center mb-20">
             <div className="inline-flex items-center bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full border border-white/20 mb-8">
-              <span className="text-sm font-semibold text-white">📊 {t.stats.title.includes('뛰어난') ? '뷰리드.AI 성과' : 'BeauLead.AI Performance'}</span>
+              <span className="text-sm font-semibold text-white">📊 {t.stats.title.includes('뛰어난') ? 'q뷰리드.AI 성과' : 'BeauLead.AI Performance'}</span>
             </div>
             <h2 className="text-3xl lg:text-5xl font-headline font-bold text-white mb-6 leading-tight" data-testid="text-stats-title">
               우리는 광고를 하지 않습니다<br />
