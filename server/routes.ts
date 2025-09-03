@@ -114,6 +114,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         published: req.body.status === 'PUBLISHED',
         // 빈 문자열 categoryId를 null로 변환
         categoryId: req.body.categoryId === '' ? null : req.body.categoryId,
+        // 썸네일을 커버 이미지로도 설정
+        coverUrl: req.body.thumbnailUrl || req.body.coverUrl,
       };
 
       const blog = await storage.createBlog(blogData);
@@ -138,6 +140,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         publishedAt: req.body.status === 'PUBLISHED' ? new Date() : null,
         // 빈 문자열 categoryId를 null로 변환
         categoryId: req.body.categoryId === '' ? null : req.body.categoryId,
+        // 썸네일을 커버 이미지로도 설정
+        coverUrl: req.body.thumbnailUrl || req.body.coverUrl,
       };
 
       const blog = await storage.updateBlog(req.params.id, updateData);
