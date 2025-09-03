@@ -1,8 +1,12 @@
 import path from 'path';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
 import { Router } from 'express';
 import multer from 'multer';
 import { v4 as uuid } from 'uuid';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const router = Router();
 const storage = multer.diskStorage({
