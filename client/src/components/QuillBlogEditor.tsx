@@ -162,7 +162,7 @@ export function QuillBlogEditor({ mode, blogId, initialData }: QuillBlogEditorPr
           </Button>
         </div>
         <h1 className="text-2xl font-bold">
-          {mode === 'new' ? '새 블로그 포스트 작성 (Quill 에디터)' : '블로그 포스트 수정 (Quill 에디터)'}
+          {mode === 'new' ? '새 블로그 포스트 작성' : '블로그 포스트 수정'}
         </h1>
       </div>
       
