@@ -2161,28 +2161,67 @@ function ModernStatCard({
 export default function AdminApp() {
   const [location] = useLocation()
   
-  // 관리자 페이지 라우팅 처리 - 직접적이고 간단한 방식
+  // 디버깅: 현재 경로를 콘솔에 출력
+  console.log('AdminApp location:', location)
+  console.log('window.location.pathname:', window.location.pathname)
+  console.log('window.location.href:', window.location.href)
+  
+  // 관리자 페이지 라우팅 처리 - 실제 브라우저 경로 사용
+  const actualPath = window.location.pathname
   const renderContent = () => {
-    if (location === '/admin') return <DashboardPage />
-    if (location === '/admin/users') return <UsersPage />
-    if (location === '/admin/analytics') return <AnalyticsPage />
-    if (location === '/admin/blog') return <BlogPage />
-    if (location === '/admin/blog/new') return <NewBlogPage />
-    if (location === '/admin/portfolio') return <PortfolioPage />
-    if (location === '/admin/portfolio/new') return <NewPortfolioPage />
-    if (location === '/admin/leads') return <LeadsPage />
-    if (location === '/admin/settings') return <SettingsPage />
+    console.log('Checking routes for location:', location)
+    console.log('Using actualPath:', actualPath)
+    
+    if (actualPath === '/admin') {
+      console.log('Rendering DashboardPage')
+      return <DashboardPage />
+    }
+    if (actualPath === '/admin/users') {
+      console.log('Rendering UsersPage')
+      return <UsersPage />
+    }
+    if (actualPath === '/admin/analytics') {
+      console.log('Rendering AnalyticsPage')
+      return <AnalyticsPage />
+    }
+    if (actualPath === '/admin/blog') {
+      console.log('Rendering BlogPage')
+      return <BlogPage />
+    }
+    if (actualPath === '/admin/blog/new') {
+      console.log('Rendering NewBlogPage')
+      return <NewBlogPage />
+    }
+    if (actualPath === '/admin/portfolio') {
+      console.log('Rendering PortfolioPage')
+      return <PortfolioPage />
+    }
+    if (actualPath === '/admin/portfolio/new') {
+      console.log('Rendering NewPortfolioPage')
+      return <NewPortfolioPage />
+    }
+    if (actualPath === '/admin/leads') {
+      console.log('Rendering LeadsPage')
+      return <LeadsPage />
+    }
+    if (actualPath === '/admin/settings') {
+      console.log('Rendering SettingsPage')
+      return <SettingsPage />
+    }
     
     // 편집 페이지 처리
-    if (location.startsWith('/admin/blog/edit/')) {
-      const blogId = location.split('/admin/blog/edit/')[1]
+    if (actualPath.startsWith('/admin/blog/edit/')) {
+      const blogId = actualPath.split('/admin/blog/edit/')[1]
+      console.log('Rendering EditBlogPage for blogId:', blogId)
       return <EditBlogPage blogId={blogId} />
     }
-    if (location.startsWith('/admin/portfolio/edit/')) {
-      const portfolioId = location.split('/admin/portfolio/edit/')[1]
+    if (actualPath.startsWith('/admin/portfolio/edit/')) {
+      const portfolioId = actualPath.split('/admin/portfolio/edit/')[1]
+      console.log('Rendering PortfolioEditorPage for portfolioId:', portfolioId)
       return <PortfolioEditorPage portfolioId={portfolioId} />
     }
     
+    console.log('No matching route found, rendering DashboardPage as default')
     return <DashboardPage />
   }
   
