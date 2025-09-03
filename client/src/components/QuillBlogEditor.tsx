@@ -3,9 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { useLocation } from 'wouter'
-import ReactQuill from 'react-quill'
-import 'react-quill/dist/quill.snow.css'
-import '../styles/quill-custom.css'
+import AdminRichTextEditor from './AdminRichTextEditor'
 import {
   Card, CardHeader, CardTitle, CardContent,
 } from '@/components/ui/card'
@@ -63,88 +61,6 @@ export function QuillBlogEditor({ mode, blogId, initialData }: QuillBlogEditorPr
     }
   })
 
-  // 이미지 업로드 핸들러
-  const handleImageUpload = useCallback(async function (this: any) {
-    const input = document.createElement('input')
-    input.setAttribute('type', 'file')
-    input.setAttribute('accept', 'image/*')
-    input.click()
-
-    input.onchange = async () => {
-      if (input.files && input.files[0]) {
-        const file = input.files[0]
-        try {
-          // 업로드 URL 가져오기
-          const uploadResponse = await apiRequest('POST', '/api/objects/upload')
-          const uploadURL = (uploadResponse as any).uploadURL
-
-          // 파일 업로드
-          const response = await fetch(uploadURL, {
-            method: 'PUT',
-            body: file
-          })
-
-          if (response.ok) {
-            const imageUrl = uploadURL.split('?')[0]
-            
-            // Quill 에디터에 이미지 삽입
-            const quill = this.quill
-            const range = quill.getSelection() || { index: 0 }
-            quill.insertEmbed(range.index, 'image', imageUrl)
-            
-            toast({
-              title: "이미지 업로드 성공",
-              description: "이미지가 에디터에 추가되었습니다.",
-            })
-          } else {
-            throw new Error('Upload failed')
-          }
-        } catch (error) {
-          console.error('Error uploading image:', error)
-          toast({
-            title: "이미지 업로드 실패",
-            description: "이미지 업로드 중 오류가 발생했습니다.",
-            variant: "destructive"
-          })
-        }
-      }
-    }
-  }, [toast])
-
-  // Quill.js 설정
-  const modules = {
-    toolbar: {
-      container: [
-        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-        ['bold', 'italic', 'underline', 'strike'],
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-        [{ 'script': 'sub'}, { 'script': 'super' }],
-        [{ 'indent': '-1'}, { 'indent': '+1' }],
-        [{ 'direction': 'rtl' }],
-        [{ 'size': ['small', false, 'large', 'huge'] }],
-        [{ 'color': [] }, { 'background': [] }],
-        [{ 'font': [] }],
-        [{ 'align': [] }],
-        ['link', 'image', 'video'],
-        ['clean']
-      ],
-      handlers: {
-        image: handleImageUpload
-      }
-    },
-    clipboard: {
-      matchVisual: false,
-    }
-  }
-
-  const formats = [
-    'header', 'font', 'size',
-    'bold', 'italic', 'underline', 'strike', 'blockquote',
-    'list', 'bullet', 'indent',
-    'link', 'image', 'video',
-    'align', 'color', 'background',
-    'script'
-  ]
 
   
   const handleSubmit = async (data: any) => {
@@ -298,15 +214,11 @@ export function QuillBlogEditor({ mode, blogId, initialData }: QuillBlogEditorPr
                   <FormItem>
                     <FormLabel>본문 (한국어)</FormLabel>
                     <FormControl>
-                      <div className="mb-12">
-                        <ReactQuill
-                          theme="snow"
-                          value={field.value}
+                      <div className="rounded-xl bg-white text-slate-900 p-2 dark:bg-slate-900 dark:text-slate-100">
+                        <AdminRichTextEditor 
+                          value={field.value} 
                           onChange={field.onChange}
-                          modules={modules}
-                          formats={formats}
-                          placeholder="한국어 본문을 입력하세요. 툴바에서 이미지 아이콘을 클릭하여 이미지를 업로드할 수 있습니다."
-                          style={{ height: '300px' }}
+                          placeholder="한국어 본문을 입력하세요..."
                         />
                       </div>
                     </FormControl>
@@ -322,15 +234,11 @@ export function QuillBlogEditor({ mode, blogId, initialData }: QuillBlogEditorPr
                   <FormItem>
                     <FormLabel>본문 (영어)</FormLabel>
                     <FormControl>
-                      <div className="mb-12">
-                        <ReactQuill
-                          theme="snow"
-                          value={field.value}
+                      <div className="rounded-xl bg-white text-slate-900 p-2 dark:bg-slate-900 dark:text-slate-100">
+                        <AdminRichTextEditor 
+                          value={field.value} 
                           onChange={field.onChange}
-                          modules={modules}
-                          formats={formats}
-                          placeholder="Enter English content. Click the image icon in the toolbar to upload images."
-                          style={{ height: '300px' }}
+                          placeholder="Enter English content..."
                         />
                       </div>
                     </FormControl>
