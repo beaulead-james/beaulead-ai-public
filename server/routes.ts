@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { sendContactFormToSlack } from "./services/slack";
+import { ObjectStorageService } from "./objectStorage";
 import { z } from "zod";
 
 const contactFormSchema = z.object({
@@ -197,6 +198,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting portfolio:", error);
       res.status(500).json({ message: "Failed to delete portfolio" });
+    }
+  });
+
+  // Object Storage routes
+  app.post('/api/objects/upload', isAuthenticated, async (req: any, res) => {
+    try {
+      const objectStorageService = new ObjectStorageService();
+      const uploadURL = await objectStorageService.getObjectEntityUploadURL();
+      res.json({ uploadURL });
+    } catch (error) {
+      console.error("Error getting upload URL:", error);
+      res.status(500).json({ message: "Failed to get upload URL" });
     }
   });
 
