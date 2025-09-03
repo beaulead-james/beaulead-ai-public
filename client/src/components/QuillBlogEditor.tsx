@@ -70,6 +70,7 @@ export function QuillBlogEditor({ mode, blogId, initialData }: QuillBlogEditorPr
         await apiRequest('POST', '/api/blogs', {
           ...data,
           slug: data.titleEn.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+          categoryId: null, // 카테고리 없이 저장
         })
         toast({
           title: "블로그 포스트 작성 완료",
