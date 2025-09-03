@@ -62,7 +62,22 @@ const blogFormSchema = z.object({
   published: z.boolean().default(false)
 })
 
+// 포트폴리오 폼 스키마
+const portfolioFormSchema = z.object({
+  titleKo: z.string().min(1, '한국어 제목을 입력해주세요'),
+  titleEn: z.string().min(1, '영어 제목을 입력해주세요'),
+  excerptKo: z.string().min(1, '한국어 요약을 입력해주세요'),
+  excerptEn: z.string().min(1, '영어 요약을 입력해주세요'),
+  contentKo: z.string().min(1, '한국어 내용을 입력해주세요'),
+  contentEn: z.string().min(1, '영어 내용을 입력해주세요'),
+  slug: z.string().min(1, 'URL 슬러그를 입력해주세요'),
+  client: z.string().min(1, '클라이언트명을 입력해주세요'),
+  category: z.string().min(1, '카테고리를 입력해주세요'),
+  published: z.boolean().default(false)
+})
+
 type BlogFormData = z.infer<typeof blogFormSchema>
+type PortfolioFormData = z.infer<typeof portfolioFormSchema>
 
 const users = [
   { id: 'U-001', name: '관리자', role: 'admin', email: 'admin@beaulead.ai', status: 'active' },
@@ -586,7 +601,11 @@ function PortfolioPage() {
         <h2 className="text-lg font-semibold">포트폴리오관리</h2>
         <div className="flex gap-2">
           <Input placeholder="제목/태그 검색" className="w-56" />
-          <Button size="sm">새 포트폴리오</Button>
+          <Link href="/admin/portfolio/new">
+            <Button size="sm" className="gap-2">
+              <Briefcase className="h-4 w-4" />새 포트폴리오 작성
+            </Button>
+          </Link>
         </div>
       </div>
       <Card>
@@ -598,6 +617,7 @@ function PortfolioPage() {
                 <TableHead>제목</TableHead>
                 <TableHead>태그</TableHead>
                 <TableHead>상태</TableHead>
+                <TableHead>액션</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -608,6 +628,14 @@ function PortfolioPage() {
                   <TableCell><Badge variant="secondary">{p.tag}</Badge></TableCell>
                   <TableCell>
                     <Badge variant={p.status === 'published' ? 'default' : 'outline'}>{p.status}</Badge>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex gap-2">
+                      <Link href={`/admin/portfolio/edit/${p.id}`}>
+                        <Button size="sm" variant="outline">편집</Button>
+                      </Link>
+                      <Button size="sm" variant="destructive">삭제</Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -877,6 +905,252 @@ function BlogEditorPage({ blogId }: { blogId?: string }) {
   )
 }
 
+function PortfolioEditorPage({ portfolioId }: { portfolioId?: string }) {
+  const isEdit = !!portfolioId
+  
+  const form = useForm<PortfolioFormData>({
+    resolver: zodResolver(portfolioFormSchema),
+    defaultValues: {
+      titleKo: '',
+      titleEn: '',
+      excerptKo: '',
+      excerptEn: '',
+      contentKo: '',
+      contentEn: '',
+      slug: '',
+      client: '',
+      category: '',
+      published: false
+    }
+  })
+
+  const onSubmit = async (data: PortfolioFormData) => {
+    try {
+      const method = isEdit ? 'PUT' : 'POST'
+      const url = isEdit ? `/api/portfolios/${portfolioId}` : '/api/portfolios'
+      
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+
+      if (response.ok) {
+        window.location.href = '/admin/portfolio'
+      } else {
+        console.error('Failed to save portfolio')
+      }
+    } catch (error) {
+      console.error('Error saving portfolio:', error)
+    }
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Link href="/admin/portfolio">
+            <Button variant="ghost" size="sm" className="gap-2">
+              <ArrowLeft className="h-4 w-4" />뒤로가기
+            </Button>
+          </Link>
+          <div>
+            <h2 className="text-xl font-semibold">
+              {isEdit ? '포트폴리오 편집' : '새 포트폴리오 작성'}
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              한국어와 영어로 포트폴리오를 작성하세요
+            </p>
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <Button 
+            type="button" 
+            variant="outline"
+            onClick={() => form.setValue('published', false)}
+          >
+            임시저장
+          </Button>
+          <Button 
+            type="submit" 
+            form="portfolio-form"
+            className="gap-2"
+            onClick={() => form.setValue('published', true)}
+          >
+            <Save className="h-4 w-4" />발행하기
+          </Button>
+        </div>
+      </div>
+
+      <Form {...form}>
+        <form id="portfolio-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* 한국어 섹션 */}
+            <Card>
+              <CardHeader>
+                <CardTitle>한국어 콘텐츠</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="titleKo"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>제목</FormLabel>
+                      <FormControl>
+                        <Input placeholder="포트폴리오 제목을 입력하세요" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="excerptKo"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>요약</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="포트폴리오 요약을 입력하세요" 
+                          className="min-h-[80px]"
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="contentKo"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>내용</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="포트폴리오 내용을 입력하세요" 
+                          className="min-h-[300px]"
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+
+            {/* 영어 섹션 */}
+            <Card>
+              <CardHeader>
+                <CardTitle>English Content</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="titleEn"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Title</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter portfolio title" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="excerptEn"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Excerpt</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Enter portfolio excerpt" 
+                          className="min-h-[80px]"
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="contentEn"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Content</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Enter portfolio content" 
+                          className="min-h-[300px]"
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* 설정 섹션 */}
+          <Card>
+            <CardHeader>
+              <CardTitle>포트폴리오 설정</CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="slug"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>URL 슬러그</FormLabel>
+                    <FormControl>
+                      <Input placeholder="portfolio-url-slug" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="client"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>클라이언트</FormLabel>
+                    <FormControl>
+                      <Input placeholder="클라이언트명" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="category"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>카테고리</FormLabel>
+                    <FormControl>
+                      <Input placeholder="예: 이커머스, 의료/헬스, 교육" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+        </form>
+      </Form>
+    </div>
+  )
+}
+
 function SettingsPage() {
   return (
     <div className="space-y-6">
@@ -987,6 +1261,10 @@ export default function AdminApp() {
             {(params) => <BlogEditorPage blogId={params.id} />}
           </Route>
           <Route path="/blog" component={BlogPage} />
+          <Route path="/portfolio/new" component={() => <PortfolioEditorPage />} />
+          <Route path="/portfolio/edit/:id">
+            {(params) => <PortfolioEditorPage portfolioId={params.id} />}
+          </Route>
           <Route path="/portfolio" component={PortfolioPage} />
           <Route path="/leads" component={LeadsPage} />
           <Route path="/settings" component={SettingsPage} />
