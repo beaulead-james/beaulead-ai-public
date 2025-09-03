@@ -1388,6 +1388,8 @@ function ModernStatCard({
 export default function AdminApp() {
   const [location] = useLocation()
   
+  // 디버깅을 위한 로그
+  console.log('AdminApp location:', location)
   
   // 관리자 페이지 라우팅 처리
   const renderAdminContent = () => {
