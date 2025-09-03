@@ -1249,27 +1249,44 @@ function ModernStatCard({
 export default function AdminApp() {
   const [location] = useLocation()
   
+  // 관리자 페이지 라우팅 처리
+  const renderAdminContent = () => {
+    switch (location) {
+      case '/admin':
+        return <DashboardPage />
+      case '/admin/users':
+        return <UsersPage />
+      case '/admin/analytics':
+        return <AnalyticsPage />
+      case '/admin/blog':
+        return <BlogPage />
+      case '/admin/blog/new':
+        return <BlogEditorPage />
+      case '/admin/portfolio':
+        return <PortfolioPage />
+      case '/admin/portfolio/new':
+        return <PortfolioEditorPage />
+      case '/admin/leads':
+        return <LeadsPage />
+      case '/admin/settings':
+        return <SettingsPage />
+      default:
+        // 편집 페이지 처리
+        if (location.startsWith('/admin/blog/edit/')) {
+          const blogId = location.split('/admin/blog/edit/')[1]
+          return <BlogEditorPage blogId={blogId} />
+        }
+        if (location.startsWith('/admin/portfolio/edit/')) {
+          const portfolioId = location.split('/admin/portfolio/edit/')[1]
+          return <PortfolioEditorPage portfolioId={portfolioId} />
+        }
+        return <DashboardPage />
+    }
+  }
+  
   return (
     <AdminLayout>
-      <Router base="/admin">
-        <Switch>
-          <Route path="/" component={DashboardPage} />
-          <Route path="/users" component={UsersPage} />
-          <Route path="/analytics" component={AnalyticsPage} />
-          <Route path="/blog/new" component={() => <BlogEditorPage />} />
-          <Route path="/blog/edit/:id">
-            {(params) => <BlogEditorPage blogId={params.id} />}
-          </Route>
-          <Route path="/blog" component={BlogPage} />
-          <Route path="/portfolio/new" component={() => <PortfolioEditorPage />} />
-          <Route path="/portfolio/edit/:id">
-            {(params) => <PortfolioEditorPage portfolioId={params.id} />}
-          </Route>
-          <Route path="/portfolio" component={PortfolioPage} />
-          <Route path="/leads" component={LeadsPage} />
-          <Route path="/settings" component={SettingsPage} />
-        </Switch>
-      </Router>
+      {renderAdminContent()}
     </AdminLayout>
   )
 }
