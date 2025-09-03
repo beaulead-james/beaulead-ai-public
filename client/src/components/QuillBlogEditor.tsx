@@ -5,6 +5,7 @@ import * as z from 'zod'
 import { useLocation } from 'wouter'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
+import '../styles/quill-custom.css'
 import {
   Card, CardHeader, CardTitle, CardContent,
 } from '@/components/ui/card'
@@ -297,7 +298,7 @@ export function QuillBlogEditor({ mode, blogId, initialData }: QuillBlogEditorPr
                   <FormItem>
                     <FormLabel>본문 (한국어)</FormLabel>
                     <FormControl>
-                      <div className="h-80">
+                      <div className="mb-12">
                         <ReactQuill
                           theme="snow"
                           value={field.value}
@@ -321,7 +322,7 @@ export function QuillBlogEditor({ mode, blogId, initialData }: QuillBlogEditorPr
                   <FormItem>
                     <FormLabel>본문 (영어)</FormLabel>
                     <FormControl>
-                      <div className="h-80">
+                      <div className="mb-12">
                         <ReactQuill
                           theme="snow"
                           value={field.value}
