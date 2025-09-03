@@ -85,9 +85,18 @@ function Router() {
       {/* Auth Routes */}
       <Route path="/login" component={Login} />
       
-      {/* Admin Routes */}
+      {/* Admin Routes - 더 구체적인 패턴을 먼저 설정 */}
+      <Route path="/admin/blog/new" component={AdminApp} />
+      <Route path="/admin/blog/edit/:id" component={AdminApp} />
+      <Route path="/admin/blog" component={AdminApp} />
+      <Route path="/admin/portfolio/new" component={AdminApp} />
+      <Route path="/admin/portfolio/edit/:id" component={AdminApp} />
+      <Route path="/admin/portfolio" component={AdminApp} />
+      <Route path="/admin/users" component={AdminApp} />
+      <Route path="/admin/analytics" component={AdminApp} />
+      <Route path="/admin/leads" component={AdminApp} />
+      <Route path="/admin/settings" component={AdminApp} />
       <Route path="/admin" component={AdminApp} />
-      <Route path="/admin/:rest*" component={AdminApp} />
       
       {/* Protected Routes - Client Dashboard */}
       <Route path="/dashboard" component={ClientDashboard} />
