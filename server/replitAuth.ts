@@ -146,6 +146,15 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
 
   const now = Math.floor(Date.now() / 1000);
   if (now <= user.expires_at) {
+    // 데이터베이스에서 최신 사용자 정보를 가져와서 역할 업데이트
+    try {
+      const dbUser = await storage.getUser(user.claims.sub);
+      if (dbUser) {
+        user.claims.role = dbUser.role;
+      }
+    } catch (error) {
+      console.error("Error fetching user role from database:", error);
+    }
     return next();
   }
 
@@ -159,6 +168,17 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
     const config = await getOidcConfig();
     const tokenResponse = await client.refreshTokenGrant(config, refreshToken);
     updateUserSession(user, tokenResponse);
+    
+    // 토큰 갱신 후에도 데이터베이스에서 최신 역할 정보 가져오기
+    try {
+      const dbUser = await storage.getUser(user.claims.sub);
+      if (dbUser) {
+        user.claims.role = dbUser.role;
+      }
+    } catch (error) {
+      console.error("Error fetching user role from database:", error);
+    }
+    
     return next();
   } catch (error) {
     res.status(401).json({ message: "Unauthorized" });
