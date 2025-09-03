@@ -11,7 +11,7 @@ export default function BlogList() {
   const { t, language } = useLanguage();
 
   const { data: blogs, isLoading, error } = useQuery<Blog[]>({
-    queryKey: ['/api/blogs', { published: true }],
+    queryKey: ['/api/blogs?published=true'],
   });
 
   const formatDate = (dateValue: Date | null | string) => {

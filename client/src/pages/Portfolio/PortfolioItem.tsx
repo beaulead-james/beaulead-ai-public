@@ -12,7 +12,7 @@ export default function PortfolioItem() {
   const { t, language } = useLanguage();
 
   const { data: portfolio, isLoading, error } = useQuery<Portfolio>({
-    queryKey: ['/api/portfolios', slug],
+    queryKey: [`/api/portfolios/${slug}`],
     enabled: !!slug
   });
 

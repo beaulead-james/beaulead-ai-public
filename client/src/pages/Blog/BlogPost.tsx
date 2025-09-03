@@ -12,7 +12,7 @@ export default function BlogPost() {
   const { t, language } = useLanguage();
 
   const { data: blog, isLoading, error } = useQuery<Blog>({
-    queryKey: ['/api/blogs', slug],
+    queryKey: [`/api/blogs/${slug}`],
     enabled: !!slug
   });
 
