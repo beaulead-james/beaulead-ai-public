@@ -1,9 +1,13 @@
 import type { Express } from "express";
+import express from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { sendContactFormToSlack } from "./services/slack";
 import { z } from "zod";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
 
 const contactFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -13,7 +17,47 @@ const contactFormSchema = z.object({
   message: z.string().min(1, "Message is required"),
 });
 
+// 업로드 디렉토리 생성
+const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+// Multer 설정 - 이미지 업로드용
+const storage_multer = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ 
+  storage: storage_multer,
+  limits: {
+    fileSize: 10 * 1024 * 1024 // 10MB 제한
+  },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('이미지 파일만 업로드 가능합니다.'));
+    }
+  }
+});
+
 export async function registerRoutes(app: Express): Promise<Server> {
+  // 정적 파일 제공 - public/uploads 디렉토리
+  app.use('/uploads', (req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Cache-Control', 'public, max-age=31536000'); // 1년 캐시
+    next();
+  });
+  
+  app.use('/uploads', express.static(uploadDir));
+
   // Auth middleware
   await setupAuth(app);
 
@@ -26,6 +70,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  // 이미지 업로드 엔드포인트
+  app.post('/api/upload', isAuthenticated, upload.single('image'), (req: any, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+      }
+      
+      const imageUrl = `/uploads/${req.file.filename}`;
+      res.json({ 
+        success: true, 
+        imageUrl: imageUrl,
+        filename: req.file.filename 
+      });
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      res.status(500).json({ message: 'Failed to upload image' });
     }
   });
 
