@@ -32,6 +32,9 @@ export default function AdminLogin() {
   const handleSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
     try {
+      console.log('Attempting login with data:', data);
+      console.log('Request URL:', window.location.origin + '/api/auth/login');
+      
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
@@ -40,8 +43,12 @@ export default function AdminLogin() {
         body: JSON.stringify(data),
       });
 
+      console.log('Response status:', response.status);
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+
       if (!response.ok) {
         const error = await response.json();
+        console.log('Error response:', error);
         throw new Error(error.message || '로그인에 실패했습니다');
       }
 
