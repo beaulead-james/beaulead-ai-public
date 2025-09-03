@@ -27,7 +27,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useToast } from '@/hooks/use-toast'
 import { apiRequest, queryClient } from '@/lib/queryClient'
-import { WixStyleBlogEditor } from "@/components/WixStyleBlogEditor"
+import { BlogEditor } from "@/components/BlogEditor"
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -2171,7 +2171,7 @@ export default function AdminApp() {
     if (actualPath === '/admin/users') return <UsersPage />
     if (actualPath === '/admin/analytics') return <AnalyticsPage />
     if (actualPath === '/admin/blog') return <BlogPage />
-    if (actualPath === '/admin/blog/new') return <WixStyleBlogEditor mode="new" />
+    if (actualPath === '/admin/blog/new') return <BlogEditor mode="new" />
     if (actualPath === '/admin/portfolio') return <PortfolioPage />
     if (actualPath === '/admin/portfolio/new') return <NewPortfolioPage />
     if (actualPath === '/admin/leads') return <LeadsPage />
@@ -2180,7 +2180,7 @@ export default function AdminApp() {
     // 편집 페이지 처리
     if (actualPath.startsWith('/admin/blog/edit/')) {
       const blogId = actualPath.split('/admin/blog/edit/')[1]
-      return <WixStyleBlogEditor mode="edit" blogId={blogId} />
+      return <BlogEditor mode="edit" blogId={blogId} />
     }
     if (actualPath.startsWith('/admin/portfolio/edit/')) {
       const portfolioId = actualPath.split('/admin/portfolio/edit/')[1]
