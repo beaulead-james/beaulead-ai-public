@@ -124,7 +124,7 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
                 <span className="text-white font-bold text-sm">BL</span>
               </div>
               <div>
-                <Link href="/admin"><a className="font-bold text-lg">BeauLead AI</a></Link>
+                <Link to="/admin"><a className="font-bold text-lg">BeauLead AI</a></Link>
                 <Badge variant="secondary" className="ml-2 text-xs">관리자</Badge>
               </div>
             </div>
@@ -154,10 +154,10 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuItem asChild>
-                  <Link href="/admin/settings"><a className="flex items-center gap-2"><Settings className="h-4 w-4"/>계정 설정</a></Link>
+                  <Link to="/admin/settings"><a className="flex items-center gap-2"><Settings className="h-4 w-4"/>계정 설정</a></Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/"><a className="flex items-center gap-2"><Globe className="h-4 w-4"/>사이트 보기</a></Link>
+                  <Link to="/"><a className="flex items-center gap-2"><Globe className="h-4 w-4"/>사이트 보기</a></Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -191,22 +191,22 @@ function Sidebar() {
       {/* Navigation */}
       <nav className="flex-1 p-4 space-y-2">
         <NavGroup title="대시보드">
-          <NavItem href="/admin" icon={LayoutDashboard} label="홈 대시보드" />
-          <NavItem href="/admin/analytics" icon={BarChart3} label="통계 분석" />
+          <NavItem to="/admin" icon={LayoutDashboard} label="홈 대시보드" />
+          <NavItem to="/admin/analytics" icon={BarChart3} label="통계 분석" />
         </NavGroup>
         
         <NavGroup title="콘텐츠 관리">
-          <NavItem href="/admin/blog" icon={FileText} label="블로그" />
-          <NavItem href="/admin/portfolio" icon={Briefcase} label="포트폴리오" />
+          <NavItem to="/admin/blog" icon={FileText} label="블로그" />
+          <NavItem to="/admin/portfolio" icon={Briefcase} label="포트폴리오" />
         </NavGroup>
         
         <NavGroup title="고객 관리">
-          <NavItem href="/admin/leads" icon={MailSearch} label="프로젝트 문의" />
-          <NavItem href="/admin/users" icon={Users} label="사용자" />
+          <NavItem to="/admin/leads" icon={MailSearch} label="프로젝트 문의" />
+          <NavItem to="/admin/users" icon={Users} label="사용자" />
         </NavGroup>
         
         <NavGroup title="시스템">
-          <NavItem href="/admin/settings" icon={Settings} label="설정" />
+          <NavItem to="/admin/settings" icon={Settings} label="설정" />
         </NavGroup>
       </nav>
       
@@ -235,11 +235,11 @@ function NavGroup({ title, children }: { title: string; children: React.ReactNod
   )
 }
 
-function NavItem({ href, icon: Icon, label }: { href: string; icon: any; label: string }) {
+function NavItem({ to, icon: Icon, label }: { to: string; icon: any; label: string }) {
   const [location] = useLocation()
-  const active = location === href
+  const active = location === to
   return (
-    <Link href={href}>
+    <Link to={to}>
       <a className={clsx(
         'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200',
         active 
@@ -548,7 +548,7 @@ function BlogPage() {
           <h2 className="text-lg font-semibold">블로그관리</h2>
           <div className="flex gap-2">
             <Input placeholder="제목/저자 검색" className="w-56" />
-            <Link href="/admin/blog/new">
+            <Link to="/admin/blog/new">
               <Button size="sm" className="gap-2">
                 <FileText className="h-4 w-4" />새 글 작성
               </Button>
@@ -574,7 +574,7 @@ function BlogPage() {
         <h2 className="text-lg font-semibold">블로그관리</h2>
         <div className="flex gap-2">
           <Input placeholder="제목/저자 검색" className="w-56" />
-          <Link href="/admin/blog/new">
+          <Link to="/admin/blog/new">
             <Button size="sm" className="gap-2">
               <FileText className="h-4 w-4" />새 글 작성
             </Button>
@@ -615,7 +615,7 @@ function BlogPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-2">
-                        <Link href={`/admin/blog/edit/${blog.id}`}>
+                        <Link to={`/admin/blog/edit/${blog.id}`}>
                           <Button size="sm" variant="outline">편집</Button>
                         </Link>
                         <Button size="sm" variant="destructive">삭제</Button>
@@ -649,7 +649,7 @@ function PortfolioPage() {
           <h2 className="text-lg font-semibold">포트폴리오관리</h2>
           <div className="flex gap-2">
             <Input placeholder="제목/태그 검색" className="w-56" />
-            <Link href="/admin/portfolio/new">
+            <Link to="/admin/portfolio/new">
               <Button size="sm" className="gap-2">
                 <Briefcase className="h-4 w-4" />새 포트폴리오 작성
               </Button>
@@ -675,7 +675,7 @@ function PortfolioPage() {
         <h2 className="text-lg font-semibold">포트폴리오관리</h2>
         <div className="flex gap-2">
           <Input placeholder="제목/태그 검색" className="w-56" />
-          <Link href="/admin/portfolio/new">
+          <Link to="/admin/portfolio/new">
             <Button size="sm" className="gap-2">
               <Briefcase className="h-4 w-4" />새 포트폴리오 작성
             </Button>
@@ -720,7 +720,7 @@ function PortfolioPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-2">
-                        <Link href={`/admin/portfolio/edit/${portfolio.id}`}>
+                        <Link to={`/admin/portfolio/edit/${portfolio.id}`}>
                           <Button size="sm" variant="outline">편집</Button>
                         </Link>
                         <Button size="sm" variant="destructive">삭제</Button>
@@ -867,7 +867,7 @@ function BlogEditorPage({ blogId }: { blogId?: string }) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Link href="/admin/blog">
+          <Link to="/admin/blog">
             <Button variant="ghost" size="sm" className="gap-2">
               <ArrowLeft className="h-4 w-4" />뒤로가기
             </Button>
@@ -1087,7 +1087,7 @@ function PortfolioEditorPage({ portfolioId }: { portfolioId?: string }) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Link href="/admin/portfolio">
+          <Link to="/admin/portfolio">
             <Button variant="ghost" size="sm" className="gap-2">
               <ArrowLeft className="h-4 w-4" />뒤로가기
             </Button>
@@ -1387,8 +1387,6 @@ function ModernStatCard({
 export default function AdminApp() {
   const [location] = useLocation()
   
-  // 디버깅: 현재 location 출력
-  console.log('Current location:', location)
   
   // 관리자 페이지 라우팅 처리
   const renderAdminContent = () => {
