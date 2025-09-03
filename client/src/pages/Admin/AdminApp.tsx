@@ -549,12 +549,13 @@ function BlogPage() {
           <h2 className="text-lg font-semibold">블로그관리</h2>
           <div className="flex gap-2">
             <Input placeholder="제목/저자 검색" className="w-56" />
-            <Link 
-              to="/admin/blog/new"
-              className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-3 gap-2"
+            <Button 
+              size="sm" 
+              className="gap-2"
+              onClick={() => window.location.href = '/admin/blog/new'}
             >
               <FileText className="h-4 w-4" />새 글 작성
-            </Link>
+            </Button>
           </div>
         </div>
         <Card>
@@ -576,12 +577,13 @@ function BlogPage() {
         <h2 className="text-lg font-semibold">블로그관리</h2>
         <div className="flex gap-2">
           <Input placeholder="제목/저자 검색" className="w-56" />
-          <Link 
-            to="/admin/blog/new"
-            className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-3 gap-2"
+          <Button 
+            size="sm" 
+            className="gap-2"
+            onClick={() => window.location.href = '/admin/blog/new'}
           >
             <FileText className="h-4 w-4" />새 글 작성
-          </Link>
+          </Button>
         </div>
       </div>
       <Card>
@@ -652,12 +654,13 @@ function PortfolioPage() {
           <h2 className="text-lg font-semibold">포트폴리오관리</h2>
           <div className="flex gap-2">
             <Input placeholder="제목/태그 검색" className="w-56" />
-            <Link 
-              to="/admin/portfolio/new"
-              className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-3 gap-2"
+            <Button 
+              size="sm" 
+              className="gap-2"
+              onClick={() => window.location.href = '/admin/portfolio/new'}
             >
               <Briefcase className="h-4 w-4" />새 포트폴리오 작성
-            </Link>
+            </Button>
           </div>
         </div>
         <Card>
@@ -679,12 +682,13 @@ function PortfolioPage() {
         <h2 className="text-lg font-semibold">포트폴리오관리</h2>
         <div className="flex gap-2">
           <Input placeholder="제목/태그 검색" className="w-56" />
-          <Link 
-            to="/admin/portfolio/new"
-            className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-3 gap-2"
+          <Button 
+            size="sm" 
+            className="gap-2"
+            onClick={() => window.location.href = '/admin/portfolio/new'}
           >
             <Briefcase className="h-4 w-4" />새 포트폴리오 작성
-          </Link>
+          </Button>
         </div>
       </div>
       <Card>
