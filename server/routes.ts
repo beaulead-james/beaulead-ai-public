@@ -60,6 +60,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get single blog by slug  
   app.get('/api/blogs/:slug', async (req, res) => {
     try {
       const blog = await storage.getBlog(req.params.slug);
@@ -69,6 +70,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(blog);
     } catch (error) {
       console.error("Error fetching blog:", error);
+      res.status(500).json({ message: "Failed to fetch blog" });
+    }
+  });
+
+  // Get single blog by ID (for editing)
+  app.get('/api/blogs/id/:id', async (req, res) => {
+    try {
+      const blog = await storage.getBlogById(req.params.id);
+      if (!blog) {
+        return res.status(404).json({ message: "Blog not found" });
+      }
+      res.json(blog);
+    } catch (error) {
+      console.error("Error fetching blog by ID:", error);
       res.status(500).json({ message: "Failed to fetch blog" });
     }
   });

@@ -29,6 +29,7 @@ export default function AdminRichTextEditor({ value, onChange, placeholder }: Ad
   return (
     <div className="admin-editor-wrapper not-prose">
       <ReactQuill
+        key={value || 'empty'} // value가 변경될 때 컴포넌트 재생성
         theme="snow"
         value={value}
         onChange={onChange}

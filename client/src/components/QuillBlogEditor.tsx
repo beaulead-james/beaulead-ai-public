@@ -1,8 +1,9 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { useLocation } from 'wouter'
+import { useQuery } from '@tanstack/react-query'
 import AdminRichTextEditor from './AdminRichTextEditor'
 import {
   Card, CardHeader, CardTitle, CardContent,
@@ -43,9 +44,20 @@ export function QuillBlogEditor({ mode, blogId, initialData }: QuillBlogEditorPr
   const { toast } = useToast()
   const [, setLocation] = useLocation()
   
+  // 기존 블로그 데이터 로드 (편집 모드일 때)
+  const { data: existingBlog, isLoading: isBlogLoading } = useQuery({
+    queryKey: ['/api/blogs/id', blogId],
+    queryFn: async () => {
+      if (!blogId) return null;
+      const response = await apiRequest('GET', `/api/blogs/id/${blogId}`);
+      return await response.json();
+    },
+    enabled: mode === 'edit' && !!blogId,
+  });
+
   const form = useForm<any>({
     resolver: zodResolver(blogFormSchema),
-    defaultValues: initialData || {
+    defaultValues: {
       titleKo: "",
       titleEn: "",
       excerptKo: "",
@@ -60,6 +72,26 @@ export function QuillBlogEditor({ mode, blogId, initialData }: QuillBlogEditorPr
       status: "DRAFT",
     }
   })
+
+  // 기존 블로그 데이터가 로드되면 폼에 설정
+  useEffect(() => {
+    if (existingBlog && mode === 'edit') {
+      form.reset({
+        titleKo: existingBlog.titleKo || "",
+        titleEn: existingBlog.titleEn || "",
+        excerptKo: existingBlog.excerptKo || "",
+        excerptEn: existingBlog.excerptEn || "",
+        contentKo: existingBlog.contentKo || "",
+        contentEn: existingBlog.contentEn || "",
+        categoryId: existingBlog.categoryId || "",
+        tags: existingBlog.tags || [],
+        metaTitle: existingBlog.metaTitle || "",
+        metaDescription: existingBlog.metaDescription || "",
+        metaKeywords: existingBlog.metaKeywords || "",
+        status: existingBlog.status || "DRAFT",
+      });
+    }
+  }, [existingBlog, mode, form]);
 
 
   
@@ -100,6 +132,20 @@ export function QuillBlogEditor({ mode, blogId, initialData }: QuillBlogEditorPr
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  // 편집 모드에서 데이터 로딩 중이면 로딩 표시
+  if (mode === 'edit' && isBlogLoading) {
+    return (
+      <div className="max-w-4xl mx-auto p-6 space-y-6">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">블로그 데이터를 불러오는 중...</p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
