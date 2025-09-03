@@ -1387,6 +1387,9 @@ function ModernStatCard({
 export default function AdminApp() {
   const [location] = useLocation()
   
+  // 디버깅: 현재 location 출력
+  console.log('Current location:', location)
+  
   // 관리자 페이지 라우팅 처리
   const renderAdminContent = () => {
     switch (location) {
