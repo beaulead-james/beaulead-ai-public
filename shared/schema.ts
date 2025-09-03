@@ -95,6 +95,7 @@ export const blogs = pgTable("blogs", {
   
   // 이미지 업로드
   featuredImageUrl: varchar("featured_image_url"),
+  thumbnailUrl: varchar('thumbnail_url'),
   galleryImages: jsonb("gallery_images"), // Array of image URLs
   
   // 태그들 (JSON 배열로 저장)
