@@ -186,6 +186,7 @@ export class DatabaseStorage implements IStorage {
       metaDescription: blogs.metaDescription,
       metaKeywords: blogs.metaKeywords,
       featuredImageUrl: blogs.featuredImageUrl,
+      thumbnailUrl: blogs.thumbnailUrl,
       galleryImages: blogs.galleryImages,
       tags: blogs.tags,
       isDraft: blogs.isDraft,
