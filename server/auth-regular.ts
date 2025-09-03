@@ -74,19 +74,32 @@ export function setupRegularAuth(app: Express) {
       }
 
       // 이메일로 사용자 찾기
+      console.log('Login attempt for email:', email);
       const user = await storage.getUserByEmail(email);
+      console.log('User found:', user ? 'Yes' : 'No');
+      console.log('User has password:', user?.password ? 'Yes' : 'No');
+      
       if (!user || !user.password) {
+        console.log('Login failed: user not found or no password');
         return res.status(401).json({ message: 'Invalid credentials' });
       }
 
       // 패스워드 검증
+      console.log('Verifying password...');
       const isValidPassword = await verifyPassword(password, user.password);
+      console.log('Password valid:', isValidPassword);
+      
       if (!isValidPassword) {
+        console.log('Login failed: invalid password');
         return res.status(401).json({ message: 'Invalid credentials' });
       }
 
       // JWT 토큰 생성
-      const token = generateToken(user.id, user.email!, user.role);
+      if (!user.email) {
+        console.log('Login failed: user email is missing');
+        return res.status(500).json({ message: 'User email is missing' });
+      }
+      const token = generateToken(user.id, user.email, user.role);
 
       res.json({
         token,
