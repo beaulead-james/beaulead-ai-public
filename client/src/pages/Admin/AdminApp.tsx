@@ -1402,10 +1402,14 @@ export default function AdminApp() {
         <Route path="/admin/analytics" component={AnalyticsPage} />
         <Route path="/admin/blog" component={BlogPage} />
         <Route path="/admin/blog/new" component={BlogEditorPage} />
-        <Route path="/admin/blog/edit/:id" component={({ params }) => <BlogEditorPage blogId={params.id} />} />
+        <Route path="/admin/blog/edit/:id">
+          {({ id }) => <BlogEditorPage blogId={id} />}
+        </Route>
         <Route path="/admin/portfolio" component={PortfolioPage} />
         <Route path="/admin/portfolio/new" component={PortfolioEditorPage} />
-        <Route path="/admin/portfolio/edit/:id" component={({ params }) => <PortfolioEditorPage portfolioId={params.id} />} />
+        <Route path="/admin/portfolio/edit/:id">
+          {({ id }) => <PortfolioEditorPage portfolioId={id} />}
+        </Route>
         <Route path="/admin/leads" component={LeadsPage} />
         <Route path="/admin/settings" component={SettingsPage} />
         <Route>
