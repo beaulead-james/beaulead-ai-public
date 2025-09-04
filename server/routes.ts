@@ -331,6 +331,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Public objects serving from Object Storage
+  app.get('/public-objects/:filePath(*)', async (req, res) => {
+    try {
+      const filePath = req.params.filePath;
+      const objectStorageService = new ObjectStorageService();
+      const file = await objectStorageService.searchPublicObject(filePath);
+      
+      if (!file) {
+        return res.status(404).json({ error: 'File not found' });
+      }
+      
+      await objectStorageService.downloadObject(file, res);
+    } catch (error) {
+      console.error('Error serving public object:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
   // Contact/Leads routes
   app.get('/api/contacts', isAuthenticated, async (req: any, res) => {
     try {
