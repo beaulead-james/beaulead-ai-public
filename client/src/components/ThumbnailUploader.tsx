@@ -78,13 +78,17 @@ export default function ThumbnailUploader({ value, onChange }: ThumbnailUploader
       // 업로드 성공시 바로 적용 (검증은 백그라운드에서)
       onChange(data.url);
       
-      // 백그라운드에서 검증 (실패해도 오류 표시하지 않음)
-      setTimeout(async () => {
-        const isValid = await validateImageUrl(data.url);
-        if (!isValid) {
-          console.warn('업로드된 이미지 URL 검증 실패:', data.url);
-        }
-      }, 1000); // 1초 후 검증
+      // 백그라운드에서 검증 (개발 환경에서만, 실패해도 무시)
+      if (process.env.NODE_ENV === 'development') {
+        setTimeout(async () => {
+          try {
+            const isValid = await validateImageUrl(data.url);
+            console.log(`이미지 검증: ${data.url} - ${isValid ? '성공' : '실패 (무시됨)'}`);
+          } catch (error) {
+            // 검증 실패해도 무시
+          }
+        }, 2000); // 2초 후 검증 (더 여유있게)
+      }
     } catch (error) {
       console.error('Upload error:', error);
       setErr(error instanceof Error ? error.message : '업로드 실패');
