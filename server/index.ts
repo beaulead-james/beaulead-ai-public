@@ -39,13 +39,11 @@ app.use(cookieSession({
   maxAge: 1000 * 60 * 60 * 24 * 7 // 7일
 }));
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use('/api/uploads', uploadRouter);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Serve attached assets
-app.use('/attached_assets', express.static('attached_assets'));
+// API routes
+app.use('/api/uploads', uploadRouter);
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -91,13 +89,15 @@ app.use((req, res, next) => {
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
+  
+  // CRITICAL: Static files must be configured BEFORE setupVite/serveStatic
+  // because those functions add catch-all routes that intercept all requests
+  app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+  app.use('/attached_assets', express.static('attached_assets'));
+  
+  if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);
   } else {
-    // Serve attached assets in production as well
-    app.use('/attached_assets', express.static('attached_assets'));
-    // Ensure uploads are served in production
-    app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
     serveStatic(app);
   }
 
