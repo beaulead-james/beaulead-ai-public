@@ -246,18 +246,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(409).json({ message: "Admin account already exists" });
       }
 
-      // Create admin account
+      // Hash the password before creating admin account
+      const bcrypt = require('bcryptjs');
+      const hashedPassword = await bcrypt.hash('admin123', 10);
+
+      // Create admin account using upsertUser
       const adminUser = {
         id: 'admin-beaulead',
         email: 'admin@beaulead.co.kr',
-        password: 'admin123',
+        password: hashedPassword,
         role: 'ADMIN' as const,
         firstName: 'Admin',
         lastName: 'BeauLead',
         isReplitUser: false
       };
 
-      await storage.createUser(adminUser);
+      await storage.upsertUser(adminUser);
       res.json({ message: "Admin account created successfully" });
     } catch (error) {
       console.error("Error creating admin account:", error);
