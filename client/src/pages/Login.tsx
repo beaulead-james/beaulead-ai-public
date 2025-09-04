@@ -46,8 +46,8 @@ export default function Login() {
       const result = await response.json();
       
       // JWT 토큰을 localStorage에 저장
-      localStorage.setItem('authToken', result.token);
-      localStorage.setItem('userData', JSON.stringify(result.user));
+      localStorage.setItem('token', result.token);
+      localStorage.setItem('user', JSON.stringify(result.user));
 
       toast({
         title: '로그인 성공',
