@@ -12,11 +12,26 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
+  // JWT 토큰을 localStorage에서 가져오기
+  const token = localStorage.getItem('token');
+  
+  const headers: Record<string, string> = {};
+  
+  // JWT 토큰이 있으면 Authorization 헤더에 추가
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  
+  // JSON 데이터가 있으면 Content-Type 헤더 추가
+  if (data) {
+    headers['Content-Type'] = 'application/json';
+  }
+
   const res = await fetch(url, {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
+    headers,
     body: data ? JSON.stringify(data) : undefined,
-    credentials: "include",
+    credentials: "include", // 쿠키도 계속 지원
   });
 
   await throwIfResNotOk(res);
@@ -29,8 +44,19 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
+    // JWT 토큰을 localStorage에서 가져오기
+    const token = localStorage.getItem('token');
+    
+    const headers: Record<string, string> = {};
+    
+    // JWT 토큰이 있으면 Authorization 헤더에 추가
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
     const res = await fetch(queryKey.join("/") as string, {
-      credentials: "include",
+      headers,
+      credentials: "include", // 쿠키도 계속 지원
     });
 
     if (unauthorizedBehavior === "returnNull" && res.status === 401) {
