@@ -177,4 +177,38 @@ export function setupRegularAuth(app: Express) {
       });
     }
   });
+
+  // 임시: 운영서버에 관리자 계정 생성
+  app.post('/api/debug/create-admin', async (req, res) => {
+    try {
+      const hashedPassword = await hashPassword('admin123');
+      
+      const adminData = {
+        id: 'admin-beaulead',
+        email: 'admin@beaulead.co.kr',
+        name: 'BeauLead Admin',
+        role: 'ADMIN' as const,
+        password: hashedPassword
+      };
+
+      const user = await storage.upsertUser(adminData);
+      
+      res.json({
+        success: true,
+        message: 'Admin account created/updated',
+        admin: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          hasPassword: !!user.password
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ 
+        error: 'Admin creation failed',
+        message: error.message 
+      });
+    }
+  });
 }
