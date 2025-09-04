@@ -207,13 +207,19 @@ export class DatabaseStorage implements IStorage {
     let uniqueSlug = blog.slug;
     let counter = 1;
     
+    console.log('Creating blog with original slug:', blog.slug);
+    
     while (true) {
       try {
+        console.log('Checking slug:', uniqueSlug);
         // 현재 slug로 기존 블로그 확인
         const existingBlog = await db.select().from(blogs).where(eq(blogs.slug, uniqueSlug)).limit(1);
         
+        console.log('Existing blogs found:', existingBlog.length);
+        
         if (existingBlog.length === 0) {
           // 중복이 없으면 사용 가능
+          console.log('Unique slug found:', uniqueSlug);
           break;
         }
         
@@ -221,13 +227,17 @@ export class DatabaseStorage implements IStorage {
         uniqueSlug = `${blog.slug}-${counter}`;
         counter++;
         
+        console.log('Slug exists, trying:', uniqueSlug);
+        
         // 무한 루프 방지 (최대 100개까지)
         if (counter > 100) {
           uniqueSlug = `${blog.slug}-${Date.now()}`;
+          console.log('Max attempts reached, using timestamp:', uniqueSlug);
           break;
         }
       } catch (error) {
         // 예외 발생 시 타임스탬프로 고유성 보장
+        console.error('Error during slug check:', error);
         uniqueSlug = `${blog.slug}-${Date.now()}`;
         break;
       }
@@ -235,6 +245,7 @@ export class DatabaseStorage implements IStorage {
     
     // 최종 고유한 slug로 블로그 생성
     const blogWithUniqueSlug = { ...blog, slug: uniqueSlug };
+    console.log('Creating blog with final slug:', uniqueSlug);
     const [created] = await db.insert(blogs).values(blogWithUniqueSlug).returning();
     return created;
   }
