@@ -237,6 +237,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Initialize admin account (one-time setup)
+  app.post('/api/auth/init-admin', async (req, res) => {
+    try {
+      // Check if admin already exists
+      const existingAdmin = await storage.getUserByEmail('admin@beaulead.co.kr');
+      if (existingAdmin) {
+        return res.status(409).json({ message: "Admin account already exists" });
+      }
+
+      // Create admin account
+      const adminUser = {
+        id: 'admin-beaulead',
+        email: 'admin@beaulead.co.kr',
+        password: 'admin123',
+        role: 'ADMIN' as const,
+        firstName: 'Admin',
+        lastName: 'BeauLead',
+        isReplitUser: false
+      };
+
+      await storage.createUser(adminUser);
+      res.json({ message: "Admin account created successfully" });
+    } catch (error) {
+      console.error("Error creating admin account:", error);
+      res.status(500).json({ message: "Failed to create admin account" });
+    }
+  });
+
   // Object Storage routes
   app.post('/api/objects/upload', isAuthenticated, async (req: any, res) => {
     try {
