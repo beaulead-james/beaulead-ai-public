@@ -203,7 +203,39 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createBlog(blog: InsertBlog): Promise<Blog> {
-    const [created] = await db.insert(blogs).values(blog).returning();
+    // 고유한 slug 생성을 위해 중복 체크 및 수정
+    let uniqueSlug = blog.slug;
+    let counter = 1;
+    
+    while (true) {
+      try {
+        // 현재 slug로 기존 블로그 확인
+        const existingBlog = await db.select().from(blogs).where(eq(blogs.slug, uniqueSlug)).limit(1);
+        
+        if (existingBlog.length === 0) {
+          // 중복이 없으면 사용 가능
+          break;
+        }
+        
+        // 중복이 있으면 숫자를 붙여서 새로운 slug 생성
+        uniqueSlug = `${blog.slug}-${counter}`;
+        counter++;
+        
+        // 무한 루프 방지 (최대 100개까지)
+        if (counter > 100) {
+          uniqueSlug = `${blog.slug}-${Date.now()}`;
+          break;
+        }
+      } catch (error) {
+        // 예외 발생 시 타임스탬프로 고유성 보장
+        uniqueSlug = `${blog.slug}-${Date.now()}`;
+        break;
+      }
+    }
+    
+    // 최종 고유한 slug로 블로그 생성
+    const blogWithUniqueSlug = { ...blog, slug: uniqueSlug };
+    const [created] = await db.insert(blogs).values(blogWithUniqueSlug).returning();
     return created;
   }
 
