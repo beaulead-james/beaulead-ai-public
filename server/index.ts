@@ -7,7 +7,6 @@ import { setupVite, serveStatic, log } from "./vite";
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
-import uploadRouter from './routes/upload';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -42,8 +41,7 @@ app.use(cookieSession({
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// API routes
-app.use('/api/uploads', uploadRouter);
+// Upload routes are registered in registerRoutes
 
 app.use((req, res, next) => {
   const start = Date.now();
