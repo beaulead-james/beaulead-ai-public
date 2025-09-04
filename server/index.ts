@@ -77,7 +77,7 @@ app.use((req, res, next) => {
 
 // Setup uploads route BEFORE everything else
 app.get('/uploads/*', (req, res) => {
-  const fileName = req.params[0]; // Get the filename after /uploads/
+  const fileName = req.params['0']; // Get the filename after /uploads/
   const filePath = path.join(__dirname, 'uploads', fileName);
   console.log(`Serving uploads file: ${filePath}, exists: ${fs.existsSync(filePath)}`);
   
