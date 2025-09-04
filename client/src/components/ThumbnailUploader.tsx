@@ -71,7 +71,7 @@ export default function ThumbnailUploader({ value, onChange }: ThumbnailUploader
       const fd = new FormData(); 
       fd.append('file', file);
       
-      const res = await fetch('/api/uploads/image', { 
+      const res = await fetch('/api/upload/image', { 
         method: 'POST', 
         body: fd, 
         credentials: 'include' 

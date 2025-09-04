@@ -88,21 +88,20 @@ app.use((req, res, next) => {
   });
 
   /**
-   * ✅ 1) 업로드 정적 서빙: SPA 캐치올보다 "무조건 위"에 둬야 함
-   *    - history fallback 또는 app.get('*') 가 /uploads 를 먹는 문제 방지
+   * ✅ 업로드 정적 서빙: /uploads 와 /api/uploads 모두 제공
+   *    - 일부 환경에서 /api만 백엔드로 프록시될 수 있어 이중 마운트로 안정화
+   *    - 반드시 SPA 캐치올보다 위에 둡니다.
    */
-  app.use(
-    "/uploads",
-    express.static(UPLOAD_DIR, {
-      index: false,
-      fallthrough: false,
-      maxAge: "7d",
-      setHeaders(res) {
-        // 일부 브라우저/프록시에서 보안 헤더 이슈 예방
-        res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
-      },
-    })
-  );
+  const staticUploads = express.static(UPLOAD_DIR, {
+    index: false,
+    fallthrough: false,
+    maxAge: "7d",
+    setHeaders(res) {
+      res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+    },
+  });
+  app.use("/uploads", staticUploads);
+  app.use("/api/uploads", staticUploads);
 
   app.use('/attached_assets', express.static('attached_assets'));
   
