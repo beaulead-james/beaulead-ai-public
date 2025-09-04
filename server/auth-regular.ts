@@ -85,7 +85,10 @@ export function setupRegularAuth(app: Express) {
       
       if (!user || !user.password) {
         console.log('[DEBUG] No user found or no password');
-        return res.status(401).json({ message: 'Invalid credentials' });
+        return res.status(401).json({ 
+          message: 'Invalid credentials',
+          debug: { userFound: !!user, hasPassword: user?.password ? 'yes' : 'no' }
+        });
       }
 
       // 패스워드 검증
@@ -98,7 +101,10 @@ export function setupRegularAuth(app: Express) {
       
       if (!isValidPassword) {
         console.log('[DEBUG] Password verification failed');
-        return res.status(401).json({ message: 'Invalid credentials' });
+        return res.status(401).json({ 
+          message: 'Invalid credentials',
+          debug: { passwordVerification: 'failed' }
+        });
       }
 
       // JWT 토큰 생성
