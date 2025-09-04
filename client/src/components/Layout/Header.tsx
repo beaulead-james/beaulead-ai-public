@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'wouter';
+import { Link, useLocation } from 'wouter';
 import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { logout } from '../../lib/api';
 import LanguageSwitcher from '../UI/LanguageSwitcher';
 import MobileMenu from './MobileMenu';
 import '../../styles/hero.css';
@@ -9,6 +10,7 @@ import '../../styles/hero.css';
 export default function Header() {
   const { isAuthenticated, user } = useAuth();
   const { t } = useLanguage();
+  const [, setLocation] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -120,14 +122,19 @@ export default function Header() {
                       </Link>
                     )}
                     <button 
-                      onClick={() => {
-                        localStorage.removeItem('user');
-                        window.location.href = '/';
+                      onClick={async () => {
+                        try {
+                          await logout();
+                          setLocation('/login');
+                        } catch (error) {
+                          // 실패해도 로그인 페이지로 이동
+                          setLocation('/login');
+                        }
                       }}
-                      className="modern-nav-link" 
+                      className="modern-nav-link text-red-300 hover:text-red-200" 
                       data-testid="link-logout"
                     >
-                      Logout
+                      로그아웃
                     </button>
                   </>
                 ) : (

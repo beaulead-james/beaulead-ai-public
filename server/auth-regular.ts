@@ -152,9 +152,23 @@ export function setupRegularAuth(app: Express) {
     }
   });
 
-  // 로그아웃 (클라이언트에서 토큰 삭제)
+  // 로그아웃 (세션과 쿠키 정리)
   app.post('/api/auth/logout', (req, res) => {
-    res.json({ message: 'Logged out successfully' });
+    try {
+      // express-session 사용 시 세션 종료
+      if (req.session) {
+        req.session.destroy(() => {});
+      }
+      
+      // 방어적으로 쿠키도 제거 (Replit Auth와 호환)
+      res.clearCookie('auth', { httpOnly: true, sameSite: 'lax', secure: true });
+      res.clearCookie('connect.sid', { httpOnly: true, sameSite: 'lax', secure: true });
+      
+      res.status(200).json({ message: 'Logged out successfully' });
+    } catch (error) {
+      // 실패해도 사용자 경험상 성공으로 처리
+      res.status(200).json({ message: 'Logged out successfully' });
+    }
   });
 
   // 임시 디버깅: 운영서버 데이터베이스 상태 확인

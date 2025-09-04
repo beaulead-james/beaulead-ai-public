@@ -1,0 +1,84 @@
+다음 변경을 한 번에 적용해줘.
+
+1) 서버에 로그아웃 API 추가
+- 파일이 server/ 또는 src/server/ 아래에 있다면 auth 라우터 파일(예: server/routes/auth.ts 또는 src/server/routes/auth.ts)에 아래 라우트를 추가.
+- 만약 auth 라우터가 없다면 server/routes/auth.ts 를 새로 만들고 app.ts(또는 index.ts)에서 '/api/auth' 프리픽스로 연결해줘.
+
+코드 (TypeScript 기준, JS면 타입 제거):
+import { Router } from "express";
+const router = Router();
+
+router.post("/logout", (req, res) => {
+  try {
+    // cookie-session 또는 express-session 사용 시
+    // 세션 종료
+    // @ts-ignore
+    req.session = null;
+
+    // 혹시 JWT를 쿠키에 함께 쓰고 있다면 방어적으로 쿠키도 제거
+    res.clearCookie("auth", { httpOnly: true, sameSite: "lax", secure: true });
+    res.status(204).end();
+  } catch (e) {
+    res.status(200).json({ ok: true }); // 실패해도 사용자 경험상 200으로 마무리
+  }
+});
+
+export default router;
+
+- app.ts(또는 server/index.ts)에 위 라우터가 없다면 추가:
+import authRouter from "./routes/auth";
+app.use("/api/auth", authRouter);
+
+2) 프런트엔드 API 유틸에 logout 함수 추가
+- 파일: client/src/lib/api.ts (없으면 생성)
+export async function logout() {
+  await fetch("/api/auth/logout", {
+    method: "POST",
+    credentials: "include"
+  });
+}
+
+3) 헤더 우측 사용자/관리 드롭다운에 '로그아웃' 메뉴 추가
+- 파일: client/src/components/layout/Header/UserMenu.tsx (또는 비슷한 드롭다운 컴포넌트)
+- 기존 '계정설정', '사이트 보기' 아래에 구분선 추가 후 '로그아웃' 항목을 넣고 클릭 시 아래 핸들러 실행:
+
+import { logout } from "@/lib/api";
+import { useNavigate } from "react-router-dom";
+
+function UserMenu() {
+  const navigate = useNavigate();
+
+  const onLogout = async () => {
+    try {
+      await logout();
+
+      // 전역 상태(Zustand/Redux/React Query 캐시) 사용 시 사용자 상태 초기화
+      // e.g. queryClient.clear(); useAuthStore.getState().reset();
+
+      navigate("/login", { replace: true });
+      // 혹은 window.location.href = "/login";
+    } catch (e) {
+      navigate("/login", { replace: true });
+    }
+  };
+
+  return (
+    // ...기존 코드
+    // 메뉴 아이템들 사이에 아래 추가
+    <>
+      {/* 기존 메뉴들: 계정설정, 사이트보기 */}
+      <div className="my-1 h-px bg-white/10" />
+      <button className="menu-item text-red-300" onClick={onLogout}>
+        로그아웃
+      </button>
+    </>
+  );
+}
+
+4) 라우팅 확인
+- /login 라우트가 존재하는지 확인하고, 보호 라우트(관리자 페이지) 진입 시 인증 없으면 /login 으로 리다이렉트하는 가드가 있는지 점검.
+- 만약 가드가 없다면, admin 레이아웃 진입 시 인증 체크(쿠키/세션 확인 실패 시 navigate("/login"))를 추가.
+
+5) 타입/빌드
+- TypeScript 프로젝트라면 서버/클라이언트 각각 타입 오류 없게 빌드 확인.
+- 변경 후 서버 재시작.
