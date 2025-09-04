@@ -1,4 +1,5 @@
 import express, { type Request, Response, NextFunction } from "express";
+import cors from "cors";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
@@ -17,6 +18,16 @@ if (!fs.existsSync(uploadsDir)) {
 }
 
 const app = express();
+
+// Trust proxy for production deployment
+app.set('trust proxy', 1);
+
+// CORS configuration for production
+app.use(cors({
+  origin: process.env.WEB_ORIGIN || 'http://localhost:5000',
+  credentials: true
+}));
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/uploads', uploadRouter);
 app.use(express.json());
