@@ -75,20 +75,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// Setup uploads route BEFORE everything else
-app.get('/uploads/*', (req, res) => {
-  const fileName = req.params['0']; // Get the filename after /uploads/
-  const filePath = path.join(__dirname, 'uploads', fileName);
-  console.log(`Serving uploads file: ${filePath}, exists: ${fs.existsSync(filePath)}`);
-  
-  if (fs.existsSync(filePath)) {
-    return res.sendFile(filePath);
-  } else {
-    console.log(`Upload file not found: ${filePath}`);
-    return res.status(404).json({ error: 'File not found' });
-  }
-});
-
 (async () => {
   const server = await registerRoutes(app);
 
@@ -104,27 +90,15 @@ app.get('/uploads/*', (req, res) => {
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
   
+  // CRITICAL: Static files must be configured BEFORE setupVite/serveStatic
+  // because those functions add catch-all routes that intercept all requests
+  app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
   app.use('/attached_assets', express.static('attached_assets'));
   
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);
   } else {
-    // In production, serve static files first, then handle client-side routing
-    app.use(express.static(path.join(__dirname, '../client/dist')));
-    
-    // Only serve the SPA for non-API, non-static file routes
-    app.get('*', (req, res, next) => {
-      // Skip if this is an API route or static file
-      if (req.path.startsWith('/api') || 
-          req.path.startsWith('/uploads') || 
-          req.path.startsWith('/attached_assets') ||
-          req.path.startsWith('/public-objects')) {
-        return next();
-      }
-      
-      // Serve the SPA
-      res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-    });
+    serveStatic(app);
   }
 
   // ALWAYS serve the app on the port specified in the environment variable PORT
