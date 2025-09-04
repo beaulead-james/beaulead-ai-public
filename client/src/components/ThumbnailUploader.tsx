@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 
 interface ThumbnailUploaderProps {
   value?: string;
@@ -11,8 +11,33 @@ export default function ThumbnailUploader({ value, onChange }: ThumbnailUploader
   const [err, setErr] = useState('');
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [isValidating, setIsValidating] = useState(false);
 
   const pick = () => inputRef.current?.click();
+
+  // 이미지 URL 유효성 검사
+  const validateImageUrl = async (url: string): Promise<boolean> => {
+    try {
+      const response = await fetch(url, { method: 'HEAD' });
+      return response.ok && (response.headers.get('content-type')?.startsWith('image/') ?? false);
+    } catch {
+      return false;
+    }
+  };
+
+  // 컴포넌트 마운트시 기존 이미지 URL 검증
+  useEffect(() => {
+    if (value && !imageLoaded && !imageError) {
+      setIsValidating(true);
+      validateImageUrl(value).then(isValid => {
+        setIsValidating(false);
+        if (!isValid) {
+          setImageError(true);
+          console.warn(`Invalid image URL: ${value}`);
+        }
+      });
+    }
+  }, [value, imageLoaded, imageError]);
 
   const onFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; 
@@ -22,8 +47,14 @@ export default function ThumbnailUploader({ value, onChange }: ThumbnailUploader
     setImageError(false);
     setImageLoaded(false);
     
+    // 파일 크기 검증
     if (file.size > 3*1024*1024) {
       return setErr('최대 3MB까지 가능합니다.');
+    }
+    
+    // 파일 타입 검증
+    if (!file.type.startsWith('image/')) {
+      return setErr('이미지 파일만 업로드 가능합니다.');
     }
     
     try {
@@ -38,14 +69,22 @@ export default function ThumbnailUploader({ value, onChange }: ThumbnailUploader
       });
       
       if (!res.ok) {
-        throw new Error(`Upload failed: ${res.status}`);
+        const errorText = await res.text();
+        throw new Error(`Upload failed: ${res.status} - ${errorText}`);
       }
       
       const data = await res.json();
+      
+      // 업로드된 URL 검증
+      const isValid = await validateImageUrl(data.url);
+      if (!isValid) {
+        throw new Error('업로드된 이미지를 확인할 수 없습니다.');
+      }
+      
       onChange(data.url);
     } catch (error) {
       console.error('Upload error:', error);
-      setErr('업로드 실패');
+      setErr(error instanceof Error ? error.message : '업로드 실패');
     } finally { 
       setBusy(false); 
     }
@@ -54,17 +93,41 @@ export default function ThumbnailUploader({ value, onChange }: ThumbnailUploader
   const handleImageLoad = () => {
     setImageLoaded(true);
     setImageError(false);
+    setIsValidating(false);
   };
 
   const handleImageError = () => {
     setImageError(true);
     setImageLoaded(false);
+    setIsValidating(false);
+    console.error(`Failed to load image: ${value}`);
   };
 
   const removeImage = () => {
     onChange('');
     setImageError(false);
     setImageLoaded(false);
+    setIsValidating(false);
+  };
+
+  const retryLoadImage = () => {
+    setImageError(false);
+    setImageLoaded(false);
+    if (value) {
+      setIsValidating(true);
+      // 이미지 재로드 트리거
+      const img = new Image();
+      img.onload = () => {
+        setImageLoaded(true);
+        setImageError(false);
+        setIsValidating(false);
+      };
+      img.onerror = () => {
+        setImageError(true);
+        setIsValidating(false);
+      };
+      img.src = value + '?t=' + Date.now(); // 캐시 무효화
+    }
   };
 
   return (
@@ -73,9 +136,12 @@ export default function ThumbnailUploader({ value, onChange }: ThumbnailUploader
         <div className='w-48 h-32 rounded-lg bg-slate-800 overflow-hidden flex items-center justify-center border border-slate-700/50 relative'>
           {value && !imageError ? (
             <>
-              {!imageLoaded && (
+              {(isValidating || !imageLoaded) && (
                 <div className="absolute inset-0 flex items-center justify-center bg-slate-800">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                  {isValidating && (
+                    <span className="absolute bottom-2 text-xs text-blue-400">검증 중...</span>
+                  )}
                 </div>
               )}
               <img 
@@ -90,11 +156,18 @@ export default function ThumbnailUploader({ value, onChange }: ThumbnailUploader
               />
             </>
           ) : imageError ? (
-            <div className="text-center p-4">
+            <div className="text-center p-4 w-full">
               <svg className="w-8 h-8 text-red-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
               </svg>
-              <p className='text-red-400 text-xs'>이미지 로딩 실패</p>
+              <p className='text-red-400 text-xs mb-2'>이미지 로딩 실패</p>
+              <button 
+                onClick={retryLoadImage}
+                className='text-xs text-blue-400 hover:text-blue-300 underline'
+                type="button"
+              >
+                다시 시도
+              </button>
             </div>
           ) : (
             <div className="text-center p-4">
@@ -117,7 +190,7 @@ export default function ThumbnailUploader({ value, onChange }: ThumbnailUploader
             </p>
           </div>
           
-          <div className='flex gap-3'>
+          <div className='flex gap-3 flex-wrap'>
             <button 
               type='button' 
               onClick={pick} 
@@ -135,7 +208,7 @@ export default function ThumbnailUploader({ value, onChange }: ThumbnailUploader
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                   </svg>
-                  이미지 선택
+                  {value ? '새 이미지 선택' : '이미지 선택'}
                 </>
               )}
             </button>
@@ -163,6 +236,15 @@ export default function ThumbnailUploader({ value, onChange }: ThumbnailUploader
                 </svg>
                 <span className='text-red-400 text-sm font-medium'>{err}</span>
               </div>
+            </div>
+          )}
+
+          {/* 디버깅 정보 (개발 환경에서만) */}
+          {process.env.NODE_ENV === 'development' && value && (
+            <div className='text-xs text-slate-500 bg-slate-800/50 p-2 rounded border-l-2 border-slate-600'>
+              <div className='font-medium mb-1'>디버그 정보:</div>
+              <div>URL: {value}</div>
+              <div>상태: {imageLoaded ? '로드됨' : imageError ? '오류' : '로딩중'}</div>
             </div>
           )}
           
