@@ -101,11 +101,15 @@ app.use((req, res, next) => {
 
   // 간단한 헬스체크 (프록시/순서 이슈 진단용)
   app.get("/api/healthz", (_req: Request, res: Response) => {
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
+    res.setHeader("Cache-Control", "no-store");
     res.json({ ok: true, from: "api/healthz" });
   });
 
   // ⚠️ API 가드: 등록되지 않은 /api/*는 HTML로 빠지지 않고 JSON 404로 고정
   app.use("/api", (_req: Request, res: Response) => {
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
+    res.setHeader("Cache-Control", "no-store");
     res.status(404).json({ ok: false, error: "API_NOT_FOUND" });
   });
 
@@ -123,7 +127,13 @@ app.use((req, res, next) => {
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);
   } else {
-    serveStatic(app);
+    // 운영환경에서 직접 SPA 정적 서빙 (HTML 캐시 방지)
+    const clientDist = path.join(process.cwd(), "client", "dist");
+    app.use(express.static(clientDist, { fallthrough: true, maxAge: "1h" }));
+    app.get("*", (_req, res) => {
+      res.setHeader("Cache-Control", "no-store"); // 🔒 HTML 캐시 방지
+      res.sendFile(path.join(clientDist, "index.html"));
+    });
   }
 
   // ALWAYS serve the app on the port specified in the environment variable PORT

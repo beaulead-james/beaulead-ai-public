@@ -1,0 +1,111 @@
+A안: 단일 서버형 배포로 고정 (권장)
+
+.replit을 “서버만” 실행하도록 고정
+(이미 있으셔도 아래처럼 최소셋 유지)
+
+applypatch << 'PATCH'
+*** Begin Patch
+*** Add File: .replit
+run = "npm run start"
+language = "nodejs"
+[env]
+NODE_ENV = "production"
+*** End Patch
+PATCH
+
+
+server/index.ts: Replit 포트 사용 보장 (이미 했어도 안전하게 다시 고정)
+
+applypatch << 'PATCH'
+*** Begin Patch
+*** Update File: server/index.ts
+@@
+-const PORT = 5000;
+-app.listen(PORT, () => {
+-  console.log(`Server is running on http://localhost:${PORT}`);
+-});
++app.set("trust proxy", 1);
++const PORT = Number(process.env.PORT || 5000);
++app.listen(PORT, () => {
++  console.log(`[server] listening on :${PORT}`);
++});
+*** End Patch
+PATCH
+
+
+index.html 캐시로 /api가 HTML로 남는 현상 방지
+CDN이 index.html을 강 캐시하면, 잘못된 HTML이 /api 경로까지 섞일 수 있어요. index.html만 no-store로 내려줍니다.
+
+applypatch << 'PATCH'
+*** Begin Patch
+*** Update File: server/index.ts
+@@
+-const clientDist = path.join(process.cwd(), "client", "dist");
+-app.use(express.static(clientDist, { fallthrough: true, maxAge: "1h" }));
+-app.get("*", (_req, res) => {
+-  res.sendFile(path.join(clientDist, "index.html"));
+-});
++const clientDist = path.join(process.cwd(), "client", "dist");
++app.use(express.static(clientDist, { fallthrough: true, maxAge: "1h" }));
++app.get("*", (_req, res) => {
++  res.setHeader("Cache-Control", "no-store"); // 🔒 HTML 캐시 방지
++  res.sendFile(path.join(clientDist, "index.html"));
++});
+*** End Patch
+PATCH
+
+
+API 응답은 항상 JSON으로 명시(안전망)
+
+applypatch << 'PATCH'
+*** Begin Patch
+*** Update File: server/index.ts
+@@
+ // ⚠️ API 가드: 등록되지 않은 /api/*는 HTML로 빠지지 않고 JSON 404로 고정
+-app.use("/api", (_req: Request, res: Response) => {
+-  res.status(404).json({ ok: false, error: "API_NOT_FOUND" });
+-});
++app.use("/api", (_req: Request, res: Response) => {
++  res.setHeader("Content-Type", "application/json; charset=utf-8");
++  res.setHeader("Cache-Control", "no-store");
++  res.status(404).json({ ok: false, error: "API_NOT_FOUND" });
++});
+*** End Patch
+PATCH
+
+
+재시작 & 건강검진
+
+npm run start & sleep 2
+echo "---- PROD CHECK ----"
+echo "브라우저로 열어 확인 → https://byurideu-ai-james1668.replit.app/api/healthz  (JSON이어야 정상)"
+echo "브라우저로 열어 확인 → https://byurideu-ai-james1668.replit.app/api/unknown-endpoint  (404 JSON이어야 정상)"
+
+
+Replit UI에서 꼭 확인
+
+Deploy 메뉴 → Deployment type: Server 선택
+
+Run command: npm run start
+
+배포 후 다시 …/api/healthz가 JSON인지 확인
+
+만약 Deploy 패널에서 타입을 고를 수 없다면, “Static”이 아닌 **“Run 버튼 실행 결과(서버)”**가 외부에 노출되도록 설정해 주세요. 핵심은 “노출되는 포트 = Express 서버” 입니다.
+
+B안: 프론트와 API 도메인 분리 (대안)
+
+지금 레플릿은 **프론트 전용(Static)**으로 두고,
+
+새 Repl을 만들어 서버 전용으로 띄운 뒤(서버 Repl의 도메인 예: api-yourapp.username.repl.co)
+
+클라이언트의 업로드/헬스체크/블로그 API 베이스 URL을 https://api-yourapp... 로 지정
+
+프론트 .env 예:
+
+VITE_API_BASE=https://api-yourapp.username.repl.co
+
+
+관리자 업로더에서:
+
+const base = import.meta.env.VITE_API_BASE ?? "";
+await fetch(`${base}/api/upload/image`, { ... });
