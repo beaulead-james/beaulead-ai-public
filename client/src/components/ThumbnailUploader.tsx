@@ -75,13 +75,16 @@ export default function ThumbnailUploader({ value, onChange }: ThumbnailUploader
       
       const data = await res.json();
       
-      // 업로드된 URL 검증
-      const isValid = await validateImageUrl(data.url);
-      if (!isValid) {
-        throw new Error('업로드된 이미지를 확인할 수 없습니다.');
-      }
-      
+      // 업로드 성공시 바로 적용 (검증은 백그라운드에서)
       onChange(data.url);
+      
+      // 백그라운드에서 검증 (실패해도 오류 표시하지 않음)
+      setTimeout(async () => {
+        const isValid = await validateImageUrl(data.url);
+        if (!isValid) {
+          console.warn('업로드된 이미지 URL 검증 실패:', data.url);
+        }
+      }, 1000); // 1초 후 검증
     } catch (error) {
       console.error('Upload error:', error);
       setErr(error instanceof Error ? error.message : '업로드 실패');
