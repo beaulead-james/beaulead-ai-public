@@ -1,0 +1,80 @@
+# 1) 업로드 폴더(운영/로컬 공통) 보장
+mkdir -p server/uploads
+
+# 2) server/index.ts 패치: /uploads 정적 서빙을 SPA fallback보다 위에 둠
+applypatch << 'PATCH'
+*** Begin Patch
+*** Update File: server/index.ts
+@@
+-import express from "express";
+-import path from "path";
++import express from "express";
++import path from "path";
++
++// 업로드 디렉토리 절대경로 (운영/로컬 동일 동작)
++const UPLOAD_DIR = path.join(process.cwd(), "server", "uploads");
+ 
+@@
+-// (기존 미들웨어들…)
++// (기존 미들웨어들…)
++
++/**
++ * ✅ 1) 업로드 정적 서빙: SPA 캐치올보다 "무조건 위"에 둬야 함
++ *    - history fallback 또는 app.get('*') 가 /uploads 를 먹는 문제 방지
++ */
++app.use(
++  "/uploads",
++  express.static(UPLOAD_DIR, {
++    index: false,
++    fallthrough: false,
++    maxAge: "7d",
++    setHeaders(res) {
++      // 일부 브라우저/프록시에서 보안 헤더 이슈 예방
++      res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
++    },
++  })
++);
+ 
+@@
+-// SPA 정적 서빙/캐치올 (예: React/Vite 빌드)
+-// ↓ 이 블록은 반드시 /uploads 정적 서빙 "이후"에 와야 함
++// SPA 정적 서빙/캐치올 (예: React/Vite 빌드)
++// ⚠️ 반드시 /uploads 정적 서빙 "이후"에 와야 함
+ const clientDist = path.join(process.cwd(), "client", "dist");
+ app.use(express.static(clientDist));
+ app.get("*", (_req, res) => {
+   res.sendFile(path.join(clientDist, "index.html"));
+ });
+*** End Patch
+PATCH
+
+# 3) (선택) history fallback을 쓰는 프로젝트라면 /uploads 제외 규칙 추가
+# history 미들웨어를 사용중인 파일(예: server/index.ts 또는 server/middlewares.ts)에 아래 패치 적용
+applypatch << 'PATCH'
+*** Begin Patch
+*** Update File: server/index.ts
+@@
+-// (history 미들웨어를 사용중이라면)
+-// app.use(history());
++// (history 미들웨어를 사용 중이라면) /api, /uploads 는 제외
++// import history from "connect-history-api-fallback";
++// app.use(history({
++//   rewrites: [
++//     { from: /^\/api\/.*/i, to: (ctx) => ctx.parsedUrl.pathname },
++//     { from: /^\/uploads\/.*/i, to: (ctx) => ctx.parsedUrl.pathname },
++//   ],
++// }));
+*** End Patch
+PATCH
+
+# 4) 재시작 & 간단 점검
+npm run build || true
+npm start & sleep 2
+
+# 로컬 헬스체크: Content-Type 이 image/* 가 떠야 정상
+curl -I "http://localhost:5000/uploads/test-nonexist.jpg" || true
+echo "위 응답이 404 Not Found 여도 Content-Type 이 text/html 이 아닌 것이 포인트입니다."
+
+# 운영 헬스체크 안내(브라우저/콘솔에서 직접 해보세요)
+echo "운영에서 다음을 확인: https://byurideu-ai-james1668.replit.app/uploads/<실제_파일명>"
+echo "개발자도구 Network 탭에서 'Type'이 image 로 표시되고, Response Headers에 Content-Type: image/jpeg(or png) 확인"
