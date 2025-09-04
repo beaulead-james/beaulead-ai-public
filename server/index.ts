@@ -8,6 +8,9 @@ import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 
+// 업로드 디렉토리 절대경로 (운영/로컬 동일 동작)
+const UPLOAD_DIR = path.join(process.cwd(), "server", "uploads");
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -84,15 +87,27 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  
-  // CRITICAL: Static files must be configured BEFORE setupVite/serveStatic
-  // because those functions add catch-all routes that intercept all requests
-  app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+  /**
+   * ✅ 1) 업로드 정적 서빙: SPA 캐치올보다 "무조건 위"에 둬야 함
+   *    - history fallback 또는 app.get('*') 가 /uploads 를 먹는 문제 방지
+   */
+  app.use(
+    "/uploads",
+    express.static(UPLOAD_DIR, {
+      index: false,
+      fallthrough: false,
+      maxAge: "7d",
+      setHeaders(res) {
+        // 일부 브라우저/프록시에서 보안 헤더 이슈 예방
+        res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+      },
+    })
+  );
+
   app.use('/attached_assets', express.static('attached_assets'));
   
+  // SPA 정적 서빙/캐치올 (예: React/Vite 빌드)
+  // ⚠️ 반드시 /uploads 정적 서빙 "이후"에 와야 함
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);
   } else {
