@@ -113,6 +113,14 @@ export function setupRegularAuth(app: Express) {
       }
       const token = generateToken(user.id, user.email, user.role);
 
+      // 세션에도 사용자 정보 저장 (cookie-session)
+      // @ts-ignore
+      req.session = {
+        userId: user.id,
+        role: user.role,
+        email: user.email
+      };
+
       res.json({
         token,
         user: {
@@ -129,18 +137,43 @@ export function setupRegularAuth(app: Express) {
     }
   });
 
-  // 현재 사용자 정보
-  app.get('/api/auth/me', requireAuth, async (req, res) => {
+  // 현재 사용자 정보 (세션 우선, JWT 대안)
+  app.get('/api/auth/me', async (req, res) => {
     try {
-      const userId = (req as any).user.claims.sub;
-      const user = await storage.getUser(userId);
+      // @ts-ignore
+      const sess = req.session || {};
+      let userId = sess.userId;
+      let userRole = sess.role;
       
+      // 세션에 정보가 없으면 JWT 토큰 확인
+      if (!userId) {
+        const authHeader = req.headers.authorization;
+        const token = authHeader && authHeader.startsWith('Bearer ') 
+          ? authHeader.slice(7) 
+          : null;
+          
+        if (token) {
+          const decoded = verifyToken(token);
+          if (decoded) {
+            userId = decoded.sub;
+            userRole = decoded.role;
+          }
+        }
+      }
+      
+      // 아직도 userId가 없으면 비로그인
+      if (!userId) {
+        return res.status(200).json({ authenticated: false });
+      }
+      
+      const user = await storage.getUser(userId);
       if (!user) {
-        return res.status(404).json({ message: 'User not found' });
+        return res.status(200).json({ authenticated: false });
       }
 
       res.json({
-        id: user.id,
+        authenticated: true,
+        userId: user.id,
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
@@ -148,19 +181,19 @@ export function setupRegularAuth(app: Express) {
       });
     } catch (error) {
       console.error('Get user error:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      res.status(200).json({ authenticated: false });
     }
   });
 
   // 로그아웃 (세션과 쿠키 정리)
   app.post('/api/auth/logout', (req, res) => {
     try {
-      // express-session 사용 시 세션 종료
-      if (req.session) {
-        req.session.destroy(() => {});
-      }
+      // cookie-session 정리
+      // @ts-ignore
+      req.session = null;
       
       // 방어적으로 쿠키도 제거 (Replit Auth와 호환)
+      res.clearCookie('sess', { httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production' });
       res.clearCookie('auth', { httpOnly: true, sameSite: 'lax', secure: true });
       res.clearCookie('connect.sid', { httpOnly: true, sameSite: 'lax', secure: true });
       

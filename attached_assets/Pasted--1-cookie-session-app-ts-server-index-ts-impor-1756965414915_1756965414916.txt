@@ -1,0 +1,124 @@
+아래 작업을 한 번에 적용해줘.
+
+1) 서버: cookie-session 및 기본 설정 강화
+- app.ts(또는 server/index.ts)에 아래 설정 추가/수정
+
+import cookieSession from "cookie-session";
+import cors from "cors";
+
+app.set("trust proxy", 1); // Replit/프록시 환경에서 secure 쿠키 신뢰
+
+// 프론트와 다른 도메인이면 origin을 정확히 지정하거나 true로 반영
+app.use(cors({
+  origin: true,           // 같은 도메인이면 생략 가능
+  credentials: true
+}));
+
+app.use(cookieSession({
+  name: "sess",
+  keys: [process.env.SESSION_SECRET || "dev_secret_change_me"],
+  httpOnly: true,
+  sameSite: "lax",        // 대개 Lax 권장
+  secure: true,           // HTTPS면 true. 로컬 http 개발 서버면 false
+  maxAge: 1000 * 60 * 60 * 24 * 7 // 7일
+}));
+
+2) 서버: 인증 미들웨어와 상태 확인 라우트 추가
+- server/middlewares/auth.ts (신규) 생성
+
+import { Request, Response, NextFunction } from "express";
+
+export function requireAuth(req: Request, res: Response, next: NextFunction) {
+  // @ts-ignore
+  if (!req.session || !req.session.userId) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  next();
+}
+
+export function requireRole(...roles: string[]) {
+  return (req: Request, res: Response, next: NextFunction) => {
+    // @ts-ignore
+    const role = req.session?.role;
+    if (!role) return res.status(401).json({ message: "Unauthorized" });
+    if (!roles.includes(role) && role !== "ADMIN") {
+      return res.status(403).json({ message: "Content management access required" });
+    }
+    next();
+  };
+}
+
+- server/routes/auth.ts에 상태 조회(me)와 기존 로그인/로그아웃 노출 확인
+
+import { Router } from "express";
+const router = Router();
+
+router.get("/me", (req, res) => {
+  // @ts-ignore
+  const sess = req.session || {};
+  // userId/role 이 없으면 비로그인
+  if (!sess.userId) return res.status(200).json({ authenticated: false });
+  return res.status(200).json({
+    authenticated: true,
+    userId: sess.userId,
+    role: sess.role
+  });
+});
+
+// (이미 구현되어 있겠지만) 로그인 시:
+// req.session = { userId: user.id, role: user.role };
+
+router.post("/logout", (req, res) => {
+  // @ts-ignore
+  req.session = null;
+  res.clearCookie("auth", { httpOnly: true, sameSite: "lax", secure: true });
+  res.status(204).end();
+});
+
+export default router;
+
+- app.ts에 라우터 연결 확인:
+import authRouter from "./routes/auth";
+app.use("/api/auth", authRouter);
+
+3) 서버: 블로그 작성 라우트에 인증/권한 미들웨어 적용
+- server/routes/blog.ts (또는 컨트롤러)에서 POST /api/blogs 보호
+
+import { requireAuth, requireRole } from "../middlewares/auth";
+
+router.post("/", requireAuth, requireRole("CONTENT"), async (req, res) => {
+  // ... 기존 생성 로직
+});
+
+4) (옵션) 최초 사용자 ADMIN 부여 확인
+- server/services/user.ts(예: upsertUser)에서 첫 유저는 role = "ADMIN"으로 저장하는 로직 확인/보강
+
+5) 클라이언트: fetch/axios에 세션 쿠키 포함
+- client/src/lib/api.ts (또는 공통 http 클라이언트) 수정/추가
+
+export async function createBlog(payload: any) {
+  const res = await fetch("/api/blogs", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+    credentials: "include"    // ★ 쿠키 포함 필수
+  });
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(res.status + ": " + txt);
+  }
+  return res.json();
+}
+
+// axios 사용 시 전역 설정:
+// axios.defaults.withCredentials = true;
+
+6) 클라이언트: 현재 인증 상태 점검 유틸 추가
+export async function fetchMe() {
+  const res = await fetch("/api/auth/me", { credentials: "include" });
+  return res.json(); // { authenticated, userId, role }
+}
+
+7) (옵션) 배포 환경에 따라 secure 쿠키 분기
+- .env or 환경 분기에서
+// production(HTTPS) => secure: true, local http 개발환경 => secure: false

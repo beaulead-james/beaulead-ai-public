@@ -1,5 +1,6 @@
 import express, { type Request, Response, NextFunction } from "express";
 import cors from "cors";
+import cookieSession from "cookie-session";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
@@ -24,8 +25,18 @@ app.set('trust proxy', 1);
 
 // CORS configuration for production
 app.use(cors({
-  origin: process.env.WEB_ORIGIN || 'http://localhost:5000',
+  origin: true,
   credentials: true
+}));
+
+// Cookie session configuration
+app.use(cookieSession({
+  name: "sess",
+  keys: [process.env.SESSION_SECRET || "dev_secret_change_me"],
+  httpOnly: true,
+  sameSite: "lax",
+  secure: process.env.NODE_ENV === "production", // HTTPS면 true, 개발환경에서는 false
+  maxAge: 1000 * 60 * 60 * 24 * 7 // 7일
 }));
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
