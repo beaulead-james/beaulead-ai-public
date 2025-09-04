@@ -12,18 +12,12 @@ const router = Router();
 
 const storage = multer.diskStorage({
   destination(_, __, cb) {
-    const dest = path.join(process.cwd(), 'server', 'uploads');
-    console.log(`Upload destination: ${dest}`);
-    if (!fs.existsSync(dest)) {
-      fs.mkdirSync(dest, { recursive: true });
-      console.log(`Created upload directory: ${dest}`);
-    }
+    const dest = path.join(__dirname, '..', 'uploads');
+    if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
     cb(null, dest);
   },
   filename(_, file, cb) {
-    const filename = (uuid() + path.extname(file.originalname || '')).toLowerCase();
-    console.log(`Uploading file: ${filename}`);
-    cb(null, filename);
+    cb(null, (uuid() + path.extname(file.originalname || '')).toLowerCase());
   },
 });
 
@@ -42,7 +36,6 @@ router.post('/image', upload.single('file'), (req, res) => {
     return res.status(400).json({ error: 'No file uploaded' });
   }
   
-  console.log(`File uploaded successfully: ${req.file.path}`);
   const url = '/uploads/' + req.file.filename;
   res.json({ url });
 });
