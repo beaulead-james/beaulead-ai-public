@@ -156,4 +156,25 @@ export function setupRegularAuth(app: Express) {
   app.post('/api/auth/logout', (req, res) => {
     res.json({ message: 'Logged out successfully' });
   });
+
+  // 임시 디버깅: 운영서버 데이터베이스 상태 확인
+  app.get('/api/debug/db-status', async (req, res) => {
+    try {
+      const userCount = await storage.getUserCount();
+      const testUser = await storage.getUserByEmail('admin@beaulead.co.kr');
+      
+      res.json({
+        databaseUrl: process.env.DATABASE_URL ? `${process.env.DATABASE_URL.slice(0, 30)}...` : 'not set',
+        userCount,
+        adminUserExists: !!testUser,
+        adminHasPassword: testUser?.password ? 'yes' : 'no',
+        nodeEnv: process.env.NODE_ENV
+      });
+    } catch (error) {
+      res.status(500).json({ 
+        error: 'Database check failed',
+        message: error.message 
+      });
+    }
+  });
 }
