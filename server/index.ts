@@ -41,10 +41,29 @@ app.use(cookieSession({
   maxAge: 1000 * 60 * 60 * 24 * 7 // 7일
 }));
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+// -------------------- 기본 미들웨어 --------------------
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true }));
 
-// Upload routes are registered in registerRoutes
+// 요청 로그 (운영 진단용)
+app.use((req: Request, _res: Response, next: NextFunction) => {
+  if (process.env.NODE_ENV === "production") {
+    console.log("[REQ]", req.method, req.url);
+  }
+  next();
+});
+
+// -------------------- 업로드 정적 서빙 (항상 최우선) --------------------
+const staticUploads = express.static(UPLOAD_DIR, {
+  index: false,
+  fallthrough: false,
+  maxAge: "7d",
+  setHeaders(res) {
+    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+  },
+});
+app.use("/uploads", staticUploads);
+app.use("/api/uploads", staticUploads);
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -77,7 +96,18 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // -------------------- API 라우트 (SPA보다 위!) --------------------
   const server = await registerRoutes(app);
+
+  // 간단한 헬스체크 (프록시/순서 이슈 진단용)
+  app.get("/api/healthz", (_req: Request, res: Response) => {
+    res.json({ ok: true, from: "api/healthz" });
+  });
+
+  // ⚠️ API 가드: 등록되지 않은 /api/*는 HTML로 빠지지 않고 JSON 404로 고정
+  app.use("/api", (_req: Request, res: Response) => {
+    res.status(404).json({ ok: false, error: "API_NOT_FOUND" });
+  });
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
@@ -87,26 +117,9 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  /**
-   * ✅ 업로드 정적 서빙: /uploads 와 /api/uploads 모두 제공
-   *    - 일부 환경에서 /api만 백엔드로 프록시될 수 있어 이중 마운트로 안정화
-   *    - 반드시 SPA 캐치올보다 위에 둡니다.
-   */
-  const staticUploads = express.static(UPLOAD_DIR, {
-    index: false,
-    fallthrough: false,
-    maxAge: "7d",
-    setHeaders(res) {
-      res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
-    },
-  });
-  app.use("/uploads", staticUploads);
-  app.use("/api/uploads", staticUploads);
-
   app.use('/attached_assets', express.static('attached_assets'));
   
-  // SPA 정적 서빙/캐치올 (예: React/Vite 빌드)
-  // ⚠️ 반드시 /uploads 정적 서빙 "이후"에 와야 함
+  // -------------------- SPA 정적 서빙 (항상 마지막) --------------------
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);
   } else {
