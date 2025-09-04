@@ -186,6 +186,34 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
 }
 
 function Sidebar() {
+  // 로그인된 사용자 정보 가져오기
+  const getUserInfo = () => {
+    try {
+      const userData = localStorage.getItem('userData');
+      if (userData) {
+        const user = JSON.parse(userData);
+        return {
+          name: user.firstName && user.lastName 
+            ? `${user.firstName} ${user.lastName}` 
+            : '관리자',
+          email: user.email || 'admin@beaulead.co.kr',
+          role: user.role || 'ADMIN'
+        };
+      }
+    } catch (error) {
+      console.error('Failed to parse user data:', error);
+    }
+    
+    // 기본값 반환
+    return {
+      name: '관리자',
+      email: 'admin@beaulead.co.kr',
+      role: 'ADMIN'
+    };
+  };
+
+  const userInfo = getUserInfo();
+  
   return (
     <div className="flex h-full flex-col">
       {/* Sidebar Header */}
@@ -216,15 +244,17 @@ function Sidebar() {
         </NavGroup>
       </nav>
       
-      {/* Sidebar Footer */}
+      {/* Sidebar Footer - 실제 로그인 사용자 정보 표시 */}
       <div className="p-4 border-t">
         <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
           <div className="h-8 w-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-xs">BL</span>
+            <span className="text-white font-bold text-xs">
+              {userInfo.name.charAt(0).toUpperCase()}
+            </span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate">관리자</p>
-            <p className="text-xs text-muted-foreground truncate">admin@beaulead.ai</p>
+            <p className="text-sm font-medium truncate">{userInfo.name}</p>
+            <p className="text-xs text-muted-foreground truncate">{userInfo.email}</p>
           </div>
         </div>
       </div>
