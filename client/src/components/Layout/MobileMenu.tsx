@@ -1,6 +1,7 @@
-import { Link } from 'wouter';
+import { Link, useLocation } from 'wouter';
 import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { logout } from '../../lib/api';
 import '../../styles/hero.css';
 
 interface MobileMenuProps {
@@ -9,8 +10,9 @@ interface MobileMenuProps {
 }
 
 export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const { t } = useLanguage();
+  const [, setLocation] = useLocation();
 
   if (!isOpen) return null;
 
@@ -82,12 +84,32 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         <div className="pt-4 mt-4 border-t border-white/20">
           {isAuthenticated ? (
             <>
-              <Link href="/dashboard" className="modern-cta-btn block text-center mb-3" onClick={handleLinkClick} data-testid="link-mobile-dashboard">
-                {t.nav.dashboard}
-              </Link>
-              <a href="/api/logout" className="mobile-menu-item" data-testid="link-mobile-logout">
-                Logout
-              </a>
+              {user?.role === 'ADMIN' ? (
+                <Link href="/admin" className="modern-cta-btn block text-center mb-3" onClick={handleLinkClick} data-testid="link-mobile-admin">
+                  관리자 대시보드
+                </Link>
+              ) : (
+                <Link href="/dashboard" className="modern-cta-btn block text-center mb-3" onClick={handleLinkClick} data-testid="link-mobile-dashboard">
+                  {t.nav.dashboard}
+                </Link>
+              )}
+              <div className="my-3 h-px bg-white/10"></div>
+              <button 
+                onClick={async () => {
+                  try {
+                    await logout();
+                    onClose();
+                    setLocation('/login');
+                  } catch (error) {
+                    onClose();
+                    setLocation('/login');
+                  }
+                }}
+                className="mobile-menu-item text-red-300 w-full text-left" 
+                data-testid="button-mobile-logout"
+              >
+                로그아웃
+              </button>
             </>
           ) : (
             <a href="/api/login" className="modern-cta-btn block text-center" data-testid="link-mobile-signin">
