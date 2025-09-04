@@ -23,32 +23,53 @@ export default function Login() {
     e.preventDefault();
     setIsLoading(true);
 
-    // 관리자 계정 확인
-    if (formData.email === 'admin' && formData.password === 'admin') {
-      // 세션에 관리자 정보 저장
-      localStorage.setItem('user', JSON.stringify({
-        id: 'admin-123',
-        email: 'admin@beauleadai.co.kr',
-        firstName: 'Admin',
-        lastName: 'User',
-        role: 'ADMIN'
-      }));
+    try {
+      console.log('Attempting login with:', formData.email);
       
-      toast({
-        title: "로그인 성공",
-        description: "관리자로 로그인되었습니다.",
+      // 실제 JWT 인증 API 호출
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
       });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || '로그인에 실패했습니다');
+      }
+
+      const result = await response.json();
       
-      setLocation('/admin');
-    } else {
+      // JWT 토큰을 localStorage에 저장
+      localStorage.setItem('authToken', result.token);
+      localStorage.setItem('userData', JSON.stringify(result.user));
+
       toast({
-        title: "로그인 실패",
-        description: "이메일 또는 비밀번호가 올바르지 않습니다.",
-        variant: "destructive",
+        title: '로그인 성공',
+        description: `${result.user.role === 'ADMIN' ? '관리자' : '사용자'}로 로그인되었습니다.`,
       });
+
+      // 관리자면 관리자 페이지로, 일반 사용자면 대시보드로 이동
+      if (result.user.role === 'ADMIN') {
+        setLocation('/admin');
+      } else {
+        setLocation('/dashboard');
+      }
+    } catch (error: any) {
+      console.error('Login error:', error);
+      toast({
+        title: '로그인 실패',
+        description: error.message || '로그인 중 오류가 발생했습니다.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
     }
-    
-    setIsLoading(false);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -158,9 +179,9 @@ export default function Login() {
 
             {/* Demo credentials hint */}
             <div className="mt-6 p-4 bg-white/5 rounded-lg border border-white/10">
-              <p className="text-xs text-white/70 text-center mb-2">데모 계정:</p>
-              <p className="text-xs text-white/60 text-center">이메일: admin</p>
-              <p className="text-xs text-white/60 text-center">비밀번호: admin</p>
+              <p className="text-xs text-white/70 text-center mb-2">관리자 계정:</p>
+              <p className="text-xs text-white/60 text-center">이메일: admin@beaulead.co.kr</p>
+              <p className="text-xs text-white/60 text-center">비밀번호: admin123</p>
             </div>
           </CardContent>
         </Card>
