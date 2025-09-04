@@ -1,0 +1,77 @@
+# 1) 서버가 Replit의 PORT에서 듣도록 보장 (5000 하드코딩 금지)
+applypatch << 'PATCH'
+*** Begin Patch
+*** Update File: server/index.ts
+@@
+-const PORT = 5000;
+-app.listen(PORT, () => {
+-  console.log(\`Server is running on http://localhost:\${PORT}\`);
+-});
++app.set("trust proxy", 1);
++const PORT = Number(process.env.PORT || 5000);
++app.listen(PORT, () => {
++  console.log(`[server] listening on :${PORT}`);
++});
+*** End Patch
+PATCH
+
+# 2) .replit (또는 replit.yaml) 생성/수정: "서버만" 띄우도록 고정
+#   - Replit이 프론트 dev서버를 띄우지 않고, Express가 정적/SPA + API 모두 제공
+applypatch << 'PATCH'
+*** Begin Patch
+*** Add File: .replit
+run = "npm run start"
+language = "nodejs"
+[env]
+NODE_ENV = "production"
+*** End Patch
+PATCH
+
+# 3) package.json 스크립트 정리: 클라이언트 빌드 → 서버 시작 (한 포트 전략)
+#    - 프로젝트마다 경로가 조금 다를 수 있으니, 이미 있는 스크립트 이름과 충돌 없게 "start"만 확정
+applypatch << 'PATCH'
+*** Begin Patch
+*** Update File: package.json
+@@
+   "scripts": {
+-    "start": "node dist/server/index.js"
++    "build:client": "vite build || echo \"skip vite build\"",
++    "build:server": "tsc -p server || echo \"skip tsc server\"",
++    "build": "npm run build:client && npm run build:server",
++    "start": "npm run build && node dist/server/index.js"
+   }
+*** End Patch
+PATCH
+
+# 4) 서버가 클라이언트 빌드 파일을 서빙하도록(이미 설정돼 있다면 그대로 두고, 없으면 추가)
+#    - SPA 캐치올은 /uploads, /api 뒤에 와야 하는 건 기존대로 유지
+applypatch << 'PATCH'
+*** Begin Patch
+*** Update File: server/index.ts
+@@
+-const clientDist = path.join(process.cwd(), "client", "dist");
+-app.use(express.static(clientDist));
+-app.get("*", (_req, res) => {
+-  res.sendFile(path.join(clientDist, "index.html"));
+-});
++const clientDist = path.join(process.cwd(), "client", "dist");
++app.use(express.static(clientDist, { fallthrough: true, maxAge: "1h" }));
++app.get("*", (_req, res) => {
++  res.sendFile(path.join(clientDist, "index.html"));
++});
+*** End Patch
+PATCH
+
+# 5) 재시작
+npm run start & sleep 2
+
+# 6) 빠른 헬스체크(운영/로컬 공통)
+echo "---- LOCAL ----"
+curl -sS http://localhost:${PORT:-5000}/api/healthz || true
+echo
+curl -I  http://localhost:${PORT:-5000}/uploads/does-not-exist.jpg || true
+curl -sS -o /dev/null -w "%{http_code}\n" http://localhost:${PORT:-5000}/api/unknown-endpoint
+
+echo "---- PROD (브라우저에서 확인) ----"
+echo "https://byurideu-ai-james1668.replit.app/api/healthz  => JSON 이어야 정상"
+echo "https://byurideu-ai-james1668.replit.app/uploads/<실제파일> => Type: image, Content-Type: image/*"
