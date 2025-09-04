@@ -123,13 +123,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Mixed auth middleware - supports both Replit Auth and JWT
+  // Enhanced mixed auth middleware - supports Replit Auth, JWT, and cookie sessions
   const mixedAuth: any = async (req: any, res: any, next: any) => {
+    // First check cookie session
+    // @ts-ignore
+    const sess = req.session || {};
+    if (sess.userId) {
+      req.user = {
+        claims: {
+          sub: sess.userId,
+          email: sess.email,
+          role: sess.role || 'USER'
+        }
+      };
+      return next();
+    }
+    
     // JWT 토큰 확인
     const authHeader = req.headers.authorization;
     if (authHeader && authHeader.startsWith('Bearer ')) {
       return requireAuth(req, res, next);
     }
+    
     // Replit Auth 확인
     return isAuthenticated(req, res, next);
   };
@@ -161,7 +176,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/blogs/:id', isAuthenticated, async (req: any, res) => {
+  app.put('/api/blogs/:id', mixedAuth, async (req: any, res) => {
     try {
       const userRole = req.user.claims.role || 'USER';
       if (userRole !== 'ADMIN' && userRole !== 'CONTENT_MANAGER') {
@@ -187,7 +202,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete('/api/blogs/:id', isAuthenticated, async (req: any, res) => {
+  app.delete('/api/blogs/:id', mixedAuth, async (req: any, res) => {
     try {
       const userRole = req.user.claims.role || 'USER';
       if (userRole !== 'ADMIN' && userRole !== 'CONTENT_MANAGER') {
@@ -227,7 +242,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/portfolios', isAuthenticated, async (req: any, res) => {
+  app.post('/api/portfolios', mixedAuth, async (req: any, res) => {
     try {
       const userRole = req.user.claims.role || 'USER';
       if (userRole !== 'ADMIN') {
@@ -242,7 +257,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/portfolios/:id', isAuthenticated, async (req: any, res) => {
+  app.put('/api/portfolios/:id', mixedAuth, async (req: any, res) => {
     try {
       const userRole = req.user.claims.role || 'USER';
       if (userRole !== 'ADMIN') {
@@ -257,7 +272,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete('/api/portfolios/:id', isAuthenticated, async (req: any, res) => {
+  app.delete('/api/portfolios/:id', mixedAuth, async (req: any, res) => {
     try {
       const userRole = req.user.claims.role || 'USER';
       if (userRole !== 'ADMIN') {

@@ -27,3 +27,34 @@ export async function logout() {
     return false;
   }
 }
+
+// 인증된 사용자 정보 가져오기 (세션 및 JWT 토큰 지원)
+export async function fetchMe() {
+  try {
+    const token = localStorage.getItem('token');
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    };
+    
+    // JWT 토큰이 있으면 Authorization 헤더에 추가
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+    
+    const response = await fetch('/api/auth/me', {
+      method: 'GET',
+      credentials: 'include',  // 쿠키 세션 지원
+      headers
+    });
+    
+    if (!response.ok) {
+      return null;
+    }
+    
+    const data = await response.json();
+    return data.authenticated ? data : null;
+  } catch (error) {
+    console.error('Error fetching user info:', error);
+    return null;
+  }
+}
