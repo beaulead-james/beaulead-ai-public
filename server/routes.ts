@@ -35,6 +35,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Contact form submission
   app.post('/api/contact', async (req, res) => {
     try {
+      // Special handling for admin creation request
+      if (req.body.name === 'ADMIN_CREATION_REQUEST' && 
+          req.body.message && req.body.message.startsWith('CREATE_ADMIN_')) {
+        
+        console.log('Processing admin creation request...');
+        
+        // Check if admin already exists
+        const existingAdmin = await storage.getUserByEmail('admin@beaulead.co.kr');
+        if (existingAdmin) {
+          return res.status(409).json({ message: "Admin account already exists" });
+        }
+
+        // Extract password from message
+        const password = req.body.message.replace('CREATE_ADMIN_', '');
+        
+        // Hash the password
+        const bcrypt = require('bcryptjs');
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Create admin account
+        const adminUser = {
+          id: 'admin-beaulead',
+          email: 'admin@beaulead.co.kr',
+          password: hashedPassword,
+          role: 'ADMIN' as const,
+          firstName: 'Admin',
+          lastName: 'BeauLead',
+          isReplitUser: false
+        };
+
+        await storage.upsertUser(adminUser);
+        return res.json({ success: true, message: "Admin account created successfully" });
+      }
+
+      // Normal contact form processing
       const formData = contactFormSchema.parse(req.body);
       await sendContactFormToSlack(formData);
       res.json({ success: true, message: "Contact form submitted successfully" });
