@@ -21,8 +21,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   await setupAuth(app);
   setupRegularAuth(app);
 
-  // Upload routes
-  app.use('/api/uploads', uploadRoutes);
+  // Upload routes (API endpoint)
+  app.use('/api/upload', uploadRoutes);
 
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
