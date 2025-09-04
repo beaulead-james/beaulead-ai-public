@@ -5,6 +5,7 @@ import { setupAuth, isAuthenticated } from "./replitAuth";
 import { setupRegularAuth, requireAuth } from "./auth-regular";
 import { sendContactFormToSlack } from "./services/slack";
 import { ObjectStorageService } from "./objectStorage";
+import uploadRoutes from "./routes/upload";
 import { z } from "zod";
 
 const contactFormSchema = z.object({
@@ -19,6 +20,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware - both Replit Auth and regular login
   await setupAuth(app);
   setupRegularAuth(app);
+
+  // Upload routes
+  app.use('/api/uploads', uploadRoutes);
 
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
