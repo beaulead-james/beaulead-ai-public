@@ -27,6 +27,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useToast } from '@/hooks/use-toast'
 import { apiRequest, queryClient } from '@/lib/queryClient'
+import { logout } from '@/lib/api'
 import { BlogEditor } from "@/components/BlogEditor"
 import { QuillBlogEditor } from "@/components/QuillBlogEditor"
 import { useForm } from 'react-hook-form'
@@ -37,7 +38,7 @@ import {
   BarChart3, LayoutDashboard, Users, Settings,
   Menu, Globe, Sun, Moon, FileText, Briefcase, MailSearch,
   TrendingUp, TrendingDown, Eye, MousePointer, Clock,
-  DollarSign, Target, Zap, Calendar, Save, ArrowLeft
+  DollarSign, Target, Zap, Calendar, Save, ArrowLeft, LogOut
 } from 'lucide-react'
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, LineChart, Line, BarChart, Bar } from 'recharts'
 
@@ -111,8 +112,18 @@ function useDarkMode() {
 
 // ---------------------- 레이아웃 ----------------------
 function AdminLayout({ children }: { children: React.ReactNode }) {
-  const [location] = useLocation()
+  const [location, setLocation] = useLocation()
   const { isDark, setIsDark } = useDarkMode()
+
+  // 로그아웃 핸들러
+  const handleLogout = async () => {
+    try {
+      await logout()
+      setLocation('/login')
+    } catch (error) {
+      setLocation('/login')
+    }
+  }
   return (
     <div className="min-h-screen w-full bg-background text-foreground">
       {/* Modern Header */}
@@ -164,6 +175,10 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/" className="flex items-center gap-2"><Globe className="h-4 w-4"/>사이트 보기</Link>
+                </DropdownMenuItem>
+                <div className="h-px bg-border my-1"></div>
+                <DropdownMenuItem onClick={handleLogout} className="flex items-center gap-2 text-red-600 hover:text-red-700 focus:text-red-700">
+                  <LogOut className="h-4 w-4"/>로그아웃
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
