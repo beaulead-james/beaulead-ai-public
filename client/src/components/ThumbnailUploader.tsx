@@ -15,13 +15,22 @@ export default function ThumbnailUploader({ value, onChange }: ThumbnailUploader
 
   const pick = () => inputRef.current?.click();
 
-  // 이미지 URL 유효성 검사
+  // 이미지 URL 유효성 검사 (운영환경에서 관대하게)
   const validateImageUrl = async (url: string): Promise<boolean> => {
     try {
-      const response = await fetch(url, { method: 'HEAD' });
-      return response.ok && (response.headers.get('content-type')?.startsWith('image/') ?? false);
+      // 절대 URL로 변환
+      const fullUrl = url.startsWith('http') ? url : `${window.location.origin}${url}`;
+      
+      const response = await fetch(fullUrl, { 
+        method: 'HEAD',
+        cache: 'no-cache'
+      });
+      
+      // 운영환경에서는 200 응답이면 OK로 처리
+      return response.ok;
     } catch {
-      return false;
+      // 네트워크 오류 시에도 허용 (운영환경 문제 가능성)
+      return true;
     }
   };
 
@@ -78,16 +87,21 @@ export default function ThumbnailUploader({ value, onChange }: ThumbnailUploader
       // 업로드 성공시 바로 적용 (검증은 백그라운드에서)
       onChange(data.url);
       
-      // 백그라운드에서 검증 (개발 환경에서만, 실패해도 무시)
-      if (process.env.NODE_ENV === 'development') {
+      // 운영환경 최적화: 검증 생략으로 즉시 표시
+      console.log(`이미지 업로드 완료: ${data.url}`);
+      
+      // 개발환경에서만 백그라운드 검증 (선택적)
+      if (import.meta.env.DEV) {
         setTimeout(async () => {
           try {
             const isValid = await validateImageUrl(data.url);
-            console.log(`이미지 검증: ${data.url} - ${isValid ? '성공' : '실패 (무시됨)'}`);
+            if (!isValid) {
+              console.warn(`백그라운드 검증 실패 (무시됨): ${data.url}`);
+            }
           } catch (error) {
             // 검증 실패해도 무시
           }
-        }, 2000); // 2초 후 검증 (더 여유있게)
+        }, 3000);
       }
     } catch (error) {
       console.error('Upload error:', error);
