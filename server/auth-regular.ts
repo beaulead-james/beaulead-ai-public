@@ -68,20 +68,36 @@ export function setupRegularAuth(app: Express) {
   app.post('/api/auth/login', async (req, res) => {
     try {
       const { email, password } = req.body;
+      console.log('[DEBUG] Login attempt:', { email, hasPassword: !!password });
       
       if (!email || !password) {
+        console.log('[DEBUG] Missing email or password');
         return res.status(400).json({ message: 'Email and password are required' });
       }
 
       // 이메일로 사용자 찾기
       const user = await storage.getUserByEmail(email);
+      console.log('[DEBUG] User lookup result:', { 
+        found: !!user, 
+        hasPassword: user?.password ? 'yes' : 'no',
+        userRole: user?.role 
+      });
+      
       if (!user || !user.password) {
+        console.log('[DEBUG] No user found or no password');
         return res.status(401).json({ message: 'Invalid credentials' });
       }
 
       // 패스워드 검증
       const isValidPassword = await verifyPassword(password, user.password);
+      console.log('[DEBUG] Password verification:', { 
+        isValid: isValidPassword,
+        inputLength: password.length,
+        hashLength: user.password.length 
+      });
+      
       if (!isValidPassword) {
+        console.log('[DEBUG] Password verification failed');
         return res.status(401).json({ message: 'Invalid credentials' });
       }
 
