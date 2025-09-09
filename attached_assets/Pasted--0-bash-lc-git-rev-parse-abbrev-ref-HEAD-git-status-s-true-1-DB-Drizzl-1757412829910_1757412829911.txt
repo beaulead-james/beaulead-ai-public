@@ -1,0 +1,261 @@
+# 0) 상태 확인(선택)
+bash -lc 'git rev-parse --abbrev-ref HEAD; git status -s || true'
+
+# 1) DB 스키마(Drizzle) 확장: portfolios 테이블에 category/tags/contentKo/contentEn 추가
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: shared/schema.ts
+@@
+ export const portfolios = pgTable("portfolios", {
+   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+   slug: varchar("slug").unique().notNull(),
+   titleKo: text("title_ko").notNull(),
+   titleEn: text("title_en").notNull(),
+   summaryKo: text("summary_ko").notNull(),
+   summaryEn: text("summary_en").notNull(),
++  // === 새 필드들 ===
++  category: varchar("category"),         // 예: 웹사이트 제작, 퍼포먼스 마케팅 등
++  tags: jsonb("tags"),                   // string[] 형태로 저장
++  contentKo: text("content_ko"),         // 본문(국문)
++  contentEn: text("content_en"),         // 본문(영문)
+   metrics: jsonb("metrics"), // Store performance metrics
+   thumbUrl: varchar("thumb_url"),
+   images: jsonb("images"), // Array of image URLs
+   published: boolean("published").default(true),
+   createdAt: timestamp("created_at").defaultNow(),
+   updatedAt: timestamp("updated_at").defaultNow(),
+ });
+*** End Patch
+PATCH
+
+# 2) 서버에서 컬럼이 없는 경우 자동 추가(운영/개발 모두 안전)
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: server/routes.ts
+@@
+   app.use('/api/upload', uploadRoutes);
+@@
++  // ---- portfolios 컬럼 보강 (존재하지 않으면 추가) ----
++  try {
++    await db.execute(sql`ALTER TABLE portfolios ADD COLUMN IF NOT EXISTS category varchar;`);
++    await db.execute(sql`ALTER TABLE portfolios ADD COLUMN IF NOT EXISTS tags jsonb;`);
++    await db.execute(sql`ALTER TABLE portfolios ADD COLUMN IF NOT EXISTS content_ko text;`);
++    await db.execute(sql`ALTER TABLE portfolios ADD COLUMN IF NOT EXISTS content_en text;`);
++  } catch (e) {
++    console.warn('[portfolios] column alter skipped:', e);
++  }
+*** End Patch
+PATCH
+
+# 3) 태그 입력 컴포넌트 추가(간단 토큰 입력)
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Add File: client/src/components/TagsInput.tsx
++import { useState } from "react";
++import { Input } from "@/components/ui/input";
++import { Badge } from "@/components/ui/badge";
++import { X } from "lucide-react";
++
++export default function TagsInput({
++  value = [],
++  onChange,
++  placeholder = "태그 입력 후 Enter",
++}: { value?: string[]; onChange?: (v: string[]) => void; placeholder?: string }) {
++  const [draft, setDraft] = useState("");
++  const add = (t: string) => {
++    const v = t.trim();
++    if (!v) return;
++    const next = Array.from(new Set([...(value||[]), v]));
++    onChange?.(next);
++    setDraft("");
++  };
++  const remove = (t: string) => onChange?.((value||[]).filter(x => x !== t));
++  return (
++    <div className="space-y-2">
++      <div className="flex flex-wrap gap-2">
++        {(value||[]).map(t => (
++          <Badge key={t} variant="secondary" className="gap-1">
++            {t}
++            <X className="w-3 h-3 cursor-pointer" onClick={()=>remove(t)} />
++          </Badge>
++        ))}
++      </div>
++      <Input
++        value={draft}
++        placeholder={placeholder}
++        onChange={(e)=>setDraft(e.target.value)}
++        onKeyDown={(e)=>{ if(e.key==='Enter'){ e.preventDefault(); add(draft);} }}
++      />
++    </div>
++  )
++}
+*** End Patch
+PATCH
+
+# 4) 포트폴리오 폼 확장: 카테고리/태그/본문(Quill 에디터) 추가
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: client/src/components/PortfolioForm.tsx
+@@
+-import { useState, useEffect } from 'react';
++import { useState, useEffect } from 'react';
+@@
+-import { Button } from '@/components/ui/button';
++import { Button } from '@/components/ui/button';
+ import { Switch } from '@/components/ui/switch';
+ import { Label } from '@/components/ui/label';
+ import { useToast } from '@/hooks/use-toast';
+ import { apiRequest, queryClient } from '@/lib/queryClient';
+ import ThumbnailUploader from '@/components/ThumbnailUploader';
++import TagsInput from '@/components/TagsInput';
++import QuillBlogEditor from '@/components/QuillBlogEditor';
++import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+@@
+ export type PortfolioPayload = {
+   titleKo: string; titleEn: string;
+   summaryKo: string; summaryEn: string;
+   slug?: string;
+   thumbUrl?: string;
+   images?: string[];
+   published?: boolean;
++  category?: string;
++  tags?: string[];
++  contentKo?: string;
++  contentEn?: string;
+ }
+@@
+   const [payload, setPayload] = useState<PortfolioPayload>({
+     titleKo: '', titleEn: '',
+     summaryKo: '', summaryEn: '',
+-    slug: '', thumbUrl: '', images: [],
++    slug: '', thumbUrl: '', images: [],
++    category: '',
++    tags: [],
++    contentKo: '',
++    contentEn: '',
+     published: false,
+   });
+@@
+       setPayload({
+         titleKo: detail.titleKo ?? '',
+         titleEn: detail.titleEn ?? '',
+         summaryKo: detail.summaryKo ?? '',
+         summaryEn: detail.summaryEn ?? '',
+         slug: detail.slug ?? '',
+         thumbUrl: detail.thumbUrl ?? '',
+         images: detail.images ?? [],
++        category: detail.category ?? '',
++        tags: detail.tags ?? [],
++        contentKo: detail.contentKo ?? '',
++        contentEn: detail.contentEn ?? '',
+         published: !!detail.published,
+       });
+     }
+   }, [detail]);
+@@
+   return (
+     <form onSubmit={onSubmit} className="space-y-6">
++      {/* 0. 카테고리/태그 */}
++      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
++        <div>
++          <Label>카테고리</Label>
++          <Select value={payload.category||''} onValueChange={(v)=>setPayload(p=>({...p, category:v}))}>
++            <SelectTrigger><SelectValue placeholder="카테고리 선택" /></SelectTrigger>
++            <SelectContent>
++              <SelectItem value="performance">퍼포먼스 마케팅</SelectItem>
++              <SelectItem value="website">웹사이트 제작</SelectItem>
++              <SelectItem value="branding">브랜딩/크리에이티브</SelectItem>
++              <SelectItem value="consulting">컨설팅</SelectItem>
++            </SelectContent>
++          </Select>
++        </div>
++        <div className="md:col-span-2">
++          <Label>태그</Label>
++          <TagsInput value={payload.tags||[]} onChange={(v)=>setPayload(p=>({...p, tags:v}))} />
++        </div>
++      </div>
+@@
+       <div>
+         <Label>썸네일</Label>
+         <div className="mt-2">
+           <ThumbnailUploader value={payload.thumbUrl} onChange={(url)=>setPayload(p=>({...p, thumbUrl:url}))}/>
+         </div>
+       </div>
++
++      {/* 4. 본문(국문/영문) */}
++      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
++        <div>
++          <Label>본문(국문)</Label>
++          <div className="mt-2 bg-white rounded">
++            <QuillBlogEditor value={payload.contentKo||''} onChange={(html)=>setPayload(p=>({...p, contentKo:html}))}/>
++          </div>
++        </div>
++        <div>
++          <Label>본문(영문)</Label>
++          <div className="mt-2 bg-white rounded">
++            <QuillBlogEditor value={payload.contentEn||''} onChange={(html)=>setPayload(p=>({...p, contentEn:html}))}/>
++          </div>
++        </div>
++      </div>
+*** End Patch
+PATCH
+
+# 5) 서버 API: create/update 시 새 필드 수집 보장 (body 그대로 전달하되 기본값 보정)
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: server/routes.ts
+@@
+   app.post('/api/portfolios', mixedAuth, async (req: any, res) => {
+     try {
+       const userRole = req.user.claims.role || 'USER';
+       if (userRole !== 'ADMIN') {
+         return res.status(403).json({ message: "Admin access required" });
+       }
+-      const portfolio = await storage.createPortfolio(req.body);
++      const payload = {
++        ...req.body,
++        tags: Array.isArray(req.body?.tags) ? req.body.tags : (req.body?.tags ? [req.body.tags].flat() : []),
++        category: req.body?.category || null,
++        contentKo: req.body?.contentKo || null,
++        contentEn: req.body?.contentEn || null,
++      };
++      const portfolio = await storage.createPortfolio(payload as any);
+       res.status(201).json(portfolio);
+     } catch (error) {
+       console.error("Error creating portfolio:", error);
+       res.status(500).json({ message: "Failed to create portfolio" });
+     }
+   });
+@@
+-  app.put('/api/portfolios/:id', mixedAuth, async (req: any, res) => {
++  app.put('/api/portfolios/:id', mixedAuth, async (req: any, res) => {
+     try {
+       const userRole = req.user.claims.role || 'USER';
+       if (userRole !== 'ADMIN') {
+         return res.status(403).json({ message: "Admin access required" });
+       }
+-
+-      const portfolio = await storage.updatePortfolio(req.params.id, req.body);
++      const payload = {
++        ...req.body,
++        tags: Array.isArray(req.body?.tags) ? req.body.tags : (req.body?.tags ? [req.body.tags].flat() : []),
++        category: req.body?.category || null,
++        contentKo: req.body?.contentKo || null,
++        contentEn: req.body?.contentEn || null,
++      };
++      const portfolio = await storage.updatePortfolio(req.params.id, payload as any);
+       res.json(portfolio);
+     } catch (error) {
+       console.error("Error updating portfolio:", error);
+       res.status(500).json({ message: "Failed to update portfolio" });
+     }
+   });
+*** End Patch
+PATCH
+
+# 6) 빌드 & 재시작
+bash -lc 'npm run build --silent || true'
+bash -lc 'pkill -f "node" || true; npm start --silent & sleep 2'
+
+# 7) 간단 API 확인
+bash -lc 'curl -sS http://localhost:$PORT/api/portfolios | head -c 400 || true'
