@@ -1,0 +1,129 @@
+# 0) 참고: 바꿀 것과 안 바꿀 것
+# - href="/contact", to="/contact", window.location.href="/contact"  ✅ → "/inquiry"로 변경
+# - '/api/contact', '/api/contacts'                                  ❌ → 그대로 유지
+
+# 1) 파일별 정확 패치
+apply_patch <<'PATCH'
+*** Begin Patch
+*** Update File: client/src/pages/About/Leadership.tsx
+@@
+-                href="/contact" 
++                href="/inquiry" 
+*** End Patch
+PATCH
+
+apply_patch <<'PATCH'
+*** Begin Patch
+*** Update File: client/src/pages/Services/Services.tsx
+@@
+-                href="/contact" 
++                href="/inquiry" 
+*** End Patch
+PATCH
+
+apply_patch <<'PATCH'
+*** Begin Patch
+*** Update File: client/src/pages/Services/GoogleAds.tsx
+@@
+-                    href="/contact" 
++                    href="/inquiry" 
+@@
+-                href="/contact" 
++                href="/inquiry" 
+*** End Patch
+PATCH
+
+apply_patch <<'PATCH'
+*** Begin Patch
+*** Update File: client/src/pages/Services/NaverAds.tsx
+@@
+-                    href="/contact" 
++                    href="/inquiry" 
+@@
+-                href="/contact" 
++                href="/inquiry" 
+*** End Patch
+PATCH
+
+apply_patch <<'PATCH'
+*** Begin Patch
+*** Update File: client/src/pages/Services/MetaAds.tsx
+@@
+-                    href="/contact" 
++                    href="/inquiry" 
+@@
+-                href="/contact" 
++                href="/inquiry" 
+*** End Patch
+PATCH
+
+apply_patch <<'PATCH'
+*** Begin Patch
+*** Update File: client/src/pages/Services/KakaoAds.tsx
+@@
+-                    href="/contact" 
++                    href="/inquiry" 
+@@
+-                href="/contact" 
++                href="/inquiry" 
+*** End Patch
+PATCH
+
+apply_patch <<'PATCH'
+*** Begin Patch
+*** Update File: client/src/pages/Portfolio/PortfolioList.tsx
+@@
+-                    href="/contact"
++                    href="/inquiry"
+*** End Patch
+PATCH
+
+apply_patch <<'PATCH'
+*** Begin Patch
+*** Update File: client/src/pages/Portfolio/PortfolioItem.tsx
+@@
+-                  href="/contact"
++                  href="/inquiry"
+*** End Patch
+PATCH
+
+apply_patch <<'PATCH'
+*** Begin Patch
+*** Update File: client/src/pages/Inquiry/ProjectInquiry.tsx
+@@
+-                    onClick={() => window.location.href = "/contact"}
++                    onClick={() => window.location.href = "/inquiry"}
+*** End Patch
+PATCH
+
+# 2) 혹시 남아 있을 잔여 링크를 안전 치환(소스 전체를 스캔하되 API는 제외)
+bash -lc '
+set -e
+for f in $(grep -RIl --exclude-dir=dist --exclude-dir=node_modules "/contact" client/src 2>/dev/null); do
+  # API 경로는 제외하고 링크만 변경
+  if grep -qE "/api/contact|/api/contacts" "$f"; then
+    # 파일 내에서 링크만 바꿔야 하므로 정규식으로 href/to/location.href 케이스만 치환
+    sed -i -E "s|(href|to)=([\"\\\'])/contact\\2|\\1=\\2/inquiry\\2|g" "$f"
+    sed -i -E "s|window\\.location\\.href\\s*=\\s*([\"\\\'])/contact\\1|window.location.href=\\1/inquiry\\1|g" "$f"
+  else
+    # API 경로가 없으면 단순 치환
+    sed -i -E "s|(href|to)=([\"\\\'])/contact\\2|\\1=\\2/inquiry\\2|g" "$f"
+    sed -i -E "s|window\\.location\\.href\\s*=\\s*([\"\\\'])/contact\\1|window.location.href=\\1/inquiry\\1|g" "$f"
+  fi
+done
+true
+'
+
+# 3) 빌드 & 재시작
+bash -lc 'npm run build --silent || true'
+bash -lc 'pkill -f "node" || true; npm start --silent & sleep 2'
+
+# 4) 검증: 코드/HTML에서 /contact 잔여 확인(API는 허용)
+bash -lc '
+echo "[SCAN SRC]"
+grep -RIn "/contact" client/src | grep -v "/api/contact" | grep -v "/api/contacts" || echo "(no non-API /contact left)"
+echo
+echo "[CHECK RENDERED HTML root]"
+curl -s http://localhost:$PORT/ | grep -oE "/contact" | wc -l | xargs -I{} echo "/contact count in HTML:" {}
+curl -s http://localhost:$PORT/ | grep -oE "/inquiry" | wc -l | xargs -I{} echo "/inquiry count in HTML:" {}
+'

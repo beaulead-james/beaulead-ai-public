@@ -100,7 +100,7 @@ export default function NaverAds() {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Link 
-                    href="/contact" 
+                    href="/inquiry" 
                     className="modern-btn text-center"
                     data-testid="button-contact-cta"
                   >
@@ -298,7 +298,7 @@ export default function NaverAds() {
                 {language === 'ko' ? '한국 시장 전문가와의 무료 상담을 통해 네이버 광고 전략을 수립하세요' : 'Develop your Naver advertising strategy through free consultation with Korean market experts'}
               </p>
               <Link 
-                href="/contact" 
+                href="/inquiry" 
                 className="modern-btn"
                 data-testid="button-final-cta"
               >

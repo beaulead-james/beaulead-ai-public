@@ -100,7 +100,7 @@ export default function KakaoAds() {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Link 
-                    href="/contact" 
+                    href="/inquiry" 
                     className="modern-btn text-center"
                     data-testid="button-contact-cta"
                   >
@@ -298,7 +298,7 @@ export default function KakaoAds() {
                 {language === 'ko' ? '카카오 플랫폼 전문가와의 무료 상담을 통해 모바일 마케팅 전략을 수립하세요' : 'Develop your mobile marketing strategy through free consultation with Kakao platform experts'}
               </p>
               <Link 
-                href="/contact" 
+                href="/inquiry" 
                 className="modern-btn"
                 data-testid="button-final-cta"
               >
