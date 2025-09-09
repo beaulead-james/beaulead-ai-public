@@ -1,4 +1,5 @@
 import { Link } from 'wouter';
+import { useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import SEO from '../components/UI/SEO';
 import Header from '../components/Layout/Header';
@@ -75,8 +76,43 @@ function BlogPosts() {
   );
 }
 
+// 유튜브 영상 임베드 컴포넌트
+function YouTubeEmbed({ videoId, title }: { videoId: string; title: string }) {
+  return (
+    <div className="floating-card relative">
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-xl font-bold text-white flex items-center gap-3" data-testid="text-youtube-title">
+          <svg className="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+          </svg>
+          {title}
+        </h3>
+        <div className="flex space-x-3">
+          <div className="w-4 h-4 bg-gradient-to-r from-red-400 to-red-500 rounded-full shadow-lg"></div>
+          <div className="w-4 h-4 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full shadow-lg"></div>
+          <div className="w-4 h-4 bg-gradient-to-r from-green-400 to-green-500 rounded-full shadow-lg"></div>
+        </div>
+      </div>
+      <div className="relative aspect-video bg-black/30 rounded-2xl overflow-hidden border border-white/10">
+        <iframe
+          width="100%"
+          height="100%"
+          src={`https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&showinfo=0`}
+          title={title}
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowFullScreen
+          className="absolute inset-0"
+          data-testid="youtube-iframe"
+        ></iframe>
+      </div>
+    </div>
+  );
+}
+
 export default function Landing() {
   const { t } = useLanguage();
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'video'>('dashboard');
 
   return (
     <div className="min-h-screen bg-background">
@@ -138,50 +174,92 @@ export default function Landing() {
               </div>
             </div>
             <div className="relative">
-              {/* 현대적인 대시보드 모형 */}
-              <div className="floating-card relative">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-bold text-white" data-testid="text-dashboard-title">
-                    AI 퍼포먼스 대시보드
-                  </h3>
-                  <div className="flex space-x-3">
-                    <div className="w-4 h-4 bg-gradient-to-r from-red-400 to-red-500 rounded-full shadow-lg"></div>
-                    <div className="w-4 h-4 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full shadow-lg"></div>
-                    <div className="w-4 h-4 bg-gradient-to-r from-green-400 to-green-500 rounded-full shadow-lg"></div>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-6 mb-8">
-                  <div className="bg-gradient-to-br from-blue-500/20 to-purple-600/20 p-5 rounded-2xl border border-blue-400/30">
-                    <div className="text-sm text-blue-300 font-semibold mb-2" data-testid="text-metric-revenue-label">
-                      월 매출액
-                    </div>
-                    <div className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent font-data" data-testid="text-metric-revenue-value">
-                      ₩15.2M
-                    </div>
-                    <div className="text-sm text-green-400 font-medium font-data" data-testid="text-metric-revenue-change">
-                      ↗ +32% 성장
-                    </div>
-                  </div>
-                  <div className="bg-gradient-to-br from-purple-500/20 to-pink-600/20 p-5 rounded-2xl border border-purple-400/30">
-                    <div className="text-sm text-purple-300 font-semibold mb-2" data-testid="text-metric-roas-label">
-                      {t.stats.roas}
-                    </div>
-                    <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent font-data" data-testid="text-metric-roas-value">
-                      524%
-                    </div>
-                    <div className="text-sm text-green-400 font-medium font-data" data-testid="text-metric-roas-change">
-                      ↗ +18% 향상
-                    </div>
-                  </div>
-                </div>
-                <div className="h-40 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 rounded-2xl flex items-end justify-around p-6 border border-white/10">
-                  <div className="w-10 bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-lg shadow-lg" style={{ height: '55%' }}></div>
-                  <div className="w-10 bg-gradient-to-t from-purple-500 to-purple-400 rounded-t-lg shadow-lg" style={{ height: '75%' }}></div>
-                  <div className="w-10 bg-gradient-to-t from-pink-500 to-pink-400 rounded-t-lg shadow-lg" style={{ height: '90%' }}></div>
-                  <div className="w-10 bg-gradient-to-t from-indigo-500 to-indigo-400 rounded-t-lg shadow-lg" style={{ height: '68%' }}></div>
-                  <div className="w-10 bg-gradient-to-t from-cyan-500 to-cyan-400 rounded-t-lg shadow-lg" style={{ height: '95%' }}></div>
-                </div>
+              {/* 탭 네비게이션 */}
+              <div className="flex mb-6 bg-white/5 backdrop-blur-sm rounded-xl p-1">
+                <button
+                  onClick={() => setActiveTab('dashboard')}
+                  className={`flex-1 px-4 py-3 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 ${
+                    activeTab === 'dashboard' 
+                      ? 'bg-white/20 text-white shadow-lg' 
+                      : 'text-white/60 hover:text-white hover:bg-white/10'
+                  }`}
+                  data-testid="tab-dashboard"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                  대시보드
+                </button>
+                <button
+                  onClick={() => setActiveTab('video')}
+                  className={`flex-1 px-4 py-3 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 ${
+                    activeTab === 'video' 
+                      ? 'bg-white/20 text-white shadow-lg' 
+                      : 'text-white/60 hover:text-white hover:bg-white/10'
+                  }`}
+                  data-testid="tab-video"
+                >
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                  영상 소개
+                </button>
               </div>
+
+              {/* 대시보드 컨텐츠 */}
+              {activeTab === 'dashboard' && (
+                <div className="floating-card relative">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-xl font-bold text-white" data-testid="text-dashboard-title">
+                      AI 퍼포먼스 대시보드
+                    </h3>
+                    <div className="flex space-x-3">
+                      <div className="w-4 h-4 bg-gradient-to-r from-red-400 to-red-500 rounded-full shadow-lg"></div>
+                      <div className="w-4 h-4 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full shadow-lg"></div>
+                      <div className="w-4 h-4 bg-gradient-to-r from-green-400 to-green-500 rounded-full shadow-lg"></div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-6 mb-8">
+                    <div className="bg-gradient-to-br from-blue-500/20 to-purple-600/20 p-5 rounded-2xl border border-blue-400/30">
+                      <div className="text-sm text-blue-300 font-semibold mb-2" data-testid="text-metric-revenue-label">
+                        월 매출액
+                      </div>
+                      <div className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent font-data" data-testid="text-metric-revenue-value">
+                        ₩15.2M
+                      </div>
+                      <div className="text-sm text-green-400 font-medium font-data" data-testid="text-metric-revenue-change">
+                        ↗ +32% 성장
+                      </div>
+                    </div>
+                    <div className="bg-gradient-to-br from-purple-500/20 to-pink-600/20 p-5 rounded-2xl border border-purple-400/30">
+                      <div className="text-sm text-purple-300 font-semibold mb-2" data-testid="text-metric-roas-label">
+                        {t.stats.roas}
+                      </div>
+                      <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent font-data" data-testid="text-metric-roas-value">
+                        524%
+                      </div>
+                      <div className="text-sm text-green-400 font-medium font-data" data-testid="text-metric-roas-change">
+                        ↗ +18% 향상
+                      </div>
+                    </div>
+                  </div>
+                  <div className="h-40 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 rounded-2xl flex items-end justify-around p-6 border border-white/10">
+                    <div className="w-10 bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-lg shadow-lg" style={{ height: '55%' }}></div>
+                    <div className="w-10 bg-gradient-to-t from-purple-500 to-purple-400 rounded-t-lg shadow-lg" style={{ height: '75%' }}></div>
+                    <div className="w-10 bg-gradient-to-t from-pink-500 to-pink-400 rounded-t-lg shadow-lg" style={{ height: '90%' }}></div>
+                    <div className="w-10 bg-gradient-to-t from-indigo-500 to-indigo-400 rounded-t-lg shadow-lg" style={{ height: '68%' }}></div>
+                    <div className="w-10 bg-gradient-to-t from-cyan-500 to-cyan-400 rounded-t-lg shadow-lg" style={{ height: '95%' }}></div>
+                  </div>
+                </div>
+              )}
+
+              {/* 유튜브 영상 컨텐츠 */}
+              {activeTab === 'video' && (
+                <YouTubeEmbed 
+                  videoId="dQw4w9WgXcQ" // 데모용 비디오 ID - 실제 사용시 변경 필요
+                  title="뷰리드AI 퍼포먼스 마케팅 소개"
+                />
+              )}
               {/* 플로팅 요소들 */}
               <div className="absolute -top-6 -right-6 modern-icon">
                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
