@@ -1,0 +1,82 @@
+# 0) 지금 무엇을 서빙 중인지 확인 (dist 경로/프로세스)
+bash -lc '
+echo "[branch] $(git rev-parse --abbrev-ref HEAD)"
+echo "[vite outDir check]"; node -e "console.log(require(\"fs\").readFileSync(\"vite.config.ts\",\"utf8\").match(/outDir:\\s*[\"\\']([^\"\\']+)/)?.[1]||\"(default dist)\")"
+echo "[list dist/public top]"; ls -la dist/public 2>/dev/null | head -n 10 || echo "dist/public 없음"
+ps -ef | grep node | grep -v grep || true
+'
+
+# 1) 서버에 "빌드 버전" 엔드포인트와 헤더 추가 (배포 확인용)
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: server/index.ts
+@@
+ import path from 'path';
+ import fs from 'fs';
+@@
+ app.use("/uploads", staticUploads);
+ app.use("/api/uploads", staticUploads);
+ 
++// === Build version helpers ===
++function readBuildId() {
++  try {
++    const p1 = path.join(process.cwd(), "dist", "public", "build-id.txt");
++    const p2 = path.join(process.cwd(), "client", "dist", "build-id.txt");
++    if (fs.existsSync(p1)) return fs.readFileSync(p1, "utf8").trim();
++    if (fs.existsSync(p2)) return fs.readFileSync(p2, "utf8").trim();
++  } catch {}
++  return "unknown";
++}
++app.get("/api/version", (_req, res) => {
++  res.setHeader("Cache-Control", "no-store");
++  res.json({ buildId: readBuildId(), time: Date.now() });
++});
++
+@@
+   if (fs.existsSync(CLIENT_DIST)) {
+     // 정적 파일 먼저
+-    app.use(express.static(CLIENT_DIST, { fallthrough: true, maxAge: "1h" }));
++    app.use((req, res, next) => { res.setHeader("X-Build-Id", readBuildId()); next(); });
++    app.use(express.static(CLIENT_DIST, { fallthrough: true, maxAge: "1h" }));
+ 
+     // 업로드/API가 아닌 모든 경로는 SPA index.html 반환
+     app.get("*", (req: Request, res: Response, next: NextFunction) => {
+       if (req.path.startsWith("/api") || req.path.startsWith("/uploads")) return next();
+       if (fs.existsSync(CLIENT_INDEX_HTML)) {
+-        res.setHeader("Cache-Control", "no-store");
++        // HTML은 항상 최신으로
++        res.setHeader("Cache-Control", "no-store");
++        res.setHeader("X-Build-Id", readBuildId());
+         return res.sendFile(CLIENT_INDEX_HTML);
+       }
+       return next();
+     });
+*** End Patch
+PATCH
+
+# 2) 클린 빌드 (산출물 싹 갈아끼우기)
+bash -lc '
+rm -rf dist client/dist || true
+BUILD_ID=$(date +%Y%m%d-%H%M%S)-$(git rev-parse --short HEAD)
+echo "$BUILD_ID" | tee dist/public/build-id.txt client/dist/build-id.txt >/dev/null 2>&1 || true
+npm ci --silent || npm i --silent
+npm run build --silent
+'
+
+# 3) 서버 완전 재시작
+bash -lc 'pkill -f "node" || true; npm start --silent & sleep 3; curl -sS http://localhost:$PORT/api/version'
+
+# 4) 로컬/공개 도메인 HTML 체크섬 비교 (프록시 캐시 의심 잡기)
+bash -lc '
+LH=$(curl -s http://localhost:$PORT/ | sha256sum | cut -d" " -f1)
+PD=$(curl -s https://beaulead-ai.co.kr/ | sha256sum | cut -d" " -f1 || echo "ERR")
+echo "[sha256] localhost: $LH"
+echo "[sha256] public   : $PD"
+curl -sI https://beaulead-ai.co.kr/ | grep -i -E "cache-control|x-build-id|etag" -n || true
+curl -sI http://localhost:$PORT/ | grep -i -E "cache-control|x-build-id|etag" -n || true
+'
+
+# 5) 강제 비우기 테스트(프록시 캐시 우회 헤더)
+bash -lc '
+curl -sI -H "Cache-Control: no-cache,no-store,max-age=0" "https://beaulead-ai.co.kr/?v=$(date +%s)" | grep -i -E "cache-control|x-build-id" -n || true
+'
