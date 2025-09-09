@@ -1,0 +1,121 @@
+# 0) 상태 출력(선택)
+bash -lc 'git rev-parse --abbrev-ref HEAD; node -v || true'
+
+# 1) 업로드 라우터: Object Storage 시도 → 실패시 로컬(server/uploads) 저장으로 폴백
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: server/routes/upload.ts
+@@
+-import path from 'path';
+-import fs from 'fs';
+-import { fileURLToPath } from 'url';
+-import { Router } from 'express';
+-import multer from 'multer';
+-import { v4 as uuid } from 'uuid';
+-import { ObjectStorageService } from '../objectStorage';
++import path from 'path';
++import fs from 'fs';
++import { fileURLToPath } from 'url';
++import { Router } from 'express';
++import multer from 'multer';
++import { v4 as uuid } from 'uuid';
++import { ObjectStorageService } from '../objectStorage';
+@@
+-const storage = multer.memoryStorage();
++const storage = multer.memoryStorage();
+ const upload = multer({
+   storage,
+   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+   fileFilter(_, file, cb) {
+     const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+     if (allowed.includes(file.mimetype)) return cb(null, true);
+     cb(new Error('Only JPG/PNG/WEBP/GIF allowed'));
+   },
+ });
+ 
+-router.post('/image', upload.single('file'), async (req, res) => {
++router.post('/image', upload.single('file'), async (req, res) => {
+   if (!req.file) {
+     return res.status(400).json({ error: 'No file uploaded' });
+   }
+-  try {
+-    // 업로드 키: uploads/<uuid>.<ext>
+-    const ext = path.extname(req.file.originalname || '').toLowerCase() || '.jpg';
+-    const key = `uploads/${uuid()}${ext}`;
+-    const oss = new ObjectStorageService();
+-    // Object Storage에 업로드 (공개 객체로)
+-    await oss.uploadPublicObject(key, req.file.buffer, req.file.mimetype || 'application/octet-stream');
+-    const publicUrl = await oss.getPublicObjectUrl(key);
+-    // 과거 호환을 위해 상대경로도 함께 내려주지만, 클라이언트는 publicUrl을 우선 사용
+-    const url = `/uploads/${path.basename(key)}`;
+-    return res.json({ url, key, publicUrl });
+-  } catch (e: any) {
+-    console.error('[upload] object storage error', e);
+-    return res.status(500).json({ error: 'Upload failed', detail: String(e?.message || e) });
+-  }
++  const ext = (path.extname(req.file.originalname || '').toLowerCase()) || '.jpg';
++  const key = `uploads/${uuid()}${ext}`;
++  // 1) Object Storage 시도
++  try {
++    if (process.env.OBJ_STORAGE_DISABLED === '1') throw new Error('OBJ_STORAGE_DISABLED');
++    const oss = new ObjectStorageService();
++    await oss.uploadPublicObject(key, req.file.buffer, req.file.mimetype || 'application/octet-stream');
++    const publicUrl = await oss.getPublicObjectUrl(key);
++    const url = `/uploads/${path.basename(key)}`; // 호환용
++    return res.json({ ok:true, storage:'object', url, key, publicUrl });
++  } catch (e: any) {
++    console.warn('[upload] object storage failed, fallback to local:', e?.message || e);
++    // 2) 로컬 폴백
++    try {
++      const destDir = path.join(process.cwd(), 'server', 'uploads');
++      if (!fs.existsSync(destDir)) fs.mkdirSync(destDir, { recursive: true });
++      const fname = path.basename(key);
++      fs.writeFileSync(path.join(destDir, fname), req.file.buffer);
++      const url = `/uploads/${fname}`;
++      // DEV에서도 바로 보이게 상대경로 제공 (publicUrl 없음)
++      return res.json({ ok:true, storage:'local', url, key, publicUrl: null });
++    } catch (e2:any) {
++      console.error('[upload] local fallback failed:', e2?.message || e2);
++      return res.status(502).json({ ok:false, error:'Upload failed', detail:String(e2?.message||e2) });
++    }
++  }
+ });
+*** End Patch
+PATCH
+
+# 2) 업로드 진단 라우트 추가: 사이드카/토큰/퍼블릭URL 테스트
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: server/routes.ts
+@@
+   app.use('/api/upload', uploadRoutes);
+@@
++  // ---- 업로드/스토리지 진단 ----
++  app.get('/api/upload/diagnose', async (_req, res) => {
++    try {
++      const info:any = { ok:true, env: { OBJ_STORAGE_DISABLED: process.env.OBJ_STORAGE_DISABLED || '0' } };
++      try {
++        const oss = new ObjectStorageService();
++        // 임시 사전 체킹: 공개 URL 생성만 시도
++        const testUrl = await oss.getPublicObjectUrl('uploads/_diagnose_dummy');
++        info.objectStorage = { reachable: true, sampleUrl: testUrl };
++      } catch (e:any) {
++        info.objectStorage = { reachable: false, error: String(e?.message||e) };
++      }
++      res.json(info);
++    } catch (e:any) {
++      res.status(500).json({ ok:false, error: String(e?.message||e) });
++    }
++  });
+*** End Patch
+PATCH
+
+# 3) 서버 재빌드 & 재시작
+bash -lc 'npm run build --silent || true'
+bash -lc 'pkill -f "node" || true; npm start --silent & sleep 2'
+
+# 4) 통합 점검
+bash -lc '
+echo "[diagnose]"; curl -sS http://localhost:$PORT/api/upload/diagnose; echo;
+echo "[test upload]"; echo test > /tmp/dev.jpg; curl -sS -F "file=@/tmp/dev.jpg" http://localhost:$PORT/api/upload/image; echo;
+'
