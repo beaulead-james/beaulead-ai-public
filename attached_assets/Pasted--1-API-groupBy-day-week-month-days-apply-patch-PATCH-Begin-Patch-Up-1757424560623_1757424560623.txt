@@ -1,0 +1,232 @@
+# 1) 서버: 집계 API에 groupBy(day|week|month) + days(기간) 지원
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: server/routes.ts
+@@
+   // ===== 집계: 기간 요약 =====
+-  app.get('/api/analytics/summary', async (req, res) => {
++  app.get('/api/analytics/summary', async (req, res) => {
+     try {
+-      const from = req.query.from ? new Date(String(req.query.from)) : new Date(Date.now() - 7*864e5);
+-      const to = req.query.to ? new Date(String(req.query.to)) : new Date();
++      const days = Math.max(1, parseInt(String(req.query.days || '30'), 10));
++      const to = req.query.to ? new Date(String(req.query.to)) : new Date();
++      const from = req.query.from ? new Date(String(req.query.from)) : new Date(to.getTime() - days*864e5);
+       const rows:any = await db.execute(sql`
+         SELECT 
+           COUNT(*)::int AS pageviews,
+           COUNT(DISTINCT sid)::int AS unique_visitors
+         FROM analytics_events
+         WHERE ts >= ${from.toISOString()} AND ts < ${to.toISOString()}
+       `);
+       const topPaths:any = await db.execute(sql`
+         SELECT path, COUNT(*)::int pv
+         FROM analytics_events
+         WHERE ts >= ${from.toISOString()} AND ts < ${to.toISOString()}
+         GROUP BY path ORDER BY pv DESC LIMIT 10
+       `);
+       res.json({ ok:true, range:{from, to}, totals: rows.rows?.[0]||{pageviews:0,unique_visitors:0}, topPaths: topPaths.rows||[] });
+     } catch (e) {
+       console.error("[analytics] summary error", e);
+       res.status(500).json({ ok:false });
+     }
+   });
+ 
+-  // ===== 집계: 일자별 시계열 =====
+-  app.get('/api/analytics/timeseries', async (req, res) => {
++  // ===== 집계: 시계열 (groupBy = day|week|month) =====
++  app.get('/api/analytics/timeseries', async (req, res) => {
+     try {
+-      const from = req.query.from ? new Date(String(req.query.from)) : new Date(Date.now() - 14*864e5);
+-      const to = req.query.to ? new Date(String(req.query.to)) : new Date();
+-      const rows:any = await db.execute(sql`
+-        SELECT to_char(date_trunc('day', ts), 'YYYY-MM-DD') AS d,
+-               COUNT(*)::int AS pv,
+-               COUNT(DISTINCT sid)::int AS uv
+-        FROM analytics_events
+-        WHERE ts >= ${from.toISOString()} AND ts < ${to.toISOString()}
+-        GROUP BY d ORDER BY d
+-      `);
++      const gb = String(req.query.groupBy || 'day').toLowerCase();
++      const groupBy = gb === 'month' ? 'month' : gb === 'week' ? 'week' : 'day';
++      const days = Math.max(1, parseInt(String(req.query.days || (groupBy==='day'?30:180)), 10));
++      const to = req.query.to ? new Date(String(req.query.to)) : new Date();
++      const from = req.query.from ? new Date(String(req.query.from)) : new Date(to.getTime() - days*864e5);
++
++      // 안전한 리터럴 선택
++      const truncExpr = groupBy === 'month' ? sql.raw("date_trunc('month', ts)") :
++                        groupBy === 'week'  ? sql.raw("date_trunc('week', ts)")  :
++                                              sql.raw("date_trunc('day', ts)");
++      const fmt       = groupBy === 'month' ? "YYYY-MM" :
++                        groupBy === 'week'  ? "IYYY-IW" : "YYYY-MM-DD";
++
++      const rows:any = await db.execute(sql`
++        SELECT to_char(${truncExpr}, ${fmt}) AS bucket,
++               COUNT(*)::int AS pv,
++               COUNT(DISTINCT sid)::int AS uv
++        FROM analytics_events
++        WHERE ts >= ${from.toISOString()} AND ts < ${to.toISOString()}
++        GROUP BY bucket ORDER BY bucket
++      `);
+       res.json({ ok:true, data: rows.rows||[] });
+     } catch (e) {
+       console.error("[analytics] timeseries error", e);
+       res.status(500).json({ ok:false });
+     }
+   });
+*** End Patch
+PATCH
+
+# 2) 관리자 UI: /admin/traffic 페이지에 탭(월/주/일) + 기간 프리셋 + 최신 카드/차트 레이아웃
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: client/src/pages/Admin/TrafficStatsPage.tsx
+@@
+-import React from 'react';
+-import { useQuery } from '@tanstack/react-query';
+-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+-import { Badge } from '@/components/ui/badge';
+-import { Button } from '@/components/ui/button';
+-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, BarChart, Bar } from 'recharts';
++import React, { useMemo, useState } from 'react';
++import { useQuery } from '@tanstack/react-query';
++import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
++import { Badge } from '@/components/ui/badge';
++import { Button } from '@/components/ui/button';
++import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
++import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
++import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, BarChart, Bar } from 'recharts';
+@@
+-function useSummary() {
+-  return useQuery({
+-    queryKey: ['/api/analytics/summary'],
+-    queryFn: async () => (await fetch('/api/analytics/summary')).json(),
+-  });
+-}
+-function useSeries() {
+-  return useQuery({
+-    queryKey: ['/api/analytics/timeseries'],
+-    queryFn: async () => (await fetch('/api/analytics/timeseries')).json(),
+-  });
+-}
++function useSummary(days:number) {
++  return useQuery({
++    queryKey: ['/api/analytics/summary', days],
++    queryFn: async () => (await fetch(`/api/analytics/summary?days=${days}`)).json(),
++  });
++}
++function useSeries(groupBy:'day'|'week'|'month', days:number) {
++  return useQuery({
++    queryKey: ['/api/analytics/timeseries', groupBy, days],
++    queryFn: async () => (await fetch(`/api/analytics/timeseries?groupBy=${groupBy}&days=${days}`)).json(),
++  });
++}
+@@
+-export default function TrafficStatsPage() {
+-  const { data: sum } = useSummary();
+-  const { data: series } = useSeries();
+-  const totals = sum?.totals || { pageviews: 0, unique_visitors: 0 };
+-  const top = sum?.topPaths || [];
+-  const ts = series?.data || [];
++export default function TrafficStatsPage() {
++  const [tab, setTab] = useState<'month'|'week'|'day'>('week');
++  const [days, setDays] = useState<number>(30);
++  const { data: sum } = useSummary(days);
++  const { data: series } = useSeries(tab, days);
++  const totals = sum?.totals || { pageviews: 0, unique_visitors: 0 };
++  const top = sum?.topPaths || [];
++  const ts = series?.data || [];
++  const titleMap = { month: '월간', week: '주간', day: '일간' } as const;
+@@
+-  return (
+-    <div className="p-6 space-y-6">
+-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
++  return (
++    <div className="p-6 space-y-6">
++      {/* 헤더 컨트롤: 탭 + 기간 프리셋 */}
++      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
++        <Tabs value={tab} onValueChange={(v:any)=>setTab(v)}>
++          <TabsList>
++            <TabsTrigger value="month">월간</TabsTrigger>
++            <TabsTrigger value="week">주간</TabsTrigger>
++            <TabsTrigger value="day">일간</TabsTrigger>
++          </TabsList>
++        </Tabs>
++        <div className="flex items-center gap-3">
++          <Select value={String(days)} onValueChange={(v)=>setDays(parseInt(v,10))}>
++            <SelectTrigger className="w-[160px]"><SelectValue placeholder="기간"/></SelectTrigger>
++            <SelectContent>
++              <SelectItem value="7">최근 7일</SelectItem>
++              <SelectItem value="30">최근 30일</SelectItem>
++              <SelectItem value="90">최근 90일</SelectItem>
++              <SelectItem value="180">최근 180일</SelectItem>
++            </SelectContent>
++          </Select>
++          <Button variant="secondary" onClick={()=>window.location.reload()}>새로고침</Button>
++        </div>
++      </div>
++
++      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+         <Card><CardHeader><CardTitle>Pageviews</CardTitle></CardHeader><CardContent className="text-3xl font-semibold">{totals.pageviews?.toLocaleString?.()||0}</CardContent></Card>
+         <Card><CardHeader><CardTitle>Unique Visitors</CardTitle></CardHeader><CardContent className="text-3xl font-semibold">{totals.unique_visitors?.toLocaleString?.()||0}</CardContent></Card>
+-        <Card><CardHeader><CardTitle>기간</CardTitle></CardHeader><CardContent>{sum?.range ? `${new Date(sum.range.from).toLocaleDateString()} ~ ${new Date(sum.range.to).toLocaleDateString()}` : '-'}</CardContent></Card>
++        <Card><CardHeader><CardTitle>기간</CardTitle></CardHeader><CardContent>{sum?.range ? `${new Date(sum.range.from).toLocaleDateString()} ~ ${new Date(sum.range.to).toLocaleDateString()}` : '-'}</CardContent></Card>
+       </div>
+ 
+       <Card>
+-        <CardHeader><CardTitle>일자별 PV/UV</CardTitle></CardHeader>
++        <CardHeader><CardTitle>{titleMap[tab]} PV/UV</CardTitle></CardHeader>
+         <CardContent>
+           <div className="h-64">
+             <ResponsiveContainer width="100%" height="100%">
+-              <LineChart data={ts}>
++              <LineChart data={ts}>
+                 <CartesianGrid strokeDasharray="3 3" />
+-                <XAxis dataKey="d" />
++                <XAxis dataKey="bucket" />
+                 <YAxis />
+                 <Tooltip />
+                 <Line type="monotone" dataKey="pv" strokeWidth={2} />
+                 <Line type="monotone" dataKey="uv" strokeWidth={2} />
+               </LineChart>
+             </ResponsiveContainer>
+           </div>
+         </CardContent>
+       </Card>
+ 
+       <Card>
+         <CardHeader><CardTitle>인기 경로 Top 10</CardTitle></CardHeader>
+         <CardContent>
+           <div className="h-64">
+             <ResponsiveContainer width="100%" height="100%">
+               <BarChart data={top}>
+                 <CartesianGrid strokeDasharray="3 3" />
+                 <XAxis dataKey="path" hide />
+                 <YAxis />
+                 <Tooltip />
+                 <Bar dataKey="pv" />
+               </BarChart>
+             </ResponsiveContainer>
+           </div>
+           <div className="mt-3 flex flex-wrap gap-2">
+             {top.slice(0,10).map((r:any)=>(
+               <Badge key={r.path} variant="secondary">{r.path} · {r.pv}</Badge>
+             ))}
+           </div>
+         </CardContent>
+       </Card>
+     </div>
+   );
+ }
+*** End Patch
+PATCH
+
+# 3) 빌드 & 재기동
+bash -lc 'npm run build --silent || true'
+bash -lc 'pkill -f "node" || true; npm start --silent & sleep 2'
+
+# 4) 간단 검증
+bash -lc '
+echo "[summary 30d]"; curl -sS "http://localhost:$PORT/api/analytics/summary?days=30" | head -c 200; echo
+echo "[timeseries week 90d]"; curl -sS "http://localhost:$PORT/api/analytics/timeseries?groupBy=week&days=90" | head -c 200; echo
+'

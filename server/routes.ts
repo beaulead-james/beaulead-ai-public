@@ -155,8 +155,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ===== 집계: 기간 요약 =====
   app.get('/api/analytics/summary', async (req, res) => {
     try {
-      const from = req.query.from ? new Date(String(req.query.from)) : new Date(Date.now() - 7*864e5);
+      const days = Math.max(1, parseInt(String(req.query.days || '30'), 10));
       const to = req.query.to ? new Date(String(req.query.to)) : new Date();
+      const from = req.query.from ? new Date(String(req.query.from)) : new Date(to.getTime() - days*864e5);
       const rows:any = await db.execute(sql`
         SELECT 
           COUNT(*)::int AS pageviews,
@@ -177,18 +178,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // ===== 집계: 일자별 시계열 =====
+  // ===== 집계: 시계열 (groupBy = day|week|month) =====
   app.get('/api/analytics/timeseries', async (req, res) => {
     try {
-      const from = req.query.from ? new Date(String(req.query.from)) : new Date(Date.now() - 14*864e5);
+      const gb = String(req.query.groupBy || 'day').toLowerCase();
+      const groupBy = gb === 'month' ? 'month' : gb === 'week' ? 'week' : 'day';
+      const days = Math.max(1, parseInt(String(req.query.days || (groupBy==='day'?30:180)), 10));
       const to = req.query.to ? new Date(String(req.query.to)) : new Date();
+      const from = req.query.from ? new Date(String(req.query.from)) : new Date(to.getTime() - days*864e5);
+
+      // 안전한 리터럴 선택
+      const truncExpr = groupBy === 'month' ? sql.raw("date_trunc('month', ts)") :
+                        groupBy === 'week'  ? sql.raw("date_trunc('week', ts)")  :
+                                              sql.raw("date_trunc('day', ts)");
+      const fmt       = groupBy === 'month' ? "YYYY-MM" :
+                        groupBy === 'week'  ? "IYYY-IW" : "YYYY-MM-DD";
+
       const rows:any = await db.execute(sql`
-        SELECT to_char(date_trunc('day', ts), 'YYYY-MM-DD') AS d,
+        SELECT to_char(${truncExpr}, ${fmt}) AS bucket,
                COUNT(*)::int AS pv,
                COUNT(DISTINCT sid)::int AS uv
         FROM analytics_events
         WHERE ts >= ${from.toISOString()} AND ts < ${to.toISOString()}
-        GROUP BY d ORDER BY d
+        GROUP BY bucket ORDER BY bucket
       `);
       res.json({ ok:true, data: rows.rows||[] });
     } catch (e) {
