@@ -80,6 +80,7 @@ function BlogPosts() {
 function YouTubeEmbed({ videoId, title }: { videoId: string; title: string }) {
   return (
     <div className="relative h-[400px] lg:h-[500px] bg-black/30 rounded-2xl overflow-hidden border border-white/10">
+      {/* 유튜브 영상 */}
       <iframe
         width="100%"
         height="100%"
@@ -91,6 +92,9 @@ function YouTubeEmbed({ videoId, title }: { videoId: string; title: string }) {
         className="absolute inset-0"
         data-testid="youtube-iframe"
       ></iframe>
+      
+      {/* 배경 색상 효과 오버레이 */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-purple-900/60 via-indigo-700/40 to-transparent mix-blend-multiply pointer-events-none"></div>
       
       {/* YouTube 스타일 플로팅 아이콘들 */}
       <div className="absolute top-4 right-4 flex items-center gap-2">
