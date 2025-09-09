@@ -10,14 +10,16 @@ const __dirname = path.dirname(__filename);
 
 const router = Router();
 
+// 운영/개발 동일하게 프로젝트 루트 기준으로 server/uploads 사용
 const storage = multer.diskStorage({
-  destination(_, __, cb) {
-    const dest = path.join(__dirname, '..', 'uploads');
+  destination(_req, _file, cb) {
+    const dest = path.join(process.cwd(), 'server', 'uploads');
     if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
     cb(null, dest);
   },
-  filename(_, file, cb) {
-    cb(null, (uuid() + path.extname(file.originalname || '')).toLowerCase());
+  filename(_req, file, cb) {
+    const ext = path.extname(file.originalname || '').toLowerCase();
+    cb(null, uuid() + ext);
   },
 });
 
@@ -35,9 +37,15 @@ router.post('/image', upload.single('file'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded' });
   }
-  
+
   const url = '/uploads/' + req.file.filename;
-  res.json({ url });
+  // 운영 환경에서 절대 URL 필요 시 사용 (프록시/커스텀도메인 대응)
+  const origin =
+    (req.headers['x-forwarded-proto'] && req.headers['x-forwarded-host'])
+      ? `${req.headers['x-forwarded-proto']}://${req.headers['x-forwarded-host']}`
+      : `${req.protocol}://${req.get('host')}`;
+  const publicUrl = `${origin}${url}`;
+  res.json({ url, publicUrl });
 });
 
 export default router;

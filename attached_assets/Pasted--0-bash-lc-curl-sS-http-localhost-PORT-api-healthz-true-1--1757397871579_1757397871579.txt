@@ -1,0 +1,103 @@
+# 0) 상태 점검 (선택) : 서버 헬스체크
+bash -lc 'curl -sS http://localhost:$PORT/api/healthz || true'
+
+# 1) 업로드 디렉토리 보장 (권한/존재)
+bash -lc "mkdir -p server/uploads && chmod -R 755 server/uploads && touch server/uploads/.gitkeep"
+
+# 2) 업로드 라우터 패치: 저장경로 고정 + publicUrl(절대URL) 포함 응답
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: server/routes/upload.ts
+@@
+-const storage = multer.diskStorage({
+-  destination(_, __, cb) {
+-    const dest = path.join(__dirname, '..', 'uploads');
+-    if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
+-    cb(null, dest);
+-  },
+-  filename(_, file, cb) {
+-    const ext = path.extname(file.originalname).toLowerCase();
+-    cb(null, uuid() + ext);
+-  },
+-});
++// 운영/개발 동일하게 프로젝트 루트 기준으로 server/uploads 사용
++const storage = multer.diskStorage({
++  destination(_req, _file, cb) {
++    const dest = path.join(process.cwd(), 'server', 'uploads');
++    if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
++    cb(null, dest);
++  },
++  filename(_req, file, cb) {
++    const ext = path.extname(file.originalname || '').toLowerCase();
++    cb(null, uuid() + ext);
++  },
++});
+@@
+ router.post('/image', upload.single('file'), (req, res) => {
+   if (!req.file) {
+     return res.status(400).json({ error: 'No file uploaded' });
+   }
+-  
+-  const url = '/uploads/' + req.file.filename;
+-  res.json({ url });
++
++  const url = '/uploads/' + req.file.filename;
++  // 운영 환경에서 절대 URL 필요 시 사용 (프록시/커스텀도메인 대응)
++  const origin =
++    (req.headers['x-forwarded-proto'] && req.headers['x-forwarded-host'])
++      ? `${req.headers['x-forwarded-proto']}://${req.headers['x-forwarded-host']}`
++      : `${req.protocol}://${req.get('host')}`;
++  const publicUrl = `${origin}${url}`;
++  res.json({ url, publicUrl });
+ });
+*** End Patch
+PATCH
+
+# 3) 서버 정적서빙 위치/순서 보장 (이미 있으나 혹시 누락된 경우 대비해 재확인용 패치)
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: server/index.ts
+@@
+-// 업로드 디렉토리 절대경로 (운영/로컬 동일 동작)
+-const UPLOAD_DIR = path.join(process.cwd(), "server", "uploads");
++// 업로드 디렉토리 절대경로 (운영/로컬 동일 동작)
++const UPLOAD_DIR = path.join(process.cwd(), "server", "uploads");
+@@
+-// -------------------- 업로드 정적 서빙 (항상 최우선) --------------------
++// -------------------- 업로드 정적 서빙 (항상 최우선) --------------------
+ const staticUploads = express.static(UPLOAD_DIR, {
+   index: false,
+   fallthrough: false,
+   maxAge: "7d",
+   setHeaders(res) {
+     res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+   },
+ });
+ app.use("/uploads", staticUploads);
+ app.use("/api/uploads", staticUploads);
+*** End Patch
+PATCH
+
+# 4) 의존성/빌드
+bash -lc 'npm i --silent && npm run build --silent || true'
+
+# 5) 서버 재시작
+bash -lc 'pkill -f "node" || true; npm start --silent & sleep 2; curl -sS http://localhost:$PORT/api/healthz || true'
+
+# 6) 업로드/접근 통합 테스트 (파비콘을 임시로 업로드 소스로 사용)
+bash -lc '
+test -f client/public/favicon.ico || printf "dummy" > client/public/favicon.ico
+RESP=$(curl -sS -F "file=@client/public/favicon.ico" http://localhost:$PORT/api/upload/image);
+echo "$RESP";
+URL=$(node -e "console.log(JSON.parse(process.argv[1]).url)" "$RESP");
+PUB=$(node -e "console.log(JSON.parse(process.argv[1]).publicUrl)" "$RESP");
+echo "URL: $URL";
+echo "PUBLIC: $PUB";
+echo "--- HEAD check (relative) ---";
+curl -sS -I "http://localhost:$PORT$URL" | head -n 1 || true;
+echo "--- HEAD check (absolute) ---";
+curl -sS -I "$PUB" | head -n 1 || true;
+'
+
+# 7) 캐시 방지용 정적파일 응답 확인 (선택)
+bash -lc 'curl -sS -I http://localhost:$PORT/uploads/ | cat || true'
