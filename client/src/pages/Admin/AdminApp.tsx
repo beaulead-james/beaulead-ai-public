@@ -232,6 +232,9 @@ function Sidebar() {
       <nav className="flex-1 p-4 space-y-2">
         <NavGroup title="대시보드">
           <NavItem to="/admin" icon={LayoutDashboard} label="홈 대시보드" />
+        </NavGroup>
+        
+        <NavGroup title="통계">
           <NavItem to="/admin/traffic" icon={BarChart3} label="접속통계" />
         </NavGroup>
         
