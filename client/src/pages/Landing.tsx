@@ -78,6 +78,13 @@ function BlogPosts() {
 
 // 유튜브 영상 임베드 컴포넌트
 function YouTubeEmbed({ videoId, title }: { videoId: string; title: string }) {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  
+  const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&rel=0&modestbranding=1&showinfo=0&loop=1&playlist=${videoId}&controls=0&disablekb=1&fs=0&iv_load_policy=3`;
+  
+  console.log('🎬 YouTube Embed URL:', embedUrl);
+  
   return (
     <div className="relative h-[400px] lg:h-[500px] rounded-2xl overflow-hidden">
       {/* 배경 글로우 효과 */}
@@ -86,25 +93,63 @@ function YouTubeEmbed({ videoId, title }: { videoId: string; title: string }) {
       
       {/* 유튜브 영상 컨테이너 */}
       <div className="relative bg-black/20 rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+        {/* 로딩 상태 */}
+        {!isLoaded && !hasError && (
+          <div className="absolute inset-0 flex items-center justify-center text-white/60">
+            <div className="text-center">
+              <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto mb-2"></div>
+              <div className="text-sm">영상 로딩 중...</div>
+            </div>
+          </div>
+        )}
+        
+        {/* 에러 상태 */}
+        {hasError && (
+          <div className="absolute inset-0 flex items-center justify-center text-white/60">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div className="text-sm">영상을 불러올 수 없습니다</div>
+              <div className="text-xs text-white/40 mt-1">YouTube 연결을 확인해주세요</div>
+            </div>
+          </div>
+        )}
+        
         <iframe
           width="100%"
           height="100%"
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&rel=0&modestbranding=1&showinfo=0&loop=1&playlist=${videoId}`}
+          src={embedUrl}
           title={title}
           frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
           allowFullScreen
-          className="absolute inset-0"
+          className="absolute inset-0 w-full h-full"
           data-testid="youtube-iframe"
+          loading="eager"
+          onLoad={() => {
+            console.log('✅ YouTube iframe loaded successfully');
+            setIsLoaded(true);
+            setHasError(false);
+          }}
+          onError={() => {
+            console.error('❌ YouTube iframe failed to load');
+            setHasError(true);
+            setIsLoaded(false);
+          }}
         ></iframe>
         
         {/* YouTube 스타일 플로팅 아이콘들 */}
-        <div className="absolute top-4 right-4 flex items-center gap-2">
-          {/* 영상 재생 표시 */}
-          <div className="bg-red-600 text-white px-2 py-1 rounded text-xs font-semibold">
-            영상 재생
+        {isLoaded && (
+          <div className="absolute top-4 right-4 flex items-center gap-2">
+            {/* 영상 재생 표시 */}
+            <div className="bg-red-600 text-white px-2 py-1 rounded text-xs font-semibold">
+              영상 재생
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
