@@ -135,9 +135,10 @@ export default function PortfolioList() {
                     <div className="relative">
                       <div className={`thumb-16x9 ${portfolio.thumbUrl ? '' : 'placeholder'}`}>
                         <img
-                          src={portfolio.thumbUrl || "/og/placeholder-1200x675.jpg"}
+                          src={/^https?:\/\//i.test(portfolio.thumbUrl||'') ? (portfolio.thumbUrl || "/og/placeholder-1200x675.jpg") : (portfolio.thumbUrl ? `${location.protocol}//${location.host}${portfolio.thumbUrl.startsWith('/')?portfolio.thumbUrl:'/'+portfolio.thumbUrl}` : "/og/placeholder-1200x675.jpg")}
                           alt={content.title || "portfolio thumbnail"}
                           loading="lazy"
+                          onError={(e)=>{ (e.currentTarget as HTMLImageElement).src="/og/placeholder-1200x675.jpg"; }}
                           data-testid={`img-portfolio-thumb-${index}`}
                         />
                       </div>

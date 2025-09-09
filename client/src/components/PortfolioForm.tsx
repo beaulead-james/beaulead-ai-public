@@ -35,6 +35,12 @@ function slugify(s: string) {
     .replace(/(^-|-$)+/g, '')
 }
 
+const toAbs = (u?: string) => {
+  if (!u) return u;
+  if (/^https?:\/\//i.test(u)) return u;
+  return `${location.protocol}//${location.host}${u.startsWith('/') ? u : '/'+u}`;
+};
+
 export default function PortfolioForm({ id }: { id?: string }) {
   const { toast } = useToast();
   const [payload, setPayload] = useState<PortfolioPayload>({
@@ -103,6 +109,9 @@ export default function PortfolioForm({ id }: { id?: string }) {
     if (!body.titleKo || !body.titleEn) {
       return toast({ title: '필수값 누락', description: '국문/영문 제목을 입력하세요.', variant: 'destructive' });
     }
+    // 썸네일과 갤러리 이미지들을 절대경로로 정규화
+    if (body.thumbUrl) body.thumbUrl = toAbs(body.thumbUrl);
+    if (body.images?.length) body.images = body.images.map(toAbs).filter(Boolean) as string[];
     saveMutation.mutate(body);
   }
 
