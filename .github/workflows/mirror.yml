@@ -1,0 +1,21 @@
+name: Mirror to Public
+on:
+  push:
+    branches: [ beaulaed ]
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Push to public mirror
+        env:
+          MIRROR_URL: https://github.com/beaulead-james/beaulead-ai-public.git
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          git config user.name "Mirror Bot"
+          git config user.email "bot@beaulead.co.kr"
+          git remote add mirror https://$GH_PAT@${MIRROR_URL#https://}
+          git push --force --prune mirror beaulaed:main
