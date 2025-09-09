@@ -352,7 +352,7 @@ export default function ProjectInquiry() {
                   <div className="flex items-start gap-3 p-4 rounded-lg border border-white/20 bg-white/5">
                     <Checkbox 
                       checked={agree} 
-                      onCheckedChange={setAgree}
+                      onCheckedChange={(checked) => setAgree(checked === true)}
                       required
                     />
                     <div className="space-y-1">
