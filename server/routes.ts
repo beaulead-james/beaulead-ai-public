@@ -110,7 +110,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Normal contact form processing
       const formData = contactFormSchema.parse(req.body);
-      await sendContactFormToSlack(formData);
+      
+      // Format contact form message for Slack
+      const contactMessage = `📞 새로운 연락처 문의
+
+*이름:* ${formData.name}
+*이메일:* ${formData.email}
+*연락처:* ${formData.phone}
+*예산:* ${formData.budget || '미선택'}
+
+*메시지:*
+${formData.message}
+
+문의 시간: ${new Date().toLocaleString('ko-KR')}`;
+
+      await sendContactFormToSlack(contactMessage);
       res.json({ success: true, message: "Contact form submitted successfully" });
     } catch (error) {
       console.error("Error submitting contact form:", error);
@@ -565,13 +579,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // 선택: Slack 알림도 보낼 수 있음
       try {
-        await sendContactFormToSlack({
-          name: body.name,
-          email: body.email,
-          phone: body.phone,
-          budget: body.budget || body.budgetCustom || "",
-          message: `프로젝트 문의\n회사: ${body.company}\n목표: ${JSON.stringify(body.goals)}\n캠페인: ${JSON.stringify(body.campaigns)}\n도메인: ${body.domain || ""}\n기타: ${body.etc || ""}`
-        });
+        const slackMessage = `🆕 새로운 프로젝트 문의
+
+*이름:* ${body.name}
+*회사:* ${body.company}
+*이메일:* ${body.email}
+*연락처:* ${body.phone}
+*예산:* ${body.budget || body.budgetCustom || '미선택'}
+
+*마케팅 목표:* ${JSON.stringify(body.goals)}
+*캠페인 유형:* ${JSON.stringify(body.campaigns)}
+*도메인:* ${body.domain || '미입력'}
+*기타 요청사항:* ${body.etc || '없음'}
+
+문의 시간: ${new Date().toLocaleString('ko-KR')}`;
+
+        await sendContactFormToSlack(slackMessage);
       } catch (slackError) {
         console.warn("Slack notification failed:", slackError);
       }
