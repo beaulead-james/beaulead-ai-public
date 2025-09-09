@@ -229,7 +229,7 @@ export default function PortfolioList() {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Link 
-                    href="/contact"
+                    href="/inquiry"
                     className="modern-btn"
                     data-testid="button-contact-cta"
                   >

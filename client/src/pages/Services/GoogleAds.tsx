@@ -105,7 +105,7 @@ export default function GoogleAds() {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Link 
-                    href="/contact" 
+                    href="/inquiry" 
                     className="modern-btn text-center"
                     data-testid="button-contact-cta"
                   >
@@ -284,7 +284,7 @@ export default function GoogleAds() {
                 {language === 'ko' ? '전문가와의 무료 상담을 통해 맞춤형 구글 광고 전략을 수립하세요' : 'Get a customized Google Ads strategy through a free consultation with our experts'}
               </p>
               <Link 
-                href="/contact" 
+                href="/inquiry" 
                 className="modern-btn"
                 data-testid="button-final-cta"
               >

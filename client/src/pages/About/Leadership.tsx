@@ -289,7 +289,7 @@ export default function Leadership() {
             </p>
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
               <a 
-                href="/contact" 
+                href="/inquiry" 
                 className="modern-btn"
                 data-testid="button-contact-cta"
               >

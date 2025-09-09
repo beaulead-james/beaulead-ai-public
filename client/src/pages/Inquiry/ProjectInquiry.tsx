@@ -138,7 +138,7 @@ function ProjectInquiry() {
                   </Button>
                   <Button 
                     variant="outline" 
-                    onClick={() => window.location.href = "/contact"}
+                    onClick={() => window.location.href = "/inquiry"}
                     className="border-white/20 text-white hover:bg-white/10"
                   >
                     다른 문의
