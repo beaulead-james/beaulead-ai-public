@@ -1,0 +1,66 @@
+# 0) 현재 상태(선택)
+bash -lc 'git rev-parse --abbrev-ref HEAD; git status -s || true'
+
+# 1) App 라우팅: /project-inquiry와 /inquiry 모두 ProjectInquiry로 매핑
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: client/src/App.tsx
+@@
+-import React from 'react'
+-import ProjectInquiry from '@/pages/Inquiry/ProjectInquiry'
++import React from 'react'
++import ProjectInquiry from '@/pages/Inquiry/ProjectInquiry'
+@@
+-  // 기존 라우팅...
+-  if (location.pathname === '/project-inquiry') return <ProjectInquiry />
++  // 프로젝트 문의 라우팅 (두 경로 지원)
++  if (location.pathname === '/project-inquiry') return <ProjectInquiry />
++  if (location.pathname === '/inquiry') return <ProjectInquiry />
+*** End Patch
+PATCH
+
+# 2) 서버 캐치올 재확인: SPA에서 /inquiry도 index.html 반환 (이미 설정되어도 안전)
+#  - /api, /uploads 제외 모든 경로는 index.html을 주도록 되어 있어야 합니다.
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: server/index.ts
+@@
+     // 업로드/API가 아닌 모든 경로는 SPA index.html 반환
+     app.get("*", (req: Request, res: Response, next: NextFunction) => {
+       if (req.path.startsWith("/api") || req.path.startsWith("/uploads")) return next();
+       if (fs.existsSync(CLIENT_INDEX_HTML)) {
+         // HTML은 항상 최신으로
+         res.setHeader("Cache-Control", "no-store");
+         res.setHeader("X-Build-Id", readBuildId());
+         return res.sendFile(CLIENT_INDEX_HTML);
+       }
+       return next();
+     });
+*** End Patch
+PATCH
+
+# 3) (선택 권장) /inquiry를 /project-inquiry로 302 리다이렉트하는 서버 사이드 경로도 추가
+#  - SEO/북마크 정리를 위해 깔끔한 정규 경로를 하나로 통일하고 싶을 때 사용
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: server/index.ts
+@@
+ // 업로드 정적 서빙 위...
+ // (기존 코드 유지)
+ 
++// SEO/북마크 통일: /inquiry로 들어오면 /project-inquiry로 일시 리다이렉트
++app.get("/inquiry", (req: Request, res: Response) => {
++  res.redirect(302, "/project-inquiry");
++});
+*** End Patch
+PATCH
+
+# 4) 빌드 & 재시작
+bash -lc 'npm run build --silent || true'
+bash -lc 'pkill -f "node" || true; npm start --silent & sleep 3'
+
+# 5) 동작 확인
+bash -lc '
+echo "[CHECK] /project-inquiry"; curl -sS -I http://localhost:$PORT/project-inquiry | head -n 1
+echo "[CHECK] /inquiry";         curl -sS -I http://localhost:$PORT/inquiry           | head -n 3
+'
