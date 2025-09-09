@@ -44,6 +44,7 @@ import {
   TrendingUp, TrendingDown, Eye, MousePointer, Clock,
   DollarSign, Target, Zap, Calendar, Save, ArrowLeft, LogOut
 } from 'lucide-react'
+import { BrandMark } from '@/components/ui/BrandMark'
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, LineChart, Line, BarChart, Bar } from 'recharts'
 
 // ---------------------- 데이터 샘플 ----------------------
@@ -128,13 +129,10 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
               <SheetContent side="left" className="w-72 p-0"><Sidebar /></SheetContent>
             </Sheet>
             <div className="flex items-center gap-3">
-              <div className="h-8 w-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">BL</span>
-              </div>
-              <div>
-                <Link to="/admin" className="font-bold text-lg">BeauLead AI</Link>
-                <Badge variant="secondary" className="ml-2 text-xs">관리자</Badge>
-              </div>
+              <Link to="/admin" className="flex items-center gap-3">
+                <BrandMark />
+              </Link>
+              <Badge variant="secondary" className="text-xs">관리자</Badge>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -224,8 +222,8 @@ function Sidebar() {
     <div className="flex h-full flex-col">
       {/* Sidebar Header */}
       <div className="p-6 border-b">
-        <h2 className="text-lg font-semibold text-foreground">관리 패널</h2>
-        <p className="text-sm text-muted-foreground mt-1">BeauLead AI 관리 시스템</p>
+        <BrandMark />
+        <p className="text-sm text-muted-foreground mt-2">관리 시스템</p>
       </div>
       
       {/* Navigation */}

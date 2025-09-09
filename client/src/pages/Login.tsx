@@ -7,15 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
-
-function BrandMark() {
-  return (
-    <div className="flex items-center gap-3">
-      <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-fuchsia-500 to-indigo-500 shadow-md" />
-      <div className="text-xl font-semibold tracking-tight">BeauLead AI</div>
-    </div>
-  );
-}
+import { BrandMark } from '@/components/ui/BrandMark';
 
 export default function LoginPage() {
   const { toast } = useToast();
