@@ -142,6 +142,47 @@ export class ObjectStorageService {
       ttlSec: 900,
     });
   }
+
+  // Upload a public object directly
+  async uploadPublicObject(key: string, buffer: Buffer, contentType: string): Promise<void> {
+    const publicPaths = this.getPublicObjectSearchPaths();
+    if (publicPaths.length === 0) {
+      throw new Error("No public object search paths configured");
+    }
+    
+    // Use the first public path for uploads
+    const fullPath = `${publicPaths[0]}/${key}`;
+    const { bucketName, objectName } = parseObjectPath(fullPath);
+    
+    const bucket = objectStorageClient.bucket(bucketName);
+    const file = bucket.file(objectName);
+    
+    // Upload the buffer directly
+    await file.save(buffer, {
+      metadata: {
+        contentType: contentType,
+      },
+      public: true, // Make the object publicly accessible
+    });
+  }
+
+  // Get public URL for an object
+  async getPublicObjectUrl(key: string): Promise<string> {
+    const publicPaths = this.getPublicObjectSearchPaths();
+    if (publicPaths.length === 0) {
+      throw new Error("No public object search paths configured");
+    }
+    
+    // Use the first public path 
+    const fullPath = `${publicPaths[0]}/${key}`;
+    const { bucketName, objectName } = parseObjectPath(fullPath);
+    
+    const bucket = objectStorageClient.bucket(bucketName);
+    const file = bucket.file(objectName);
+    
+    // Generate a public URL (for publicly accessible objects)
+    return `https://storage.googleapis.com/${bucketName}/${objectName}`;
+  }
 }
 
 function parseObjectPath(path: string): {
