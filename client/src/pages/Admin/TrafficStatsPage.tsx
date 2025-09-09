@@ -1,32 +1,60 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, BarChart, Bar } from 'recharts';
 
-function useSummary() {
+function useSummary(days:number) {
   return useQuery({
-    queryKey: ['/api/analytics/summary'],
-    queryFn: async () => (await fetch('/api/analytics/summary')).json(),
+    queryKey: ['/api/analytics/summary', days],
+    queryFn: async () => (await fetch(`/api/analytics/summary?days=${days}`)).json(),
   });
 }
-function useSeries() {
+function useSeries(groupBy:'day'|'week'|'month', days:number) {
   return useQuery({
-    queryKey: ['/api/analytics/timeseries'],
-    queryFn: async () => (await fetch('/api/analytics/timeseries')).json(),
+    queryKey: ['/api/analytics/timeseries', groupBy, days],
+    queryFn: async () => (await fetch(`/api/analytics/timeseries?groupBy=${groupBy}&days=${days}`)).json(),
   });
 }
 
 export default function TrafficStatsPage() {
-  const { data: sum } = useSummary();
-  const { data: series } = useSeries();
+  const [tab, setTab] = useState<'month'|'week'|'day'>('week');
+  const [days, setDays] = useState<number>(30);
+  const { data: sum } = useSummary(days);
+  const { data: series } = useSeries(tab, days);
   const totals = sum?.totals || { pageviews: 0, unique_visitors: 0 };
   const top = sum?.topPaths || [];
   const ts = series?.data || [];
+  const titleMap = { month: '월간', week: '주간', day: '일간' } as const;
 
   return (
     <div className="p-6 space-y-6">
+      {/* 헤더 컨트롤: 탭 + 기간 프리셋 */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <Tabs value={tab} onValueChange={(v:any)=>setTab(v)}>
+          <TabsList>
+            <TabsTrigger value="month">월간</TabsTrigger>
+            <TabsTrigger value="week">주간</TabsTrigger>
+            <TabsTrigger value="day">일간</TabsTrigger>
+          </TabsList>
+        </Tabs>
+        <div className="flex items-center gap-3">
+          <Select value={String(days)} onValueChange={(v)=>setDays(parseInt(v,10))}>
+            <SelectTrigger className="w-[160px]"><SelectValue placeholder="기간"/></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="7">최근 7일</SelectItem>
+              <SelectItem value="30">최근 30일</SelectItem>
+              <SelectItem value="90">최근 90일</SelectItem>
+              <SelectItem value="180">최근 180일</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button variant="secondary" onClick={()=>window.location.reload()}>새로고침</Button>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card><CardHeader><CardTitle>Pageviews</CardTitle></CardHeader><CardContent className="text-3xl font-semibold">{totals.pageviews?.toLocaleString?.()||0}</CardContent></Card>
         <Card><CardHeader><CardTitle>Unique Visitors</CardTitle></CardHeader><CardContent className="text-3xl font-semibold">{totals.unique_visitors?.toLocaleString?.()||0}</CardContent></Card>
@@ -34,13 +62,13 @@ export default function TrafficStatsPage() {
       </div>
 
       <Card>
-        <CardHeader><CardTitle>일자별 PV/UV</CardTitle></CardHeader>
+        <CardHeader><CardTitle>{titleMap[tab]} PV/UV</CardTitle></CardHeader>
         <CardContent>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={ts}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="d" />
+                <XAxis dataKey="bucket" />
                 <YAxis />
                 <Tooltip />
                 <Line type="monotone" dataKey="pv" strokeWidth={2} />
