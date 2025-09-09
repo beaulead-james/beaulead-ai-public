@@ -103,9 +103,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // ===== (임시) 업로드 폴더 → Object Storage 마이그레이션 =====
-  app.post('/api/admin/migrate-uploads', mixedAuth, async (req: any, res) => {
-    const userRole = (req.user?.claims?.role) || 'USER';
-    if (userRole !== 'ADMIN') return res.status(403).json({ message: 'Admin access required' });
+  app.post('/api/admin/migrate-uploads', async (req: any, res) => {
+    // Simplified admin check for this migration route
+    if (!req.session?.user?.role || req.session.user.role !== 'ADMIN') {
+      return res.status(403).json({ message: 'Admin access required' });
+    }
     try {
       const base = path.join(process.cwd(), 'server', 'uploads');
       if (!fs.existsSync(base)) return res.json({ ok:true, migrated: 0, note: 'no local uploads' });
