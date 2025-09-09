@@ -93,14 +93,14 @@ function YouTubeEmbed({ videoId, title }: { videoId: string; title: string }) {
         data-testid="youtube-iframe"
       ></iframe>
       
-      {/* 배경 색상 효과 오버레이 */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-purple-900/60 via-indigo-700/40 to-transparent mix-blend-multiply pointer-events-none"></div>
+      {/* 🎨 GRADIENT OVERLAY - NEW EFFECT 🎨 */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-purple-900/70 via-indigo-700/50 to-cyan-500/20 mix-blend-multiply pointer-events-none z-10"></div>
       
       {/* YouTube 스타일 플로팅 아이콘들 */}
       <div className="absolute top-4 right-4 flex items-center gap-2">
         {/* 영상 재생 표시 */}
         <div className="bg-red-600 text-white px-2 py-1 rounded text-xs font-semibold">
-          영상 재생
+          🎥 NEW GRADIENT EFFECT
         </div>
       </div>
     </div>
