@@ -79,32 +79,25 @@ function BlogPosts() {
 // 유튜브 영상 임베드 컴포넌트
 function YouTubeEmbed({ videoId, title }: { videoId: string; title: string }) {
   return (
-    <div className="floating-card relative">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-xl font-bold text-white flex items-center gap-3" data-testid="text-youtube-title">
-          <svg className="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-          </svg>
-          {title}
-        </h3>
-        <div className="flex space-x-3">
-          <div className="w-4 h-4 bg-gradient-to-r from-red-400 to-red-500 rounded-full shadow-lg"></div>
-          <div className="w-4 h-4 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full shadow-lg"></div>
-          <div className="w-4 h-4 bg-gradient-to-r from-green-400 to-green-500 rounded-full shadow-lg"></div>
+    <div className="relative h-[400px] lg:h-[500px] bg-black/30 rounded-2xl overflow-hidden border border-white/10">
+      <iframe
+        width="100%"
+        height="100%"
+        src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&rel=0&modestbranding=1&showinfo=0&loop=1&playlist=${videoId}`}
+        title={title}
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowFullScreen
+        className="absolute inset-0"
+        data-testid="youtube-iframe"
+      ></iframe>
+      
+      {/* YouTube 스타일 플로팅 아이콘들 */}
+      <div className="absolute top-4 right-4 flex items-center gap-2">
+        {/* 영상 재생 표시 */}
+        <div className="bg-red-600 text-white px-2 py-1 rounded text-xs font-semibold">
+          영상 재생
         </div>
-      </div>
-      <div className="relative aspect-video bg-black/30 rounded-2xl overflow-hidden border border-white/10">
-        <iframe
-          width="100%"
-          height="100%"
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&rel=0&modestbranding=1&showinfo=0&loop=1&playlist=${videoId}`}
-          title={title}
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowFullScreen
-          className="absolute inset-0"
-          data-testid="youtube-iframe"
-        ></iframe>
       </div>
     </div>
   );
@@ -181,15 +174,15 @@ export default function Landing() {
                 videoId="dQw4w9WgXcQ" // 데모용 비디오 ID - 실제 사용시 변경 필요
                 title="뷰리드AI 퍼포먼스 마케팅 소개"
               />
-              {/* 플로팅 요소들 */}
-              <div className="absolute -top-6 -right-6 modern-icon">
+              {/* YouTube 스타일 플로팅 아이콘들 */}
+              <div className="absolute -top-6 -right-6 w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 flex items-center justify-center">
                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
                 </svg>
               </div>
-              <div className="absolute -bottom-6 -left-6 modern-icon">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              <div className="absolute -bottom-6 -left-6 w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 flex items-center justify-center">
+                <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z"/>
                 </svg>
               </div>
             </div>
