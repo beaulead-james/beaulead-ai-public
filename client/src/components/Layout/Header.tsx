@@ -98,7 +98,7 @@ export default function Header() {
                 <Link href="/portfolio" className="modern-nav-link" data-testid="link-nav-portfolio">
                   {t.nav.portfolio}
                 </Link>
-                <Link href="/contact" className="modern-nav-link" data-testid="link-nav-contact">
+                <Link href="/inquiry" className="modern-nav-link" data-testid="link-nav-contact">
                   {t.nav.contact}
                 </Link>
               </div>
