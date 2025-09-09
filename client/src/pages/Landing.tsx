@@ -106,8 +106,8 @@ function YouTubeEmbed({ videoId, title }: { videoId: string; title: string }) {
 export default function Landing() {
   const { t } = useLanguage();
   
-  // HMR 강제 트리거용 타임스탬프 - 영상 ID: ekS18FZU-GE
-  console.log('Landing component loaded at:', new Date().toISOString(), 'Video ID: ekS18FZU-GE');
+  // 🚨 CACHE BUSTER - 영상 변경됨! 🚨
+  console.log('🔥 NEW VIDEO ID: ekS18FZU-GE 🔥', new Date().toISOString());
 
   return (
     <div className="min-h-screen bg-background">
@@ -126,7 +126,7 @@ export default function Landing() {
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="space-y-8">
               <div className="inline-flex items-center bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full border border-white/20">
-                <span className="text-sm font-semibold text-white">✨ AI 기반 퍼포먼스 마케팅</span>
+                <span className="text-sm font-semibold text-white">🎥 NEW VIDEO: ekS18FZU-GE</span>
               </div>
               <h1 className="hero-title" data-testid="text-hero-title">
                 {t.hero.title.split('\n').map((line, index) => (
@@ -171,7 +171,7 @@ export default function Landing() {
             <div className="relative">
               {/* 유튜브 영상 */}
               <YouTubeEmbed 
-                videoId="ekS18FZU-GE"
+                videoId="ekS18FZU-GE" // 새 영상 ID로 변경됨!
                 title="뷰리드AI 퍼포먼스 마케팅 소개"
               />
               {/* YouTube 스타일 플로팅 아이콘들 */}
