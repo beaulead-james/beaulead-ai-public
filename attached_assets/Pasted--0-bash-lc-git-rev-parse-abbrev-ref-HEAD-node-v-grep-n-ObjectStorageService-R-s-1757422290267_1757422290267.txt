@@ -1,0 +1,160 @@
+# 0) 현재 상태
+bash -lc 'git rev-parse --abbrev-ref HEAD; node -v; grep -n \"ObjectStorageService\" -R server || true'
+
+# 1) 업로드 라우터: multer → memoryStorage로 전환하고, Object Storage에 업로드
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: server/routes/upload.ts
+@@
+-import path from 'path';
+-import fs from 'fs';
+-import { fileURLToPath } from 'url';
+-import { Router } from 'express';
+-import multer from 'multer';
+-import { v4 as uuid } from 'uuid';
++import path from 'path';
++import fs from 'fs';
++import { fileURLToPath } from 'url';
++import { Router } from 'express';
++import multer from 'multer';
++import { v4 as uuid } from 'uuid';
++import { ObjectStorageService } from '../objectStorage';
+ 
+ const __filename = fileURLToPath(import.meta.url);
+ const __dirname = path.dirname(__filename);
+ 
+ const router = Router();
+ 
+-const storage = multer.diskStorage({
+-  destination(_, __, cb) {
+-    const dest = path.join(__dirname, '..', 'uploads');
+-    if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
+-    cb(null, dest);
+-  },
+-  filename(_, file, cb) {
+-    const ext = path.extname(file.originalname).toLowerCase();
+-    cb(null, uuid() + ext);
+-  },
+-});
++// ✅ 디스크 대신 메모리 버퍼로 받아 곧바로 Object Storage에 업로드
++const storage = multer.memoryStorage();
+ const upload = multer({
+   storage,
+   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+   fileFilter(_, file, cb) {
+     const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+     if (allowed.includes(file.mimetype)) return cb(null, true);
+     cb(new Error('Only JPG/PNG/WEBP/GIF allowed'));
+   },
+ });
+ 
+ router.post('/image', upload.single('file'), async (req, res) => {
+   if (!req.file) {
+     return res.status(400).json({ error: 'No file uploaded' });
+   }
+-  
+-  const url = '/uploads/' + req.file.filename;
+-  res.json({ url });
++  try {
++    // 업로드 키: uploads/<uuid>.<ext>
++    const ext = path.extname(req.file.originalname || '').toLowerCase() || '.jpg';
++    const key = `uploads/${uuid()}${ext}`;
++    const oss = new ObjectStorageService();
++    // Object Storage에 업로드 (공개 객체로)
++    await oss.uploadPublicObject(key, req.file.buffer, req.file.mimetype || 'application/octet-stream');
++    const publicUrl = await oss.getPublicObjectUrl(key);
++    // 과거 호환을 위해 상대경로도 함께 내려주지만, 클라이언트는 publicUrl을 우선 사용
++    const url = `/uploads/${path.basename(key)}`;
++    return res.json({ url, key, publicUrl });
++  } catch (e: any) {
++    console.error('[upload] object storage error', e);
++    return res.status(500).json({ error: 'Upload failed', detail: String(e?.message || e) });
++  }
+ });
+ 
+ export default router;
+*** End Patch
+PATCH
+
+# 2) /uploads 정적서빙 폴백: 로컬에 없을 때 Object Storage URL로 302 리디렉트
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: server/index.ts
+@@
+ app.use("/uploads", staticUploads);
+ app.use("/api/uploads", staticUploads);
+ 
++// 🔁 /uploads/* 요청 시 로컬에 없으면 Object Storage로 폴백
++import { ObjectStorageService } from "./objectStorage";
++app.get("/uploads/:fname", async (req, res, next) => {
++  try {
++    const fname = req.params.fname;
++    const localPath = path.join(process.cwd(), "server", "uploads", fname);
++    if (fs.existsSync(localPath)) return res.sendFile(localPath);
++    const oss = new ObjectStorageService();
++    const key = `uploads/${fname}`;
++    const url = await oss.getPublicObjectUrl(key).catch(() => null);
++    if (url) {
++      res.setHeader("Cache-Control", "public, max-age=604800, immutable");
++      return res.redirect(302, url);
++    }
++    return res.status(404).json({ message: "Not Found" });
++  } catch {
++    return next();
++  }
++});
+*** End Patch
+PATCH
+
+# 3) (선택) 기존 로컬 파일 → Object Storage 일괄 마이그레이션 유틸 라우트(Admin 전용 임시)
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: server/routes.ts
+@@
+   // Blog routes
+@@
++  // ===== (임시) 업로드 폴더 → Object Storage 마이그레이션 =====
++  app.post('/api/admin/migrate-uploads', mixedAuth, async (req: any, res) => {
++    const userRole = (req.user?.claims?.role) || 'USER';
++    if (userRole !== 'ADMIN') return res.status(403).json({ message: 'Admin access required' });
++    try {
++      const base = path.join(process.cwd(), 'server', 'uploads');
++      if (!fs.existsSync(base)) return res.json({ ok:true, migrated: 0, note: 'no local uploads' });
++      const oss = new ObjectStorageService();
++      const files = fs.readdirSync(base).filter(f => fs.statSync(path.join(base,f)).isFile());
++      let ok = 0, fail = 0; const map:any[] = [];
++      for (const f of files) {
++        const key = `uploads/${f}`;
++        try {
++          const buf = fs.readFileSync(path.join(base,f));
++          const mime = f.endsWith('.png') ? 'image/png' :
++                       f.endsWith('.webp') ? 'image/webp' :
++                       f.endsWith('.gif') ? 'image/gif' : 'image/jpeg';
++          await oss.uploadPublicObject(key, buf, mime);
++          const url = await oss.getPublicObjectUrl(key);
++          ok++; map.push({ file: f, url });
++        } catch (e:any) { fail++; map.push({ file: f, error: String(e?.message||e) }); }
++      }
++      res.json({ ok:true, migrated: ok, failed: fail, map });
++    } catch (e:any) {
++      console.error('[migrate-uploads] error', e);
++      res.status(500).json({ ok:false, message: String(e?.message||e) });
++    }
++  });
+*** End Patch
+PATCH
+
+# 4) 타입스크립트 재빌드 & 서버 재시작
+bash -lc 'npm run build --silent || true'
+bash -lc 'pkill -f "node" || true; npm start --silent & sleep 2'
+
+# 5) 동작 확인
+bash -lc '
+echo "[health]"; curl -sS http://localhost:$PORT/api/healthz || true; echo
+echo "[upload test]"; echo test > /tmp/x.jpg; curl -sS -F "file=@/tmp/x.jpg" http://localhost:$PORT/api/upload/image; echo
+'
+
+# 6) (선택) 기존 로컬 파일을 스토리지로 마이그레이션
+bash -lc '
+echo "[migrate]"; curl -sS -X POST http://localhost:$PORT/api/admin/migrate-uploads || true
+'
