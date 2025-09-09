@@ -9,6 +9,8 @@ import uploadRoutes from "./routes/upload";
 import { z } from "zod";
 import { sql } from "drizzle-orm";
 import { db } from "./db";
+import path from "path";
+import fs from "fs";
 
 const contactFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -97,6 +99,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         res.status(500).json({ message: "Failed to submit contact form" });
       }
+    }
+  });
+
+  // ===== (임시) 업로드 폴더 → Object Storage 마이그레이션 =====
+  app.post('/api/admin/migrate-uploads', mixedAuth, async (req: any, res) => {
+    const userRole = (req.user?.claims?.role) || 'USER';
+    if (userRole !== 'ADMIN') return res.status(403).json({ message: 'Admin access required' });
+    try {
+      const base = path.join(process.cwd(), 'server', 'uploads');
+      if (!fs.existsSync(base)) return res.json({ ok:true, migrated: 0, note: 'no local uploads' });
+      const oss = new ObjectStorageService();
+      const files = fs.readdirSync(base).filter(f => fs.statSync(path.join(base,f)).isFile());
+      let ok = 0, fail = 0; const map:any[] = [];
+      for (const f of files) {
+        const key = `uploads/${f}`;
+        try {
+          const buf = fs.readFileSync(path.join(base,f));
+          const mime = f.endsWith('.png') ? 'image/png' :
+                       f.endsWith('.webp') ? 'image/webp' :
+                       f.endsWith('.gif') ? 'image/gif' : 'image/jpeg';
+          await oss.uploadPublicObject(key, buf, mime);
+          const url = await oss.getPublicObjectUrl(key);
+          ok++; map.push({ file: f, url });
+        } catch (e:any) { fail++; map.push({ file: f, error: String(e?.message||e) }); }
+      }
+      res.json({ ok:true, migrated: ok, failed: fail, map });
+    } catch (e:any) {
+      console.error('[migrate-uploads] error', e);
+      res.status(500).json({ ok:false, message: String(e?.message||e) });
     }
   });
 
