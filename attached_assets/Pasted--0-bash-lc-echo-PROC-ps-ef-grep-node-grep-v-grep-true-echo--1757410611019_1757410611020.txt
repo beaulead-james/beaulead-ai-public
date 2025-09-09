@@ -1,0 +1,75 @@
+# 0) 런타임/프로세스/헬스 확인
+bash -lc '
+echo "=== PROC ==="; ps -ef | grep node | grep -v grep || true
+echo; echo "=== PORT ==="; echo "PORT=$PORT"
+echo; echo "=== HEALTH ==="; curl -sS http://localhost:$PORT/api/healthz || echo "no healthz"
+echo; echo "=== VERSION ==="; curl -sS http://localhost:$PORT/api/version || echo "no version"
+'
+
+# 1) 서버 로그에서 에러 스캔(최근 300줄)
+bash -lc '
+LOGF="server.log"
+if [ -f .replit_logs/server.log ]; then LOGF=".replit_logs/server.log"; fi
+echo "=== LOG(FILE:$LOGF) ==="
+tail -n 300 "$LOGF" 2>/dev/null | sed -n "1,200p" || echo "(no log)"
+'
+
+# 2) 클라이언트 정적 서빙 경로 확인 (vite outDir, dist 내용)
+bash -lc '
+echo "=== vite outDir ==="
+node -e "const s=require(\"fs\").readFileSync(\"vite.config.ts\",\"utf8\");const m=s.match(/outDir:\\s*[\"\\']([^\"\\']+)/);console.log(m?m[1]:\"(default dist)\")"
+echo; echo "=== dist/public top ==="; ls -la dist/public 2>/dev/null | head -n 10 || echo "dist/public 없음"
+echo; echo "=== client/dist top ==="; ls -la client/dist 2>/dev/null | head -n 10 || echo "client/dist 없음"
+'
+
+# 3) 흔한 원인 즉시 조치
+#  - dev 프리뷰에서 뜨는 디버그 alert 억제
+#  - service worker가 캐시를 고정해두었을 경우 비활성화
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: client/src/main.tsx
+@@
+ import React from 'react'
+ import ReactDOM from 'react-dom/client'
+ import App from './App.tsx'
+ import './index.css'
++// --- DEV 프리뷰 UX 안정화: 디버그 alert 억제 ---
++if (import.meta.env.DEV) {
++  const orig = window.alert?.bind(window) as any;
++  window.alert = (msg?: any) => console.info('[dev alert suppressed]', msg);
++}
+*** End Patch
+PATCH
+
+# (서비스워커가 있다면 등록 해제하도록 가드 추가)
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: client/src/App.tsx
+@@
+ import React from 'react'
++// 서비스워커 제거(존재 시) - dev 프리뷰 캐시 고착 방지
++if ('serviceWorker' in navigator) {
++  navigator.serviceWorker.getRegistrations?.().then(regs => regs.forEach(r => r.unregister()));
++}
+*** End Patch
+PATCH
+
+# 4) 클린 빌드 → 재시작 (빌드ID 스탬프 포함)
+bash -lc '
+rm -rf dist client/dist || true
+BUILD_ID=$(date +%Y%m%d-%H%M%S)-$(git rev-parse --short HEAD 2>/dev/null || echo dev)
+mkdir -p dist/public client/dist
+echo "$BUILD_ID" | tee dist/public/build-id.txt client/dist/build-id.txt >/dev/null
+npm ci --silent || npm i --silent
+npm run build --silent || true
+pkill -f "node" || true
+npm start --silent & sleep 3
+echo; echo "=== /api/version ==="; curl -sS http://localhost:$PORT/api/version || true
+'
+
+# 5) 라우팅/정적 서빙 체크 (루트/블로그/업로드)
+bash -lc '
+echo "[/]"; curl -sI http://localhost:$PORT/ | head -n 5
+echo "[/blog]"; curl -sI http://localhost:$PORT/blog | head -n 5
+echo "[/uploads test]"; curl -sI http://localhost:$PORT/uploads/ | head -n 1 || true
+'
