@@ -65,6 +65,17 @@ const staticUploads = express.static(UPLOAD_DIR, {
 app.use("/uploads", staticUploads);
 app.use("/api/uploads", staticUploads);
 
+// === Build version helpers ===
+function readBuildId() {
+  try {
+    const p1 = path.join(process.cwd(), "dist", "public", "build-id.txt");
+    const p2 = path.join(process.cwd(), "client", "dist", "build-id.txt");
+    if (fs.existsSync(p1)) return fs.readFileSync(p1, "utf8").trim();
+    if (fs.existsSync(p2)) return fs.readFileSync(p2, "utf8").trim();
+  } catch {}
+  return "unknown";
+}
+
 // 🔁 업로드 파일 폴백: server/uploads 에 없으면 dist/public/uploads 에서도 찾아본다.
 app.get("/uploads/:fname", (req, res, next) => {
   const fname = req.params.fname;
@@ -124,6 +135,12 @@ app.use((req, res, next) => {
     res.json({ ok: true, from: "api/healthz" });
   });
 
+  // 빌드 버전 확인 엔드포인트
+  app.get("/api/version", (_req: Request, res: Response) => {
+    res.setHeader("Cache-Control", "no-store");
+    res.json({ buildId: readBuildId(), time: Date.now() });
+  });
+
   // ⚠️ API 가드: 등록되지 않은 /api/*는 HTML로 빠지지 않고 JSON 404로 고정
   app.use("/api", (_req: Request, res: Response) => {
     res.setHeader("Content-Type", "application/json; charset=utf-8");
@@ -148,13 +165,16 @@ app.use((req, res, next) => {
 
   if (fs.existsSync(CLIENT_DIST)) {
     // 정적 파일 먼저
+    app.use((req, res, next) => { res.setHeader("X-Build-Id", readBuildId()); next(); });
     app.use(express.static(CLIENT_DIST, { fallthrough: true, maxAge: "1h" }));
 
     // 업로드/API가 아닌 모든 경로는 SPA index.html 반환
     app.get("*", (req: Request, res: Response, next: NextFunction) => {
       if (req.path.startsWith("/api") || req.path.startsWith("/uploads")) return next();
       if (fs.existsSync(CLIENT_INDEX_HTML)) {
+        // HTML은 항상 최신으로
         res.setHeader("Cache-Control", "no-store");
+        res.setHeader("X-Build-Id", readBuildId());
         return res.sendFile(CLIENT_INDEX_HTML);
       }
       return next();
