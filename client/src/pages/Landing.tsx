@@ -106,8 +106,8 @@ function YouTubeEmbed({ videoId, title }: { videoId: string; title: string }) {
 export default function Landing() {
   const { t } = useLanguage();
   
-  // 🚨 CACHE BUSTER - 영상 변경됨! 🚨
-  console.log('🔥 NEW VIDEO ID: ekS18FZU-GE 🔥', new Date().toISOString());
+  // === CACHE BUSTER ${Math.random()} ===
+  alert('NEW CODE LOADED! Video ID: ekS18FZU-GE');
 
   return (
     <div className="min-h-screen bg-background">
