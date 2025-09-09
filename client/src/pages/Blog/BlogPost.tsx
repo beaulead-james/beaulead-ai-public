@@ -93,14 +93,14 @@ export default function BlogPost() {
     <div className="min-h-screen bg-black relative overflow-hidden">
       {/* Background orbs */}
       <div className="fixed inset-0 bg-gradient-to-br from-purple-900/20 via-blue-900/10 to-black"></div>
-      <div className="orb orb-1"></div>
-      <div className="orb orb-2"></div>
+      <div className="orb orb-a"></div>
+      <div className="orb orb-b"></div>
       
       <SEO 
         title={`${content.title} | 뷰리드AI`}
         description={blog.excerptKo || blog.excerptEn || content.title || ""}
         keywords="마케팅블로그, 퍼포먼스마케팅, 디지털마케팅"
-        ogImage={blog.coverUrl}
+        ogImage={blog.coverUrl || undefined}
       />
       <Header />
 
