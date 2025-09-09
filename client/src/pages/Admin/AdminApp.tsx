@@ -3,6 +3,7 @@
 // wouter 라우팅 기반. shadcn/ui + lucide-react + recharts 사용.
 
 import React from 'react'
+import SidebarToggle from '@/components/SidebarToggle'
 // 포트폴리오 관련 컴포넌트 임포트
 import NewPortfolioPage from './NewPortfolioPage'
 import PortfolioEditorPage from './PortfolioEditorPage'
@@ -176,10 +177,10 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
       </header>
 
       <div className="flex h-[calc(100vh-4rem)]">
-        <aside className="hidden lg:block w-72 border-r bg-muted/20">
+        <aside className="hidden lg:block w-72 border-r bg-muted/20 admin-sidebar transition-all duration-300">
           <Sidebar />
         </aside>
-        <main className="flex-1 overflow-auto">
+        <main className="flex-1 overflow-auto admin-main transition-all duration-300">
           <div className="p-6">
             {children}
           </div>
@@ -291,8 +292,8 @@ function NavItem({ to, icon: Icon, label }: { to: string; icon: any; label: stri
           : 'text-muted-foreground hover:bg-muted hover:text-foreground hover:translate-x-1'
       )}
     >
-      <Icon className={clsx('h-4 w-4', active ? 'text-primary' : '')} /> 
-      {label}
+      <Icon className={clsx('h-4 w-4 flex-shrink-0', active ? 'text-primary' : '')} /> 
+      <span className="sidebar-label" data-item-label>{label}</span>
     </Link>
   )
 }
@@ -1978,6 +1979,7 @@ export default function AdminApp() {
   
   return (
     <AdminLayout>
+      <SidebarToggle />
       {renderContent()}
     </AdminLayout>
   )
