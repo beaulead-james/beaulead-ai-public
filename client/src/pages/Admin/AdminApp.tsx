@@ -3,6 +3,9 @@
 // wouter 라우팅 기반. shadcn/ui + lucide-react + recharts 사용.
 
 import React from 'react'
+// 포트폴리오 관련 컴포넌트 임포트
+import NewPortfolioPage from './NewPortfolioPage'
+import PortfolioEditorPage from './PortfolioEditorPage'
 import { Route, Switch, Link, useLocation, Router } from 'wouter'
 import { useQuery } from '@tanstack/react-query'
 import {
