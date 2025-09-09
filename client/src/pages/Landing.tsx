@@ -79,28 +79,31 @@ function BlogPosts() {
 // 유튜브 영상 임베드 컴포넌트
 function YouTubeEmbed({ videoId, title }: { videoId: string; title: string }) {
   return (
-    <div className="relative h-[400px] lg:h-[500px] bg-black/30 rounded-2xl overflow-hidden border border-white/10">
-      {/* 유튜브 영상 */}
-      <iframe
-        width="100%"
-        height="100%"
-        src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&rel=0&modestbranding=1&showinfo=0&loop=1&playlist=${videoId}`}
-        title={title}
-        frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowFullScreen
-        className="absolute inset-0"
-        data-testid="youtube-iframe"
-      ></iframe>
+    <div className="relative h-[400px] lg:h-[500px] rounded-2xl overflow-hidden">
+      {/* 배경 글로우 효과 */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-purple-600/30 via-indigo-500/20 to-cyan-400/20 rounded-2xl blur-xl"></div>
+      <div className="absolute inset-2 bg-gradient-to-tr from-purple-500/20 via-indigo-400/15 to-cyan-300/15 rounded-xl blur-lg"></div>
       
-      {/* 🎨 GRADIENT OVERLAY - NEW EFFECT 🎨 */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-purple-900/70 via-indigo-700/50 to-cyan-500/20 mix-blend-multiply pointer-events-none z-10"></div>
-      
-      {/* YouTube 스타일 플로팅 아이콘들 */}
-      <div className="absolute top-4 right-4 flex items-center gap-2">
-        {/* 영상 재생 표시 */}
-        <div className="bg-red-600 text-white px-2 py-1 rounded text-xs font-semibold">
-          영상 재생
+      {/* 유튜브 영상 컨테이너 */}
+      <div className="relative bg-black/20 rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+        <iframe
+          width="100%"
+          height="100%"
+          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&rel=0&modestbranding=1&showinfo=0&loop=1&playlist=${videoId}`}
+          title={title}
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowFullScreen
+          className="absolute inset-0"
+          data-testid="youtube-iframe"
+        ></iframe>
+        
+        {/* YouTube 스타일 플로팅 아이콘들 */}
+        <div className="absolute top-4 right-4 flex items-center gap-2">
+          {/* 영상 재생 표시 */}
+          <div className="bg-red-600 text-white px-2 py-1 rounded text-xs font-semibold">
+            영상 재생
+          </div>
         </div>
       </div>
     </div>
