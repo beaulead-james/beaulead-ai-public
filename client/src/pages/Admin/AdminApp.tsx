@@ -7,6 +7,7 @@ import React from 'react'
 import NewPortfolioPage from './NewPortfolioPage'
 import PortfolioEditorPage from './PortfolioEditorPage'
 import TrafficStatsPage from './TrafficStatsPage'
+import InquiriesPage from './InquiriesPage'
 import { Route, Switch, Link, useLocation, Router } from 'wouter'
 import { useQuery } from '@tanstack/react-query'
 import {
@@ -1960,7 +1961,7 @@ export default function AdminApp() {
     if (actualPath === '/admin/blog/new') return <QuillBlogEditor mode="new" />
     if (actualPath === '/admin/portfolio') return <PortfolioPage />
     if (actualPath === '/admin/portfolio/new') return <NewPortfolioPage />
-    if (actualPath === '/admin/leads') return <LeadsPage />
+    if (actualPath === '/admin/leads') return <InquiriesPage />
     if (actualPath === '/admin/settings') return <SettingsPage />
     
     // 편집 페이지 처리
