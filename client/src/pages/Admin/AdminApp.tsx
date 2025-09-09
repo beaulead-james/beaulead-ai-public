@@ -73,22 +73,9 @@ const blogFormSchema = z.object({
   published: z.boolean().default(false)
 })
 
-// 포트폴리오 폼 스키마
-const portfolioFormSchema = z.object({
-  titleKo: z.string().min(1, '한국어 제목을 입력해주세요'),
-  titleEn: z.string().min(1, '영어 제목을 입력해주세요'),
-  excerptKo: z.string().min(1, '한국어 요약을 입력해주세요'),
-  excerptEn: z.string().min(1, '영어 요약을 입력해주세요'),
-  contentKo: z.string().min(1, '한국어 내용을 입력해주세요'),
-  contentEn: z.string().min(1, '영어 내용을 입력해주세요'),
-  slug: z.string().min(1, 'URL 슬러그를 입력해주세요'),
-  client: z.string().min(1, '클라이언트명을 입력해주세요'),
-  category: z.string().min(1, '카테고리를 입력해주세요'),
-  published: z.boolean().default(false)
-})
+// 포트폴리오 폼 스키마 - 별도 파일로 분리됨
 
 type BlogFormData = z.infer<typeof blogFormSchema>
-type PortfolioFormData = z.infer<typeof portfolioFormSchema>
 
 const users = [
   { id: 'U-001', name: '관리자', role: 'admin', email: 'admin@beaulead.ai', status: 'active' },
@@ -1262,15 +1249,7 @@ function EditBlogPage({ blogId }: { blogId: string }) {
   )
 }
 
-// 포트폴리오 작성 페이지
-function NewPortfolioPage() {
-  return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold">새 포트폴리오 작성</h1>
-      <p>포트폴리오 작성 페이지입니다.</p>
-    </div>
-  )
-}
+// NewPortfolioPage는 별도 파일로 분리됨
 
 // 새로운 블로그 목록 페이지
 function BlogPage() {
@@ -1867,64 +1846,7 @@ function BlogEditorPage({ blogId }: { blogId?: string }) {
   )
 }
 
-function PortfolioEditorPage({ portfolioId }: { portfolioId?: string }) {
-  const isEdit = !!portfolioId
-  
-  const form = useForm<PortfolioFormData>({
-    resolver: zodResolver(portfolioFormSchema),
-    defaultValues: {
-      titleKo: '',
-      titleEn: '',
-      excerptKo: '',
-      excerptEn: '',
-      contentKo: '',
-      contentEn: '',
-      slug: '',
-      client: '',
-      category: '',
-      published: false
-    }
-  })
-
-  const onSubmit = async (data: PortfolioFormData) => {
-    try {
-      const method = isEdit ? 'PUT' : 'POST'
-      const url = isEdit ? `/api/portfolios/${portfolioId}` : '/api/portfolios'
-      
-      const response = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      })
-
-      if (response.ok) {
-        window.location.href = '/admin/portfolio'
-      } else {
-        console.error('Failed to save portfolio')
-      }
-    } catch (error) {
-      console.error('Error saving portfolio:', error)
-    }
-  }
-
-  return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Link to="/admin/portfolio">
-            <Button variant="ghost" size="sm" className="gap-2">
-              <ArrowLeft className="h-4 w-4" />뒤로가기
-            </Button>
-          </Link>
-          <div>
-            <h2 className="text-xl font-semibold">
-              {isEdit ? '포트폴리오 편집' : '새 포트폴리오 작성'}
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              한국어와 영어로 포트폴리오를 작성하세요
-            </p>
-          </div>
-        </div>
+// PortfolioEditorPage는 별도 파일로 분리됨
         <div className="flex gap-2">
           <Button 
             type="button" 
