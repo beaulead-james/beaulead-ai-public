@@ -28,20 +28,31 @@ router.post('/image', upload.single('file'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded' });
   }
+  const ext = (path.extname(req.file.originalname || '').toLowerCase()) || '.jpg';
+  const key = `uploads/${uuid()}${ext}`;
+  // 1) Object Storage 시도
   try {
-    // 업로드 키: uploads/<uuid>.<ext>
-    const ext = path.extname(req.file.originalname || '').toLowerCase() || '.jpg';
-    const key = `uploads/${uuid()}${ext}`;
+    if (process.env.OBJ_STORAGE_DISABLED === '1') throw new Error('OBJ_STORAGE_DISABLED');
     const oss = new ObjectStorageService();
-    // Object Storage에 업로드 (공개 객체로)
     await oss.uploadPublicObject(key, req.file.buffer, req.file.mimetype || 'application/octet-stream');
     const publicUrl = await oss.getPublicObjectUrl(key);
-    // 과거 호환을 위해 상대경로도 함께 내려주지만, 클라이언트는 publicUrl을 우선 사용
-    const url = `/uploads/${path.basename(key)}`;
-    return res.json({ url, key, publicUrl });
+    const url = `/uploads/${path.basename(key)}`; // 호환용
+    return res.json({ ok:true, storage:'object', url, key, publicUrl });
   } catch (e: any) {
-    console.error('[upload] object storage error', e);
-    return res.status(500).json({ error: 'Upload failed', detail: String(e?.message || e) });
+    console.warn('[upload] object storage failed, fallback to local:', e?.message || e);
+    // 2) 로컬 폴백
+    try {
+      const destDir = path.join(process.cwd(), 'server', 'uploads');
+      if (!fs.existsSync(destDir)) fs.mkdirSync(destDir, { recursive: true });
+      const fname = path.basename(key);
+      fs.writeFileSync(path.join(destDir, fname), req.file.buffer);
+      const url = `/uploads/${fname}`;
+      // DEV에서도 바로 보이게 상대경로 제공 (publicUrl 없음)
+      return res.json({ ok:true, storage:'local', url, key, publicUrl: null });
+    } catch (e2:any) {
+      console.error('[upload] local fallback failed:', e2?.message || e2);
+      return res.status(502).json({ ok:false, error:'Upload failed', detail:String(e2?.message||e2) });
+    }
   }
 });
 

@@ -29,6 +29,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Upload routes (API endpoint)
   app.use('/api/upload', uploadRoutes);
 
+  // ---- 업로드/스토리지 진단 ----
+  app.get('/api/upload/diagnose', async (_req, res) => {
+    try {
+      const info:any = { ok:true, env: { OBJ_STORAGE_DISABLED: process.env.OBJ_STORAGE_DISABLED || '0' } };
+      try {
+        const oss = new ObjectStorageService();
+        // 임시 사전 체킹: 공개 URL 생성만 시도
+        const testUrl = await oss.getPublicObjectUrl('uploads/_diagnose_dummy');
+        info.objectStorage = { reachable: true, sampleUrl: testUrl };
+      } catch (e:any) {
+        info.objectStorage = { reachable: false, error: String(e?.message||e) };
+      }
+      res.json(info);
+    } catch (e:any) {
+      res.status(500).json({ ok:false, error: String(e?.message||e) });
+    }
+  });
+
   // ---- portfolios 컬럼 보강 (존재하지 않으면 추가) ----
   try {
     await db.execute(sql`ALTER TABLE portfolios ADD COLUMN IF NOT EXISTS category varchar;`);
