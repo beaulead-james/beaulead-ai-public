@@ -66,24 +66,56 @@ app.use("/uploads", staticUploads);
 app.use("/api/uploads", staticUploads);
 
 // 🔁 /uploads/* 요청 시 로컬에 없으면 Object Storage로 폴백
-import { ObjectStorageService } from "./objectStorage";
+import { ObjectStorageService, objectStorageClient } from "./objectStorage";
 app.get("/uploads/:fname", async (req, res, next) => {
   try {
     const fname = req.params.fname;
     const localPath = path.join(process.cwd(), "server", "uploads", fname);
     if (fs.existsSync(localPath)) return res.sendFile(localPath);
+    
+    // Try to serve from Object Storage directly
     const oss = new ObjectStorageService();
-    const key = `uploads/${fname}`;
-    const url = await oss.getPublicObjectUrl(key).catch(() => null);
-    if (url) {
-      res.setHeader("Cache-Control", "public, max-age=604800, immutable");
-      return res.redirect(302, url);
+    const publicPaths = oss.getPublicObjectSearchPaths();
+    if (publicPaths.length > 0) {
+      const fullPath = `${publicPaths[0]}/uploads/${fname}`;
+      const { bucketName, objectName } = parseObjectPath(fullPath);
+      const bucket = objectStorageClient.bucket(bucketName);
+      const file = bucket.file(objectName);
+      
+      try {
+        // Check if file exists
+        const [exists] = await file.exists();
+        if (exists) {
+          // Stream the file directly through our server
+          const [metadata] = await file.getMetadata();
+          res.set({
+            "Content-Type": metadata.contentType || "application/octet-stream",
+            "Cache-Control": "public, max-age=604800, immutable",
+          });
+          const stream = file.createReadStream();
+          stream.pipe(res);
+          return;
+        }
+      } catch (error) {
+        console.error('Object Storage fallback error:', error);
+      }
     }
+    
     return res.status(404).json({ message: "Not Found" });
   } catch {
     return next();
   }
 });
+
+// Helper function for parsing object path
+function parseObjectPath(path: string): { bucketName: string; objectName: string } {
+  if (!path.startsWith("/")) path = `/${path}`;
+  const pathParts = path.split("/");
+  if (pathParts.length < 3) throw new Error("Invalid path: must contain at least a bucket name");
+  const bucketName = pathParts[1];
+  const objectName = pathParts.slice(2).join("/");
+  return { bucketName, objectName };
+}
 
 // === Build version helpers ===
 function readBuildId() {
