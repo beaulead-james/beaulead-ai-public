@@ -6,6 +6,7 @@ import React from 'react'
 // 포트폴리오 관련 컴포넌트 임포트
 import NewPortfolioPage from './NewPortfolioPage'
 import PortfolioEditorPage from './PortfolioEditorPage'
+import TrafficStatsPage from './TrafficStatsPage'
 import { Route, Switch, Link, useLocation, Router } from 'wouter'
 import { useQuery } from '@tanstack/react-query'
 import {
@@ -231,7 +232,7 @@ function Sidebar() {
       <nav className="flex-1 p-4 space-y-2">
         <NavGroup title="대시보드">
           <NavItem to="/admin" icon={LayoutDashboard} label="홈 대시보드" />
-          <NavItem to="/admin/analytics" icon={BarChart3} label="통계 분석" />
+          <NavItem to="/admin/traffic" icon={BarChart3} label="접속통계" />
         </NavGroup>
         
         <NavGroup title="콘텐츠 관리">
@@ -1953,7 +1954,7 @@ export default function AdminApp() {
     
     if (actualPath === '/admin') return <DashboardPage />
     if (actualPath === '/admin/users') return <UsersPage />
-    if (actualPath === '/admin/analytics') return <AnalyticsPage />
+    if (actualPath === '/admin/traffic') return <TrafficStatsPage />
     if (actualPath === '/admin/blog') return <BlogPage />
     if (actualPath === '/admin/blog/new') return <QuillBlogEditor mode="new" />
     if (actualPath === '/admin/portfolio') return <PortfolioPage />

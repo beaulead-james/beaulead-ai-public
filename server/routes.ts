@@ -11,6 +11,7 @@ import { sql } from "drizzle-orm";
 import { db } from "./db";
 import path from "path";
 import fs from "fs";
+import crypto from "crypto";
 
 const contactFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -99,6 +100,100 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         res.status(500).json({ message: "Failed to submit contact form" });
       }
+    }
+  });
+
+  // ===== 접속통계: 테이블 생성(없으면) =====
+  try {
+    await db.execute(sql`CREATE TABLE IF NOT EXISTS analytics_events (
+      id           varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+      ts           timestamptz DEFAULT now(),
+      sid          varchar,
+      user_id      varchar,
+      path         varchar,
+      referrer     varchar,
+      utm          jsonb,
+      ua           varchar,
+      ip_hash      varchar,
+      device       varchar,
+      browser      varchar,
+      os           varchar
+    );`);
+  } catch (e) {
+    console.warn("[analytics] init skipped:", e);
+  }
+
+  // 유틸: 간단 UA 파싱
+  function parseUA(ua: string = '') {
+    const low = ua.toLowerCase();
+    const device = /mobile|iphone|android/.test(low) ? 'mobile' : 'desktop';
+    const browser = /chrome/.test(low) ? 'chrome' : /safari/.test(low) ? 'safari' : /firefox/.test(low) ? 'firefox' : 'other';
+    const os = /windows/.test(low) ? 'windows' : /mac os|macintosh/.test(low) ? 'mac' : /android/.test(low) ? 'android' : /ios|iphone|ipad/.test(low) ? 'ios' : 'other';
+    return { device, browser, os };
+  }
+  function hashIp(ip: string) {
+    try { return crypto.createHash('sha256').update(ip + (process.env.IP_HASH_SALT || 'salt')).digest('hex'); }
+    catch { return 'na'; }
+  }
+
+  // ===== 수집: 페이지뷰 =====
+  app.post('/api/analytics/track', async (req, res) => {
+    try {
+      const { type, path, ref, sid, ua, ts, utm } = req.body || {};
+      if (type !== 'pageview' || !path) return res.status(400).json({ ok:false, message:'invalid payload' });
+      const ip = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || req.socket.remoteAddress || '';
+      const { device, browser, os } = parseUA(ua || (req.headers['user-agent'] as string) || '');
+      await db.execute(sql`INSERT INTO analytics_events (ts, sid, user_id, path, referrer, utm, ua, ip_hash, device, browser, os)
+        VALUES (to_timestamp(${(ts||Date.now())/1000.0}), ${sid||null}, ${(req as any).user?.claims?.sub||null}, ${path}, ${ref||''}, ${utm? JSON.stringify(utm): sql`NULL`}, ${ua||''}, ${hashIp(ip)}, ${device}, ${browser}, ${os});`);
+      res.json({ ok:true });
+    } catch (e) {
+      console.error("[analytics] track error", e);
+      res.status(500).json({ ok:false });
+    }
+  });
+
+  // ===== 집계: 기간 요약 =====
+  app.get('/api/analytics/summary', async (req, res) => {
+    try {
+      const from = req.query.from ? new Date(String(req.query.from)) : new Date(Date.now() - 7*864e5);
+      const to = req.query.to ? new Date(String(req.query.to)) : new Date();
+      const rows:any = await db.execute(sql`
+        SELECT 
+          COUNT(*)::int AS pageviews,
+          COUNT(DISTINCT sid)::int AS unique_visitors
+        FROM analytics_events
+        WHERE ts >= ${from.toISOString()} AND ts < ${to.toISOString()}
+      `);
+      const topPaths:any = await db.execute(sql`
+        SELECT path, COUNT(*)::int pv
+        FROM analytics_events
+        WHERE ts >= ${from.toISOString()} AND ts < ${to.toISOString()}
+        GROUP BY path ORDER BY pv DESC LIMIT 10
+      `);
+      res.json({ ok:true, range:{from, to}, totals: rows.rows?.[0]||{pageviews:0,unique_visitors:0}, topPaths: topPaths.rows||[] });
+    } catch (e) {
+      console.error("[analytics] summary error", e);
+      res.status(500).json({ ok:false });
+    }
+  });
+
+  // ===== 집계: 일자별 시계열 =====
+  app.get('/api/analytics/timeseries', async (req, res) => {
+    try {
+      const from = req.query.from ? new Date(String(req.query.from)) : new Date(Date.now() - 14*864e5);
+      const to = req.query.to ? new Date(String(req.query.to)) : new Date();
+      const rows:any = await db.execute(sql`
+        SELECT to_char(date_trunc('day', ts), 'YYYY-MM-DD') AS d,
+               COUNT(*)::int AS pv,
+               COUNT(DISTINCT sid)::int AS uv
+        FROM analytics_events
+        WHERE ts >= ${from.toISOString()} AND ts < ${to.toISOString()}
+        GROUP BY d ORDER BY d
+      `);
+      res.json({ ok:true, data: rows.rows||[] });
+    } catch (e) {
+      console.error("[analytics] timeseries error", e);
+      res.status(500).json({ ok:false });
     }
   });
 
