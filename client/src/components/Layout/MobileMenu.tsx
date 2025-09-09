@@ -77,7 +77,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         <Link href="/portfolio" className="mobile-menu-item" onClick={handleLinkClick} data-testid="link-mobile-portfolio">
           {t.nav.portfolio}
         </Link>
-        <Link href="/contact" className="mobile-menu-item" onClick={handleLinkClick} data-testid="link-mobile-contact">
+        <Link href="/inquiry" className="mobile-menu-item" onClick={handleLinkClick} data-testid="link-mobile-contact">
           {t.nav.contact}
         </Link>
         

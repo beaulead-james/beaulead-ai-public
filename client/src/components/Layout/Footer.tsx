@@ -112,7 +112,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-gray-300 hover:text-white transition-colors" data-testid="link-footer-contact">
+                <Link href="/inquiry" className="text-gray-300 hover:text-white transition-colors" data-testid="link-footer-contact">
                   {t.footer.resources.contact}
                 </Link>
               </li>

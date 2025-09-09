@@ -142,7 +142,7 @@ export default function Landing() {
               </p>
               <div className="flex flex-col sm:flex-row gap-6">
                 <Link 
-                  href="/contact" 
+                  href="/inquiry" 
                   className="modern-btn"
                   data-testid="button-cta-contact"
                 >
