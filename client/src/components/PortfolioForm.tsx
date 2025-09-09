@@ -50,10 +50,10 @@ export default function PortfolioForm({ id }: { id?: string }) {
 
   // 편집 모드: 기존 데이터 불러오기
   const { data: detail, isFetching } = useQuery({
-    queryKey: ['/api/portfolios', id],
+    queryKey: ['/api/portfolios/by-id', id],
     queryFn: async () => {
       if (!id) return null;
-      const res = await fetch(`/api/portfolios/${id}`);
+      const res = await fetch(`/api/portfolios/by-id/${id}`);
       if (!res.ok) throw new Error('Failed to fetch portfolio');
       return res.json();
     },
