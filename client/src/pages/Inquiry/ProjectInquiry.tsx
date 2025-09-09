@@ -30,7 +30,7 @@ const BUDGETS = [
   "3,000 ~ 5,000만원", "5,000만원 초과"
 ];
 
-export default function ProjectInquiry() {
+function ProjectInquiry() {
   const { toast } = useToast();
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -387,3 +387,5 @@ export default function ProjectInquiry() {
     </div>
   );
 }
+
+export default ProjectInquiry;
