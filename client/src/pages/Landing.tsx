@@ -171,7 +171,7 @@ export default function Landing() {
             <div className="relative">
               {/* 유튜브 영상 */}
               <YouTubeEmbed 
-                videoId="dQw4w9WgXcQ" // 데모용 비디오 ID - 실제 사용시 변경 필요
+                videoId="ekS18FZU-GE"
                 title="뷰리드AI 퍼포먼스 마케팅 소개"
               />
               {/* YouTube 스타일 플로팅 아이콘들 */}
