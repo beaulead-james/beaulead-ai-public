@@ -131,24 +131,16 @@ export default function PortfolioList() {
                 
                 return (
                   <article key={portfolio.id} className="service-card overflow-hidden hover:bg-white/10 transition-all duration-300">
-                    {/* Thumbnail */}
+                    {/* Thumbnail (항상 16:9) */}
                     <div className="relative">
-                      {portfolio.thumbUrl ? (
-                        <img 
-                          src={portfolio.thumbUrl}
-                          alt={content.title}
-                          className="w-full h-64 object-cover"
+                      <div className={`thumb-16x9 ${portfolio.thumbUrl ? '' : 'placeholder'}`}>
+                        <img
+                          src={portfolio.thumbUrl || "/og/placeholder-1200x675.jpg"}
+                          alt={content.title || "portfolio thumbnail"}
+                          loading="lazy"
                           data-testid={`img-portfolio-thumb-${index}`}
                         />
-                      ) : (
-                        <div className="w-full h-64 bg-gradient-to-br from-white/20 to-white/10 flex items-center justify-center">
-                          <div className="contact-icon">
-                            <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                              <path d="M16,6L18.29,8.29L13.41,13.17L9.41,9.17L2,16.59L3.41,18L9.41,12L13.41,16L19.71,9.71L22,12V6H16Z"/>
-                            </svg>
-                          </div>
-                        </div>
-                      )}
+                      </div>
                       
                       {/* Category Badge */}
                       <div className="absolute top-4 left-4">

@@ -1,0 +1,80 @@
+# 1) 전역 CSS에 16:9 유틸 추가
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: client/src/index.css
+@@
+ /* Custom utilities */
++
++/* --- 16:9 thumbnail box (브라우저 기본 aspect-ratio 사용) --- */
++.thumb-16x9 {
++  aspect-ratio: 16 / 9;
++  width: 100%;
++  display: block;
++  position: relative;
++  overflow: hidden;
++  border-radius: 0.75rem; /* rounded-xl */
++  background: rgb(15 23 42 / 0.6); /* slate-900/60 */
++}
++.thumb-16x9 > img, .thumb-16x9 > video, .thumb-16x9 > picture {
++  position: absolute;
++  inset: 0;
++  width: 100%;
++  height: 100%;
++  object-fit: cover;     /* 가득 채우기 */
++  object-position: center;
++  display: block;
++}
++.thumb-16x9.placeholder::before {
++  content: "";
++  position: absolute; inset: 0;
++  background: radial-gradient(60% 60% at 50% 50%, rgba(88,28,135,.25), rgba(30,27,75,.25) 60%, transparent);
++}
+*** End Patch
+PATCH
+
+# 2) 포트폴리오 리스트 카드에서 썸네일을 16:9 박스로 감싸기
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: client/src/pages/Portfolio/PortfolioList.tsx
+@@
+-            {/* 썸네일 */}
+-            {item.thumbUrl && (
+-              <img src={item.thumbUrl} alt={item.titleKo || item.titleEn} className="w-full h-48 object-cover rounded-xl" loading="lazy" />
+-            )}
++            {/* 썸네일 (항상 16:9) */}
++            <div className={`thumb-16x9 ${item.thumbUrl ? '' : 'placeholder'}`}>
++              <img
++                src={item.thumbUrl || "/og/placeholder-1200x675.jpg"}
++                alt={(item.titleKo || item.titleEn || "portfolio thumbnail")}
++                loading="lazy"
++              />
++            </div>
+@@
+-            {/* 제목/요약 */}
++            {/* 제목/요약 */}
+*** End Patch
+PATCH
+
+# 3) 카드 그리드 높이 보정(선택): 기존 h-48 같은 고정 높이 제거했으므로 카드 간격만 약간 조정
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: client/src/pages/Portfolio/PortfolioList.tsx
+@@
+-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
++          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+*** End Patch
+PATCH
+
+# 4) (선택) 플레이스홀더 이미지가 없다면 하나 생성 안내 주석 — 없으면 무시하고 진행됨
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: client/src/pages/Portfolio/PortfolioItem.tsx
+@@
+-  // ... 기존 상세 렌더
++  // 썸네일 없는 항목도 상세 상단에서 16:9 유지
+*** End Patch
+PATCH
+
+# 5) 빌드 & 재시작
+bash -lc 'npm run build --silent || true'
+bash -lc 'pkill -f "node" || true; npm start --silent & sleep 2'
