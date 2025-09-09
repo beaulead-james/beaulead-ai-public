@@ -6,6 +6,11 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { useAuth } from "./hooks/useAuth";
 
+// 서비스워커 제거(존재 시) - dev 프리뷰 캐시 고착 방지
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations?.().then(regs => regs.forEach(r => r.unregister()));
+}
+
 // Import pages
 import NotFound from "@/pages/not-found";
 import Landing from "./pages/Landing";
