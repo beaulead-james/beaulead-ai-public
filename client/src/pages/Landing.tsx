@@ -100,7 +100,7 @@ function YouTubeEmbed({ videoId, title }: { videoId: string; title: string }) {
       <div className="absolute top-4 right-4 flex items-center gap-2">
         {/* 영상 재생 표시 */}
         <div className="bg-red-600 text-white px-2 py-1 rounded text-xs font-semibold">
-          🎥 NEW GRADIENT EFFECT
+          영상 재생
         </div>
       </div>
     </div>
