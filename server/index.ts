@@ -163,10 +163,7 @@ app.use((req, res, next) => {
   // -------------------- API 라우트 (SPA보다 위!) --------------------
   const server = await registerRoutes(app);
 
-  // SEO/북마크 통일: /inquiry로 들어오면 /project-inquiry로 일시 리다이렉트
-  app.get("/inquiry", (req: Request, res: Response) => {
-    res.redirect(302, "/project-inquiry");
-  });
+  // (리다이렉트는 제거: 아래에서 직접 index.html을 서빙하도록 변경)
 
   // 간단한 헬스체크 (프록시/순서 이슈 진단용)
   app.get("/api/healthz", (_req: Request, res: Response) => {
@@ -208,7 +205,21 @@ app.use((req, res, next) => {
     app.use((req, res, next) => { res.setHeader("X-Build-Id", readBuildId()); next(); });
     app.use(express.static(CLIENT_DIST, { fallthrough: true, maxAge: "1h" }));
 
-    // 업로드/API가 아닌 모든 경로는 SPA index.html 반환
+    // 👉 SPA의 특정 클라이언트 라우트를 "우선" index.html로 직접 서빙
+    const serveIndex = (_req: Request, res: Response) => {
+      if (fs.existsSync(CLIENT_INDEX_HTML)) {
+        res.setHeader("Cache-Control", "no-store");
+        res.setHeader("X-Build-Id", readBuildId());
+        return res.sendFile(CLIENT_INDEX_HTML);
+      }
+      return res.status(404).end();
+    };
+
+    // 두 경로 모두 확실하게 index.html 반환
+    app.get("/project-inquiry", serveIndex);
+    app.get("/inquiry", serveIndex);
+
+    // 업로드/API가 아닌 모든 경로는 SPA index.html 반환 (후순위 캐치올)
     app.get("*", (req: Request, res: Response, next: NextFunction) => {
       if (req.path.startsWith("/api") || req.path.startsWith("/uploads")) return next();
       if (fs.existsSync(CLIENT_INDEX_HTML)) {
