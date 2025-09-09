@@ -16,6 +16,7 @@ import NotFound from "@/pages/not-found";
 import Landing from "./pages/Landing";
 import Home from "./pages/Home";
 import Contact from "./pages/Contact";
+import ProjectInquiry from "./pages/Inquiry/ProjectInquiry";
 
 // About pages
 import About from "./pages/About/About";
@@ -87,6 +88,7 @@ function Router() {
       
       {/* Contact & Careers */}
       <Route path="/contact" component={Contact} />
+      <Route path="/inquiry" component={ProjectInquiry} />
       <Route path="/careers" component={Careers} />
       
       {/* Auth Routes */}
