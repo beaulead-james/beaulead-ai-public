@@ -79,18 +79,30 @@ function BlogPosts() {
 // 유튜브 영상 임베드 컴포넌트
 function YouTubeEmbed({ videoId, title }: { videoId: string; title: string }) {
   return (
-    <div className="w-full h-[400px] lg:h-[500px] bg-black rounded-2xl overflow-hidden">
-      <iframe
-        width="100%"
-        height="100%"
-        src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1&rel=0&loop=1&playlist=${videoId}`}
-        title={title}
-        frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowFullScreen
-        className="w-full h-full"
-        data-testid="youtube-iframe"
-      ></iframe>
+    <div className="relative w-full h-[400px] lg:h-[500px]">
+      {/* 외곽 글로우 효과 */}
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-cyan-500/20 rounded-2xl blur-xl"></div>
+      <div className="absolute inset-2 bg-gradient-to-r from-blue-400/15 via-purple-400/15 to-cyan-400/15 rounded-xl blur-lg"></div>
+      
+      {/* 영상 컨테이너 */}
+      <div className="relative bg-black rounded-2xl overflow-hidden border border-white/20 shadow-2xl">
+        {/* 내부 그라디언트 테두리 */}
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/30 via-purple-500/30 to-cyan-500/30 rounded-2xl p-[2px]">
+          <div className="bg-black rounded-2xl w-full h-full overflow-hidden">
+            <iframe
+              width="100%"
+              height="100%"
+              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1&rel=0&loop=1&playlist=${videoId}`}
+              title={title}
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              className="w-full h-full"
+              data-testid="youtube-iframe"
+            ></iframe>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
