@@ -33,7 +33,7 @@ export default function BlogPost() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-black relative overflow-hidden">
+      <div className="min-h-screen relative overflow-hidden" style={{backgroundColor: '#000000'}}>
         {/* Background orbs */}
         <div className="fixed inset-0 bg-gradient-to-br from-purple-900/20 via-blue-900/10 to-black"></div>
         <div className="orb orb-a"></div>
@@ -62,7 +62,7 @@ export default function BlogPost() {
 
   if (error || !blog) {
     return (
-      <div className="min-h-screen bg-black relative overflow-hidden">
+      <div className="min-h-screen relative overflow-hidden" style={{backgroundColor: '#000000'}}>
         {/* Background orbs */}
         <div className="fixed inset-0 bg-gradient-to-br from-purple-900/20 via-blue-900/10 to-black"></div>
         <div className="orb orb-a"></div>
@@ -90,7 +90,7 @@ export default function BlogPost() {
   const content = getBlogContent(blog);
 
   return (
-    <div className="min-h-screen bg-black relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden" style={{backgroundColor: '#000000'}}>
       {/* Background orbs */}
       <div className="fixed inset-0 bg-gradient-to-br from-purple-900/20 via-blue-900/10 to-black"></div>
       <div className="orb orb-a"></div>
@@ -121,7 +121,7 @@ export default function BlogPost() {
             </span>
           </nav>
 
-          <article className="service-card overflow-hidden">
+          <article className="service-card overflow-hidden" style={{background: 'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.1)'}}>
             {/* Featured Image */}
             {blog.coverUrl && (
               <img 
