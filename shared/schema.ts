@@ -202,6 +202,43 @@ export const insertContactSchema = createInsertSchema(contacts).omit({
   updatedAt: true,
 });
 
+// ============================
+// Project Inquiries (광고 제안 요청)
+// ============================
+export const projectInquiries = pgTable("project_inquiries", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  goals: jsonb("goals"),        // string[]
+  campaigns: jsonb("campaigns"),// string[]
+  metrics: jsonb("metrics"),    // string[]
+  budget: varchar("budget"),
+  budgetCustom: varchar("budget_custom"),
+  period: varchar("period"),
+  domain: varchar("domain"),
+  keywords: text("keywords"),
+  solution: varchar("solution"),
+  email: varchar("email").notNull(),
+  name: varchar("name").notNull(),
+  phone: varchar("phone").notNull(),
+  company: varchar("company").notNull(),
+  etc: text("etc"),
+  agree: boolean("agree").default(false),
+  status: varchar("status").default("NEW"), // NEW, IN_PROGRESS, DONE
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertProjectInquirySchema = createInsertSchema(projectInquiries).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+}).extend({
+  email: z.string().email("올바른 이메일 형식이 아닙니다"),
+  name: z.string().min(1, "이름을 입력해주세요"),
+  phone: z.string().min(1, "연락처를 입력해주세요"),
+  company: z.string().min(1, "회사명을 입력해주세요"),
+  agree: z.boolean().refine(v => v === true, "개인정보 수집·이용에 동의해주세요"),
+});
+
 // Types
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
@@ -220,6 +257,9 @@ export type Portfolio = typeof portfolios.$inferSelect;
 
 export type InsertContact = z.infer<typeof insertContactSchema>;
 export type Contact = typeof contacts.$inferSelect;
+
+export type InsertProjectInquiry = z.infer<typeof insertProjectInquirySchema>;
+export type ProjectInquiry = typeof projectInquiries.$inferSelect;
 
 // Blog with relations
 export type BlogWithAuthor = Blog & {

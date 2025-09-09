@@ -1,0 +1,530 @@
+# 0) 상태(선택)
+bash -lc 'git rev-parse --abbrev-ref HEAD; git status -s || true'
+
+########################################
+# 1) DB 스키마: project_inquiries 테이블 추가
+########################################
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: shared/schema.ts
+@@
+ import { sql } from 'drizzle-orm';
+ import {
+   index,
+   jsonb,
+   pgTable,
+   timestamp,
+   varchar,
+   text,
+   boolean,
+   pgEnum
+ } from "drizzle-orm/pg-core";
+ import { createInsertSchema } from "drizzle-zod";
+ import { z } from "zod";
+@@
+ // Portfolio items table
+ export const portfolios = pgTable("portfolios", {
+   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+   slug: varchar("slug").unique().notNull(),
+   titleKo: text("title_ko").notNull(),
+   titleEn: text("title_en").notNull(),
+   summaryKo: text("summary_ko").notNull(),
+   summaryEn: text("summary_en").notNull(),
+   category: varchar("category"),
+   tags: jsonb("tags"),
+   contentKo: text("content_ko"),
+   contentEn: text("content_en"),
+   metrics: jsonb("metrics"),
+   thumbUrl: varchar("thumb_url"),
+   images: jsonb("images"),
+   published: boolean("published").default(true),
+   createdAt: timestamp("created_at").defaultNow(),
+   updatedAt: timestamp("updated_at").defaultNow(),
+ });
++
++// ============================
++// Project Inquiries (광고 제안 요청)
++// ============================
++export const projectInquiries = pgTable("project_inquiries", {
++  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
++  goals: jsonb("goals"),        // string[]
++  campaigns: jsonb("campaigns"),// string[]
++  metrics: jsonb("metrics"),    // string[]
++  budget: varchar("budget"),
++  budgetCustom: varchar("budget_custom"),
++  period: varchar("period"),
++  domain: varchar("domain"),
++  keywords: text("keywords"),
++  solution: varchar("solution"),
++  email: varchar("email").notNull(),
++  name: varchar("name").notNull(),
++  phone: varchar("phone").notNull(),
++  company: varchar("company").notNull(),
++  etc: text("etc"),
++  agree: boolean("agree").default(false),
++  status: varchar("status").default("NEW"), // NEW, IN_PROGRESS, DONE
++  createdAt: timestamp("created_at").defaultNow(),
++  updatedAt: timestamp("updated_at").defaultNow(),
++});
++
++export type ProjectInquiry = typeof projectInquiries.$inferSelect;
++export type InsertProjectInquiry = typeof projectInquiries.$inferInsert;
+*** End Patch
+PATCH
+
+########################################
+# 2) 서버 라우트: /api/inquiries (생성 + 관리자 목록/상세 + 상태 변경)
+########################################
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: server/routes.ts
+@@
+ import { storage } from "./storage";
+ import { setupAuth, isAuthenticated } from "./replitAuth";
+ import { setupRegularAuth, requireAuth } from "./auth-regular";
+ import { sendContactFormToSlack } from "./services/slack";
+ import { ObjectStorageService } from "./objectStorage";
+ import uploadRoutes from "./routes/upload";
+ import { z } from "zod";
++import { db } from "./db";
++import { sql, eq, desc } from "drizzle-orm";
++import { projectInquiries } from "@shared/schema";
+@@
+ export async function registerRoutes(app: Express): Promise<Server> {
+@@
+   app.use('/api/upload', uploadRoutes);
+@@
+   // Contact form submission
+   app.post('/api/contact', async (req, res) => {
+@@
+   });
+ 
++  // ============================
++  // Project Inquiries
++  // ============================
++  const inquirySchema = z.object({
++    goals: z.array(z.string()).optional(),
++    campaigns: z.array(z.string()).optional(),
++    metrics: z.array(z.string()).optional(),
++    budget: z.string().optional(),
++    budgetCustom: z.string().optional(),
++    period: z.string().optional(),
++    domain: z.string().optional(),
++    keywords: z.string().optional(),
++    solution: z.string().optional(),
++    email: z.string().email(),
++    name: z.string().min(1),
++    phone: z.string().min(3),
++    company: z.string().min(1),
++    etc: z.string().optional(),
++    agree: z.boolean().refine(v=>v===true, "동의가 필요합니다"),
++  });
++
++  // Create (public)
++  app.post('/api/inquiries', async (req, res) => {
++    try {
++      const body = inquirySchema.parse(req.body || {});
++      const [row] = await db.insert(projectInquiries).values(body as any).returning();
++      // 선택: Slack 알림 연결 시 sendContactFormToSlack 사용 가능
++      res.status(201).json({ ok:true, data: row });
++    } catch (error:any) {
++      if (error?.issues) return res.status(400).json({ ok:false, message: "Invalid input", errors: error.issues });
++      console.error("[inquiries] create error", error);
++      res.status(500).json({ ok:false, message: "Failed to submit inquiry" });
++    }
++  });
++
++  // Admin list
++  app.get('/api/inquiries', requireAuth, async (req: any, res) => {
++    try {
++      const role = req.user?.claims?.role || 'USER';
++      if (role !== 'ADMIN') return res.status(403).json({ ok:false, message:"Admin access required" });
++      const rows = await db.select().from(projectInquiries).orderBy(desc(projectInquiries.createdAt));
++      res.json({ ok:true, items: rows });
++    } catch (e) {
++      console.error("[inquiries] list error", e);
++      res.status(500).json({ ok:false });
++    }
++  });
++
++  // Admin detail
++  app.get('/api/inquiries/:id', requireAuth, async (req: any, res) => {
++    try {
++      const role = req.user?.claims?.role || 'USER';
++      if (role !== 'ADMIN') return res.status(403).json({ ok:false, message:"Admin access required" });
++      const [row] = await db.select().from(projectInquiries).where(eq(projectInquiries.id, req.params.id));
++      if (!row) return res.status(404).json({ ok:false, message:"Not found" });
++      res.json({ ok:true, data: row });
++    } catch (e) {
++      console.error("[inquiries] detail error", e);
++      res.status(500).json({ ok:false });
++    }
++  });
++
++  // Admin status update
++  app.patch('/api/inquiries/:id/status', requireAuth, async (req: any, res) => {
++    try {
++      const role = req.user?.claims?.role || 'USER';
++      if (role !== 'ADMIN') return res.status(403).json({ ok:false, message:"Admin access required" });
++      const status = String(req.body?.status || '');
++      if (!['NEW','IN_PROGRESS','DONE'].includes(status)) return res.status(400).json({ ok:false, message:"Invalid status" });
++      const result = await db.execute(sql`UPDATE project_inquiries SET status=${status}, updated_at=now() WHERE id=${req.params.id} RETURNING *`);
++      res.json({ ok:true, data: result.rows?.[0] });
++    } catch (e) {
++      console.error("[inquiries] status error", e);
++      res.status(500).json({ ok:false });
++    }
++  });
+*** End Patch
+PATCH
+
+########################################
+# 3) Public 폼 페이지: /project-inquiry
+########################################
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Add File: client/src/pages/Inquiry/ProjectInquiry.tsx
++import { useState } from "react";
++import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
++import { Button } from "@/components/ui/button";
++import { Input } from "@/components/ui/input";
++import { Label } from "@/components/ui/label";
++import { Textarea } from "@/components/ui/textarea";
++import { Checkbox } from "@/components/ui/checkbox";
++import { useToast } from "@/hooks/use-toast";
++
++const GOALS = ["판매","리드","브랜딩","특정 페이지 방문","Google SEO 실적 상승","웹사이트 트래픽","앱 다운로드"];
++const CAMPAIGNS = ["검색","YouTube","디스플레이","실적최대화","디멘드젠","리마케팅","앱","Google SEO 대행"];
++const METRICS = ["노출수/클릭수","전환/CPA/ROAS","유튜브 조회수","앱 다운로드"];
++const BUDGETS = ["500만원 이하","500 ~ 1,000만원","1,000 ~ 3,000만원","3,000 ~ 5,000만원","5,000만원 초과"];
++
++export default function ProjectInquiry() {
++  const { toast } = useToast();
++  const [sent, setSent] = useState(false);
++  const [agree, setAgree] = useState(false);
++  const [form, setForm] = useState<any>({
++    goals: [], campaigns: [], metrics: [],
++    budget: "", budgetCustom: "",
++    period: "", domain: "", keywords: "", solution: "",
++    email: "", name: "", phone: "", company: "",
++    etc: ""
++  });
++  const toggleArr = (k:string, v:string) => {
++    setForm((p:any)=>({ ...p, [k]: (p[k]||[]).includes(v) ? p[k].filter((x:string)=>x!==v) : [...(p[k]||[]), v]}));
++  };
++  const onSubmit = async (e:any) => {
++    e.preventDefault();
++    try{
++      if (!agree) { toast({title:"동의 필요", description:"개인정보 수집·이용에 동의해주세요.", variant:"destructive"}); return; }
++      const payload = { ...form, agree };
++      const res = await fetch("/api/inquiries", { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(payload) });
++      if (!res.ok) throw new Error(await res.text());
++      setSent(true);
++    }catch(err:any){
++      toast({title:"제출 실패", description: err?.message || "다시 시도해주세요.", variant:"destructive"});
++    }
++  };
++  if (sent) {
++    return (
++      <div className="min-h-screen bg-slate-50 py-12">
++        <div className="container max-w-3xl">
++          <Card>
++            <CardHeader><CardTitle>문의가 접수되었습니다</CardTitle></CardHeader>
++            <CardContent className="space-y-2">
++              <p>담당자가 확인 후 연락드리겠습니다. 감사합니다.</p>
++              <Button onClick={()=>location.href="/"}>홈으로</Button>
++            </CardContent>
++          </Card>
++        </div>
++      </div>
++    );
++  }
++  return (
++    <div className="min-h-screen bg-slate-50 py-12">
++      <div className="container max-w-4xl space-y-6">
++        <Card>
++          <CardHeader><CardTitle>프로젝트 문의 (광고 캠페인 제안 요청)</CardTitle></CardHeader>
++          <CardContent>
++            <form className="space-y-8" onSubmit={onSubmit}>
++              {/* 1. 목표 */}
++              <section className="space-y-3">
++                <Label>마케팅 목표</Label>
++                <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
++                  {GOALS.map(g=>(
++                    <label key={g} className="flex items-center gap-2 p-2 rounded border">
++                      <Checkbox checked={(form.goals||[]).includes(g)} onCheckedChange={()=>toggleArr("goals", g)}/> {g}
++                    </label>
++                  ))}
++                </div>
++              </section>
++              {/* 2. 캠페인 */}
++              <section className="space-y-3">
++                <Label>계획 중인 광고 캠페인</Label>
++                <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
++                  {CAMPAIGNS.map(g=>(
++                    <label key={g} className="flex items-center gap-2 p-2 rounded border">
++                      <Checkbox checked={(form.campaigns||[]).includes(g)} onCheckedChange={()=>toggleArr("campaigns", g)}/> {g}
++                    </label>
++                  ))}
++                </div>
++              </section>
++              {/* 3. 성과 지표 */}
++              <section className="space-y-3">
++                <Label>광고 성과 주요 고려사항</Label>
++                <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
++                  {METRICS.map(g=>(
++                    <label key={g} className="flex items-center gap-2 p-2 rounded border">
++                      <Checkbox checked={(form.metrics||[]).includes(g)} onCheckedChange={()=>toggleArr("metrics", g)}/> {g}
++                    </label>
++                  ))}
++                </div>
++              </section>
++              {/* 4. 예산 */}
++              <section className="space-y-3">
++                <Label>월 광고 예산</Label>
++                <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-2">
++                  {BUDGETS.map(b=>(
++                    <button type="button" key={b}
++                      className={`px-3 py-2 rounded border ${form.budget===b?'bg-slate-900 text-white':'bg-white'}`}
++                      onClick={()=>setForm((p:any)=>({...p, budget:b}))}>{b}</button>
++                  ))}
++                </div>
++                <div className="flex gap-3">
++                  <Input placeholder="기타 예산 (예: 800만원 정확히)" value={form.budgetCustom||''} onChange={e=>setForm((p:any)=>({...p, budgetCustom:e.target.value}))}/>
++                </div>
++              </section>
++              {/* 5. 기간 */}
++              <section className="space-y-3">
++                <Label>광고 예정 기간</Label>
++                <Input placeholder="예: 2025-09-01 ~ 계속" value={form.period||''} onChange={e=>setForm((p:any)=>({...p, period:e.target.value}))}/>
++              </section>
++              {/* 6. 비즈니스 정보 */}
++              <section className="grid md:grid-cols-2 gap-4">
++                <div>
++                  <Label>홈페이지 도메인</Label>
++                  <Input placeholder="https://example.com" value={form.domain||''} onChange={e=>setForm((p:any)=>({...p, domain:e.target.value}))}/>
++                </div>
++                <div>
++                  <Label>제작 솔루션</Label>
++                  <Input placeholder="카페24 / 고도몰 / 자체 / 기타" value={form.solution||''} onChange={e=>setForm((p:any)=>({...p, solution:e.target.value}))}/>
++                </div>
++                <div className="md:col-span-2">
++                  <Label>핵심 키워드</Label>
++                  <Input placeholder='예: "구글 광고대행사", "구글 광고"' value={form.keywords||''} onChange={e=>setForm((p:any)=>({...p, keywords:e.target.value}))}/>
++                </div>
++              </section>
++              {/* 7. 연락처 */}
++              <section className="grid md:grid-cols-2 gap-4">
++                <div><Label>이메일 *</Label><Input required type="email" value={form.email} onChange={e=>setForm((p:any)=>({...p,email:e.target.value}))}/></div>
++                <div><Label>담당자 성함 *</Label><Input required value={form.name} onChange={e=>setForm((p:any)=>({...p,name:e.target.value}))}/></div>
++                <div><Label>휴대폰 번호 *</Label><Input required value={form.phone} onChange={e=>setForm((p:any)=>({...p,phone:e.target.value}))}/></div>
++                <div><Label>업체명 *</Label><Input required value={form.company} onChange={e=>setForm((p:any)=>({...p,company:e.target.value}))}/></div>
++              </section>
++              {/* 8. 기타 */}
++              <section>
++                <Label>기타 문의사항</Label>
++                <Textarea rows={5} value={form.etc||''} onChange={e=>setForm((p:any)=>({...p,etc:e.target.value}))}/>
++              </section>
++              {/* 9. 동의 */}
++              <section className="flex items-center gap-2">
++                <Checkbox checked={agree} onCheckedChange={()=>setAgree(v=>!v)}/>
++                <span>제안서 송부를 위한 개인정보 수집·이용에 동의합니다. (항목: 이름, 연락처, 이메일)</span>
++              </section>
++
++              <div className="pt-2">
++                <Button type="submit" className="w-full">제출하기</Button>
++              </div>
++            </form>
++          </CardContent>
++        </Card>
++      </div>
++    </div>
++  )
++}
+*** End Patch
+PATCH
+
+########################################
+# 4) Admin 페이지: 목록/상세
+########################################
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Add File: client/src/pages/Admin/Inquiries.tsx
++import { useQuery, useMutation } from "@tanstack/react-query";
++import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
++import { Button } from "@/components/ui/button";
++import { Badge } from "@/components/ui/badge";
++import { useToast } from "@/hooks/use-toast";
++
++export default function AdminInquiries() {
++  const { toast } = useToast();
++  const { data, refetch, isLoading } = useQuery({
++    queryKey: ['/api/inquiries'],
++    queryFn: async ()=> (await fetch('/api/inquiries', { credentials:'include'})).json(),
++  });
++  const items = data?.items || [];
++  return (
++    <div className="p-6">
++      <Card>
++        <CardHeader><CardTitle>프로젝트 문의</CardTitle></CardHeader>
++        <CardContent>
++          {isLoading ? <div>로딩...</div> : (
++            <div className="overflow-x-auto">
++              <table className="min-w-full text-sm">
++                <thead>
++                  <tr className="text-left border-b">
++                    <th className="p-2">업체명</th>
++                    <th className="p-2">담당자</th>
++                    <th className="p-2">이메일</th>
++                    <th className="p-2">예산</th>
++                    <th className="p-2">기간</th>
++                    <th className="p-2">상태</th>
++                    <th className="p-2">접수일</th>
++                    <th className="p-2">액션</th>
++                  </tr>
++                </thead>
++                <tbody>
++                  {items.map((it:any)=>(
++                    <tr key={it.id} className="border-b hover:bg-slate-50">
++                      <td className="p-2">{it.company}</td>
++                      <td className="p-2">{it.name}</td>
++                      <td className="p-2">{it.email}</td>
++                      <td className="p-2">{it.budget || it.budgetCustom || '-'}</td>
++                      <td className="p-2">{it.period || '-'}</td>
++                      <td className="p-2"><Badge variant={it.status==='DONE'?'default':it.status==='IN_PROGRESS'?'secondary':'outline'}>{it.status}</Badge></td>
++                      <td className="p-2">{new Date(it.createdAt).toLocaleString()}</td>
++                      <td className="p-2">
++                        <a className="underline text-blue-600" href={`/admin/inquiries/${it.id}`}>상세</a>
++                      </td>
++                    </tr>
++                  ))}
++                </tbody>
++              </table>
++            </div>
++          )}
++        </CardContent>
++      </Card>
++    </div>
++  )
++}
+*** End Patch
+PATCH
+
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Add File: client/src/pages/Admin/InquiryDetail.tsx
++import { useEffect, useState } from "react";
++import { useToast } from "@/hooks/use-toast";
++import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
++import { Button } from "@/components/ui/button";
++import { Badge } from "@/components/ui/badge";
++
++export default function InquiryDetail({ id }: { id: string }) {
++  const { toast } = useToast();
++  const [data, setData] = useState<any>(null);
++  const [status, setStatus] = useState("NEW");
++  useEffect(() => {
++    (async ()=>{
++      const res = await fetch(`/api/inquiries/${id}`, { credentials:'include' });
++      if (res.ok) {
++        const j = await res.json();
++        setData(j.data); setStatus(j.data?.status || "NEW");
++      }
++    })();
++  }, [id]);
++  const updateStatus = async (next:string) => {
++    const res = await fetch(`/api/inquiries/${id}/status`, {
++      method:"PATCH", headers:{ "Content-Type": "application/json" },
++      credentials:'include', body: JSON.stringify({ status: next })
++    });
++    if (res.ok) { setStatus(next); toast({ title:"상태 업데이트" }); }
++  }
++  if (!data) return <div className="p-6">로딩...</div>;
++  const field = (k:string)=> data?.[k] ?? '-';
++  const renderArr = (v:any)=> Array.isArray(v) ? v.join(", ") : "-";
++  return (
++    <div className="p-6">
++      <Card>
++        <CardHeader className="flex flex-row items-center justify-between">
++          <CardTitle>문의 상세</CardTitle>
++          <div className="flex items-center gap-2">
++            <Badge>{status}</Badge>
++            <Button size="sm" variant="secondary" onClick={()=>updateStatus('IN_PROGRESS')}>진행중</Button>
++            <Button size="sm" onClick={()=>updateStatus('DONE')}>완료</Button>
++          </div>
++        </CardHeader>
++        <CardContent className="space-y-4">
++          <div className="grid md:grid-cols-2 gap-4">
++            <div><b>업체명</b><div>{field('company')}</div></div>
++            <div><b>담당자</b><div>{field('name')}</div></div>
++            <div><b>이메일</b><div>{field('email')}</div></div>
++            <div><b>휴대폰</b><div>{field('phone')}</div></div>
++            <div><b>예산</b><div>{field('budget') || field('budgetCustom')}</div></div>
++            <div><b>기간</b><div>{field('period')}</div></div>
++            <div><b>도메인</b><div>{field('domain')}</div></div>
++            <div><b>제작 솔루션</b><div>{field('solution')}</div></div>
++            <div className="md:col-span-2"><b>핵심 키워드</b><div>{field('keywords')}</div></div>
++            <div className="md:col-span-2"><b>기타 문의사항</b><div className="whitespace-pre-wrap">{field('etc')}</div></div>
++          </div>
++          <div className="grid md:grid-cols-3 gap-4">
++            <div><b>목표</b><div>{renderArr(data.goals)}</div></div>
++            <div><b>캠페인</b><div>{renderArr(data.campaigns)}</div></div>
++            <div><b>성과 고려사항</b><div>{renderArr(data.metrics)}</div></div>
++          </div>
++          <div className="text-xs text-slate-500">접수: {new Date(data.createdAt).toLocaleString()}</div>
++        </CardContent>
++      </Card>
++    </div>
++  )
++}
+*** End Patch
+PATCH
+
+########################################
+# 5) 라우팅 연결: /project-inquiry, /admin/inquiries, /admin/inquiries/:id
+########################################
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: client/src/pages/Admin/AdminApp.tsx
+@@
+ import React from 'react'
++import AdminInquiries from '@/pages/Admin/Inquiries'
++import InquiryDetail from '@/pages/Admin/InquiryDetail'
+@@
+   const actualPath = window.location.pathname
+@@
+-    if (actualPath === '/admin/leads') return <LeadsPage />
++    if (actualPath === '/admin/inquiries') return <AdminInquiries />
++    if (actualPath.startsWith('/admin/inquiries/')) {
++      const id = actualPath.split('/admin/inquiries/')[1]
++      return <InquiryDetail id={id} />
++    }
++    if (actualPath === '/admin/leads') return <LeadsPage />
+*** End Patch
+PATCH
+
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: client/src/App.tsx
+@@
+-import React from 'react'
++import React from 'react'
++import ProjectInquiry from '@/pages/Inquiry/ProjectInquiry'
+@@
+-  // 기존 라우팅...
++  // 기존 라우팅...
++  if (location.pathname === '/project-inquiry') return <ProjectInquiry />
+*** End Patch
+PATCH
+
+########################################
+# 6) 빌드 & 재시작
+########################################
+bash -lc 'npm run build --silent || true'
+bash -lc 'pkill -f "node" || true; npm start --silent & sleep 2'
+
+# 7) 간단 확인
+bash -lc '
+echo "[public form]"; curl -sS -I http://localhost:$PORT/project-inquiry | head -n 1 || true
+echo "[admin list]"; curl -sS -I http://localhost:$PORT/admin/inquiries | head -n 1 || true
+'
