@@ -113,6 +113,9 @@ function YouTubeEmbed({ videoId, title }: { videoId: string; title: string }) {
 export default function Landing() {
   const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<'dashboard' | 'video'>('dashboard');
+  
+  // HMR 강제 트리거용 타임스탬프
+  console.log('Landing component loaded at:', new Date().toISOString());
 
   return (
     <div className="min-h-screen bg-background">
