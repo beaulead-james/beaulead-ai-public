@@ -188,6 +188,12 @@ export const insertPortfolioSchema = createInsertSchema(portfolios).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+}).extend({
+  // 새로 추가된 필드들에 대한 검증 규칙
+  titleKo: z.string().min(1, "한국어 제목을 입력해주세요"),
+  titleEn: z.string().min(1, "영어 제목을 입력해주세요"),
+  summaryKo: z.string().min(1, "한국어 요약을 입력해주세요"),
+  summaryEn: z.string().min(1, "영어 요약을 입력해주세요"),
 });
 
 export const insertContactSchema = createInsertSchema(contacts).omit({
