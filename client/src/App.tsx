@@ -102,7 +102,7 @@ function Router() {
       <Route path="/admin/portfolio/edit/:id" component={AdminApp} />
       <Route path="/admin/portfolio" component={AdminApp} />
       <Route path="/admin/users" component={AdminApp} />
-      <Route path="/admin/analytics" component={AdminApp} />
+      <Route path="/admin/traffic" component={AdminApp} />
       <Route path="/admin/leads" component={AdminApp} />
       <Route path="/admin/settings" component={AdminApp} />
       <Route path="/admin" component={AdminApp} />
