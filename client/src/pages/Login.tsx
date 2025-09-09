@@ -177,12 +177,6 @@ export default function Login() {
               </p>
             </div>
 
-            {/* Demo credentials hint */}
-            <div className="mt-6 p-4 bg-white/5 rounded-lg border border-white/10">
-              <p className="text-xs text-white/70 text-center mb-2">관리자 계정:</p>
-              <p className="text-xs text-white/60 text-center">이메일: admin@beaulead.co.kr</p>
-              <p className="text-xs text-white/60 text-center">비밀번호: admin123</p>
-            </div>
           </CardContent>
         </Card>
       </div>
