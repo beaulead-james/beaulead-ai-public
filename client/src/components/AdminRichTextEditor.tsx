@@ -72,16 +72,26 @@ export default function AdminRichTextEditor({
             border-left: none !important;
             border-right: none !important;
             border-bottom: none !important;
+            background-color: white !important;
           }
           .ql-toolbar {
             border-left: none !important;
             border-right: none !important;
             border-top: none !important;
+            background-color: #f8f9fa !important;
           }
           .ql-editor {
             min-height: 150px !important;
             line-height: 1.5 !important;
             padding: 12px 15px !important;
+            color: #000000 !important;
+            background-color: white !important;
+          }
+          .ql-editor p, .ql-editor div, .ql-editor span, .ql-editor h1, .ql-editor h2, .ql-editor h3, .ql-editor li {
+            color: #000000 !important;
+          }
+          .ql-editor::before {
+            color: #6b7280 !important;
           }
         `
       }} />
