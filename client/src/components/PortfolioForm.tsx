@@ -8,6 +8,9 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import ThumbnailUploader from '@/components/ThumbnailUploader';
+import TagsInput from '@/components/TagsInput';
+import AdminRichTextEditor from '@/components/AdminRichTextEditor';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export type PortfolioPayload = {
   titleKo: string; 
@@ -18,6 +21,10 @@ export type PortfolioPayload = {
   thumbUrl?: string;
   images?: string[];
   published?: boolean;
+  category?: string;
+  tags?: string[];
+  contentKo?: string;
+  contentEn?: string;
 }
 
 function slugify(s: string) {
@@ -34,6 +41,10 @@ export default function PortfolioForm({ id }: { id?: string }) {
     titleKo: '', titleEn: '',
     summaryKo: '', summaryEn: '',
     slug: '', thumbUrl: '', images: [],
+    category: '',
+    tags: [],
+    contentKo: '',
+    contentEn: '',
     published: false,
   });
 
@@ -59,6 +70,10 @@ export default function PortfolioForm({ id }: { id?: string }) {
         slug: detail.slug ?? '',
         thumbUrl: detail.thumbUrl ?? '',
         images: detail.images ?? [],
+        category: detail.category ?? '',
+        tags: detail.tags ?? [],
+        contentKo: detail.contentKo ?? '',
+        contentEn: detail.contentEn ?? '',
         published: !!detail.published,
       });
     }
@@ -121,6 +136,26 @@ export default function PortfolioForm({ id }: { id?: string }) {
           />
         </div>
       </div>
+
+      {/* 0. 카테고리/태그 */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <Label>카테고리</Label>
+          <Select value={payload.category||''} onValueChange={(v)=>setPayload(p=>({...p, category:v}))}>
+            <SelectTrigger><SelectValue placeholder="카테고리 선택" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="performance">퍼포먼스 마케팅</SelectItem>
+              <SelectItem value="website">웹사이트 제작</SelectItem>
+              <SelectItem value="branding">브랜딩/크리에이티브</SelectItem>
+              <SelectItem value="consulting">컨설팅</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="md:col-span-2">
+          <Label>태그</Label>
+          <TagsInput value={payload.tags||[]} onChange={(v)=>setPayload(p=>({...p, tags:v}))} />
+        </div>
+      </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
@@ -171,6 +206,22 @@ export default function PortfolioForm({ id }: { id?: string }) {
             value={payload.thumbUrl} 
             onChange={(url)=>setPayload(p=>({...p, thumbUrl:url}))}
           />
+        </div>
+      </div>
+
+      {/* 4. 본문(국문/영문) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <Label>본문(국문)</Label>
+          <div className="mt-2 bg-white rounded">
+            <AdminRichTextEditor value={payload.contentKo||''} onChange={(html)=>setPayload(p=>({...p, contentKo:html}))}/>
+          </div>
+        </div>
+        <div>
+          <Label>본문(영문)</Label>
+          <div className="mt-2 bg-white rounded">
+            <AdminRichTextEditor value={payload.contentEn||''} onChange={(html)=>setPayload(p=>({...p, contentEn:html}))}/>
+          </div>
         </div>
       </div>
       

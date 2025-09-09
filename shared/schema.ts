@@ -142,6 +142,11 @@ export const portfolios = pgTable("portfolios", {
   titleEn: text("title_en").notNull(),
   summaryKo: text("summary_ko").notNull(),
   summaryEn: text("summary_en").notNull(),
+  // === 새 필드들 ===
+  category: varchar("category"),         // 예: 웹사이트 제작, 퍼포먼스 마케팅 등
+  tags: jsonb("tags"),                   // string[] 형태로 저장
+  contentKo: text("content_ko"),         // 본문(국문)
+  contentEn: text("content_en"),         // 본문(영문)
   metrics: jsonb("metrics"), // Store performance metrics
   thumbUrl: varchar("thumb_url"),
   images: jsonb("images"), // Array of image URLs

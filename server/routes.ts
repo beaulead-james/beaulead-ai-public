@@ -7,6 +7,8 @@ import { sendContactFormToSlack } from "./services/slack";
 import { ObjectStorageService } from "./objectStorage";
 import uploadRoutes from "./routes/upload";
 import { z } from "zod";
+import { sql } from "drizzle-orm";
+import { db } from "./db";
 
 const contactFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -23,6 +25,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Upload routes (API endpoint)
   app.use('/api/upload', uploadRoutes);
+
+  // ---- portfolios 컬럼 보강 (존재하지 않으면 추가) ----
+  try {
+    await db.execute(sql`ALTER TABLE portfolios ADD COLUMN IF NOT EXISTS category varchar;`);
+    await db.execute(sql`ALTER TABLE portfolios ADD COLUMN IF NOT EXISTS tags jsonb;`);
+    await db.execute(sql`ALTER TABLE portfolios ADD COLUMN IF NOT EXISTS content_ko text;`);
+    await db.execute(sql`ALTER TABLE portfolios ADD COLUMN IF NOT EXISTS content_en text;`);
+    console.log('[portfolios] columns updated successfully');
+  } catch (e) {
+    console.warn('[portfolios] column alter skipped:', e);
+  }
 
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
