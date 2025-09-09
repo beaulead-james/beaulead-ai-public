@@ -1,0 +1,134 @@
+# 0) 상태
+bash -lc 'git rev-parse --abbrev-ref HEAD; git status -s || true'
+
+########################################
+# 1) Tailwind에 brand 팔레트 등록(존재하는 설정 파일에 안전추가)
+########################################
+apply_patch <<'PATCH'
+*** Begin Patch
+*** Update File: tailwind.config.ts
+@@
+   theme: {
+     extend: {
++      colors: {
++        brand: {
++          50:'#EEF2FF',100:'#E0E7FF',200:'#C7D2FE',300:'#A5B4FC',
++          400:'#818CF8',500:'#6366F1',600:'#4F46E5',700:'#4338CA',
++          800:'#3730A3',900:'#312E81'
++        }
++      }
+     }
+   },
+*** End Patch
+PATCH
+
+apply_patch <<'PATCH'
+*** Begin Patch
+*** Update File: tailwind.config.js
+@@
+   theme: {
+     extend: {
++      colors: {
++        brand: {
++          50:'#EEF2FF',100:'#E0E7FF',200:'#C7D2FE',300:'#A5B4FC',
++          400:'#818CF8',500:'#6366F1',600:'#4F46E5',700:'#4338CA',
++          800:'#3730A3',900:'#312E81'
++        }
++      }
+     }
+   },
+*** End Patch
+PATCH
+
+########################################
+# 2) 공통 유틸리티 추가: 버튼/링크/배지 + Hero gradient/orb
+########################################
+apply_patch <<'PATCH'
+*** Begin Patch
+*** Update File: client/src/index.css
+@@
+ @tailwind base;
+ @tailwind components;
+ @tailwind utilities;
++
++/* ===== BeauLead brand utilities ===== */
++@layer components {
++  .btn-brand {
++    @apply inline-flex items-center justify-center rounded-xl px-5 py-3
++      bg-brand-500 text-white font-medium shadow-md
++      hover:bg-brand-600 active:bg-brand-700
++      focus:outline-none focus:ring-2 focus:ring-brand-500/40 transition;
++  }
++  .link-brand {
++    @apply text-brand-600 hover:text-brand-700 underline-offset-2 hover:underline;
++  }
++  .badge-brand {
++    @apply inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium
++      bg-brand-50 text-brand-700;
++  }
++}
++
++@layer utilities {
++  .bg-hero-gradient {
++    @apply bg-gradient-to-tr from-brand-500 via-brand-600 to-brand-700;
++  }
++  .orb-brand {
++    background: radial-gradient(ellipse at center, rgba(99,102,241,0.28), transparent 60%);
++    filter: blur(32px);
++  }
++}
+*** End Patch
+PATCH
+
+########################################
+# 3) Landing Hero 섹션 개선: 그라디언트+오브 + CTA 브랜드 버튼
+########################################
+apply_patch <<'PATCH'
+*** Begin Patch
+*** Update File: client/src/pages/Landing.tsx
+@@
+-  return (
+-    <div className="min-h-screen">
++  return (
++    <div className="min-h-screen relative overflow-hidden">
++      {/* Hero gradient background */}
++      <div className="absolute inset-0 bg-hero-gradient opacity-40 pointer-events-none"></div>
++      {/* Orb accents */}
++      <div className="pointer-events-none absolute -top-40 -left-32 w-[420px] h-[420px] rounded-full orb-brand"></div>
++      <div className="pointer-events-none absolute -bottom-48 -right-24 w-[520px] h-[520px] rounded-full orb-brand"></div>
+@@
+-        {/* CTA 버튼 (예: 무료 상담 받기) */}
+-        <a href="/inquiry" className="...">무료 상담 받기</a>
++        {/* CTA 버튼 (브랜드 컬러) */}
++        <a href="/inquiry" className="btn-brand">무료 상담 받기</a>
+*** End Patch
+PATCH
+
+########################################
+# 4) 헤더의 "프로젝트 문의" 버튼을 브랜드 버튼으로
+########################################
+apply_patch <<'PATCH'
+*** Begin Patch
+*** Update File: client/src/components/Layout/Header.tsx
+@@
+-            <a href="/inquiry" className="...">
+-              프로젝트 문의
+-            </a>
++            <a href="/inquiry" className="btn-brand">프로젝트 문의</a>
+*** End Patch
+PATCH
+
+########################################
+# 5) 빌드 & 재시작
+########################################
+bash -lc 'npm run build --silent || true'
+bash -lc 'pkill -f "node" || true; npm start --silent & sleep 2'
+
+########################################
+# 6) 간단 검증
+########################################
+bash -lc '
+echo "[CHECK brand utilities]" ; grep -n "btn-brand" client/src/index.css | head -n 1 || true
+echo "[CHECK header CTA]" ; grep -n "btn-brand" client/src/components/Layout/Header.tsx || true
+echo "[CHECK landing CTA]" ; grep -n "btn-brand" client/src/pages/Landing.tsx || true
+'
