@@ -7,8 +7,9 @@ import { sendContactFormToSlack } from "./services/slack";
 import { ObjectStorageService } from "./objectStorage";
 import uploadRoutes from "./routes/upload";
 import { z } from "zod";
-import { sql } from "drizzle-orm";
 import { db } from "./db";
+import { sql, eq, desc } from "drizzle-orm";
+import { projectInquiries, insertProjectInquirySchema } from "@shared/schema";
 import path from "path";
 import fs from "fs";
 import crypto from "crypto";
@@ -549,6 +550,106 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching contacts:", error);
       res.status(500).json({ message: "Failed to fetch contacts" });
+    }
+  });
+
+  // ============================
+  // Project Inquiries (프로젝트 문의)
+  // ============================
+  
+  // Create inquiry (public)
+  app.post('/api/inquiries', async (req, res) => {
+    try {
+      const body = insertProjectInquirySchema.parse(req.body || {});
+      const [inquiry] = await db.insert(projectInquiries).values(body as any).returning();
+      
+      // 선택: Slack 알림도 보낼 수 있음
+      try {
+        await sendContactFormToSlack({
+          type: "PROJECT_INQUIRY",
+          name: body.name,
+          email: body.email,
+          company: body.company,
+          phone: body.phone,
+          details: {
+            goals: body.goals,
+            campaigns: body.campaigns,
+            budget: body.budget || body.budgetCustom,
+            domain: body.domain,
+            etc: body.etc
+          }
+        });
+      } catch (slackError) {
+        console.warn("Slack notification failed:", slackError);
+      }
+      
+      res.status(201).json({ ok: true, data: inquiry });
+    } catch (error: any) {
+      if (error?.issues) {
+        return res.status(400).json({ ok: false, message: "Invalid input", errors: error.issues });
+      }
+      console.error("[inquiries] create error", error);
+      res.status(500).json({ ok: false, message: "Failed to submit inquiry" });
+    }
+  });
+
+  // Admin: Get all inquiries
+  app.get('/api/inquiries', mixedAuth, async (req: any, res) => {
+    try {
+      const role = req.user?.claims?.role || 'USER';
+      if (role !== 'ADMIN') {
+        return res.status(403).json({ ok: false, message: "Admin access required" });
+      }
+      
+      const inquiries = await db.select().from(projectInquiries).orderBy(desc(projectInquiries.createdAt));
+      res.json({ ok: true, items: inquiries });
+    } catch (error) {
+      console.error("[inquiries] list error", error);
+      res.status(500).json({ ok: false, message: "Failed to fetch inquiries" });
+    }
+  });
+
+  // Admin: Get inquiry by ID
+  app.get('/api/inquiries/:id', mixedAuth, async (req: any, res) => {
+    try {
+      const role = req.user?.claims?.role || 'USER';
+      if (role !== 'ADMIN') {
+        return res.status(403).json({ ok: false, message: "Admin access required" });
+      }
+      
+      const [inquiry] = await db.select().from(projectInquiries).where(eq(projectInquiries.id, req.params.id));
+      if (!inquiry) {
+        return res.status(404).json({ ok: false, message: "Inquiry not found" });
+      }
+      
+      res.json({ ok: true, data: inquiry });
+    } catch (error) {
+      console.error("[inquiries] detail error", error);
+      res.status(500).json({ ok: false, message: "Failed to fetch inquiry" });
+    }
+  });
+
+  // Admin: Update inquiry status
+  app.patch('/api/inquiries/:id/status', mixedAuth, async (req: any, res) => {
+    try {
+      const role = req.user?.claims?.role || 'USER';
+      if (role !== 'ADMIN') {
+        return res.status(403).json({ ok: false, message: "Admin access required" });
+      }
+      
+      const status = String(req.body?.status || '');
+      if (!['NEW', 'IN_PROGRESS', 'DONE'].includes(status)) {
+        return res.status(400).json({ ok: false, message: "Invalid status" });
+      }
+      
+      const result = await db.execute(
+        sql`UPDATE project_inquiries SET status=${status}, updated_at=now() WHERE id=${req.params.id} RETURNING *`
+      );
+      
+      res.json({ ok: true, data: result.rows?.[0] });
+    } catch (error) {
+      console.error("[inquiries] status update error", error);
+      res.status(500).json({ ok: false, message: "Failed to update status" });
     }
   });
 
