@@ -162,7 +162,7 @@ export class ObjectStorageService {
       metadata: {
         contentType: contentType,
       },
-      public: true, // Make the object publicly accessible
+      // Remove public: true due to public access prevention policy
     });
   }
 
@@ -177,10 +177,8 @@ export class ObjectStorageService {
     const fullPath = `${publicPaths[0]}/${key}`;
     const { bucketName, objectName } = parseObjectPath(fullPath);
     
-    const bucket = objectStorageClient.bucket(bucketName);
-    const file = bucket.file(objectName);
-    
-    // Generate a public URL (for publicly accessible objects)
+    // Return a direct GCS URL - may not work with access prevention but we'll try
+    // If this fails, we'll need to serve files through our own endpoint
     return `https://storage.googleapis.com/${bucketName}/${objectName}`;
   }
 }
