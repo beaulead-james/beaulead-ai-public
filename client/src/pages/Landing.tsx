@@ -78,93 +78,19 @@ function BlogPosts() {
 
 // 유튜브 영상 임베드 컴포넌트
 function YouTubeEmbed({ videoId, title }: { videoId: string; title: string }) {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [hasError, setHasError] = useState(false);
-  
-  // 더 간단한 YouTube 임베드 URL
-  const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&rel=0&loop=1&playlist=${videoId}`;
-  
-  console.log('🎬 YouTube Embed URL:', embedUrl);
-  console.log('🎬 Video ID:', videoId);
-  
   return (
-    <div className="relative h-[400px] lg:h-[500px] rounded-2xl overflow-hidden">
-      {/* 배경 글로우 효과 */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-purple-600/30 via-indigo-500/20 to-cyan-400/20 rounded-2xl blur-xl"></div>
-      <div className="absolute inset-2 bg-gradient-to-tr from-purple-500/20 via-indigo-400/15 to-cyan-300/15 rounded-xl blur-lg"></div>
-      
-      {/* 유튜브 영상 컨테이너 */}
-      <div className="relative bg-black/20 rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
-        {/* 항상 iframe을 표시하되, 로딩/에러 오버레이로 상태 표시 */}
-        <iframe
-          width="100%"
-          height="100%"
-          src={embedUrl}
-          title={title}
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowFullScreen
-          className="absolute inset-0 w-full h-full"
-          data-testid="youtube-iframe"
-          onLoad={(e) => {
-            console.log('✅ YouTube iframe onLoad triggered');
-            console.log('✅ iframe src:', e.currentTarget.src);
-            setIsLoaded(true);
-            setHasError(false);
-          }}
-          onError={(e) => {
-            console.error('❌ YouTube iframe onError triggered');
-            console.error('❌ iframe src:', e.currentTarget.src);
-            setHasError(true);
-            setIsLoaded(false);
-          }}
-        ></iframe>
-        
-        {/* 로딩 오버레이 */}
-        {!isLoaded && !hasError && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-white/60 z-10">
-            <div className="text-center">
-              <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto mb-2"></div>
-              <div className="text-sm">영상 로딩 중...</div>
-              <div className="text-xs text-white/40 mt-1">Video ID: {videoId}</div>
-            </div>
-          </div>
-        )}
-        
-        {/* 에러 오버레이 */}
-        {hasError && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-white/60 z-10">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <div className="text-sm">영상을 불러올 수 없습니다</div>
-              <div className="text-xs text-white/40 mt-1">Video ID: {videoId}</div>
-              <button 
-                onClick={() => {
-                  console.log('🔄 Retrying YouTube embed...');
-                  setHasError(false);
-                  setIsLoaded(false);
-                }}
-                className="mt-2 px-3 py-1 bg-white/10 hover:bg-white/20 rounded text-xs transition-colors"
-              >
-                다시 시도
-              </button>
-            </div>
-          </div>
-        )}
-        
-        {/* 성공 시 재생 표시 */}
-        {isLoaded && !hasError && (
-          <div className="absolute top-4 right-4 flex items-center gap-2 z-20">
-            <div className="bg-red-600 text-white px-2 py-1 rounded text-xs font-semibold">
-              ● LIVE
-            </div>
-          </div>
-        )}
-      </div>
+    <div className="w-full h-[400px] lg:h-[500px] bg-black rounded-2xl overflow-hidden">
+      <iframe
+        width="100%"
+        height="100%"
+        src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1&rel=0&loop=1&playlist=${videoId}`}
+        title={title}
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowFullScreen
+        className="w-full h-full"
+        data-testid="youtube-iframe"
+      ></iframe>
     </div>
   );
 }
