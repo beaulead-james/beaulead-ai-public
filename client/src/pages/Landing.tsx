@@ -106,8 +106,8 @@ function YouTubeEmbed({ videoId, title }: { videoId: string; title: string }) {
 export default function Landing() {
   const { t } = useLanguage();
   
-  // HMR 강제 트리거용 타임스탬프
-  console.log('Landing component loaded at:', new Date().toISOString());
+  // HMR 강제 트리거용 타임스탬프 - 영상 ID: ekS18FZU-GE
+  console.log('Landing component loaded at:', new Date().toISOString(), 'Video ID: ekS18FZU-GE');
 
   return (
     <div className="min-h-screen bg-background">
