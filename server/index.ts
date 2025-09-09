@@ -163,6 +163,11 @@ app.use((req, res, next) => {
   // -------------------- API 라우트 (SPA보다 위!) --------------------
   const server = await registerRoutes(app);
 
+  // SEO/북마크 통일: /inquiry로 들어오면 /project-inquiry로 일시 리다이렉트
+  app.get("/inquiry", (req: Request, res: Response) => {
+    res.redirect(302, "/project-inquiry");
+  });
+
   // 간단한 헬스체크 (프록시/순서 이슈 진단용)
   app.get("/api/healthz", (_req: Request, res: Response) => {
     res.setHeader("Content-Type", "application/json; charset=utf-8");

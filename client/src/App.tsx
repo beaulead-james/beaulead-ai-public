@@ -88,6 +88,8 @@ function Router() {
       
       {/* Contact & Careers */}
       <Route path="/contact" component={Contact} />
+      {/* 프로젝트 문의 라우팅 (두 경로 지원) */}
+      <Route path="/project-inquiry" component={ProjectInquiry} />
       <Route path="/inquiry" component={ProjectInquiry} />
       <Route path="/careers" component={Careers} />
       
