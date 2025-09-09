@@ -1,185 +1,122 @@
-import { useState } from 'react';
-import { useLocation } from 'wouter';
-import { useToast } from '../hooks/use-toast';
-import { useLanguage } from '../contexts/LanguageContext';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Card, CardContent, CardHeader } from '../components/ui/card';
-import { Checkbox } from '../components/ui/checkbox';
-import SEO from '../components/UI/SEO';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import { useToast } from '@/hooks/use-toast';
+import { apiRequest } from '@/lib/queryClient';
+import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
 
-export default function Login() {
-  const [, setLocation] = useLocation();
+function BrandMark() {
+  return (
+    <div className="flex items-center gap-3">
+      <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-fuchsia-500 to-indigo-500 shadow-md" />
+      <div className="text-xl font-semibold tracking-tight">BeauLead AI</div>
+    </div>
+  );
+}
+
+export default function LoginPage() {
   const { toast } = useToast();
-  const { language } = useLanguage();
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    rememberMe: false
-  });
-  const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPw, setShowPw] = useState(false);
+  const [busy, setBusy] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // redirect 파라미터 지원 (ex. /login?next=/admin/portfolio)
+  const next = useMemo(() => new URLSearchParams(location.search).get('next') || '/admin', []);
+
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-
     try {
-      console.log('Attempting login with:', formData.email);
-      
-      // 실제 JWT 인증 API 호출
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-        }),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || '로그인에 실패했습니다');
-      }
-
-      const result = await response.json();
-      
-      // JWT 토큰을 localStorage에 저장
-      localStorage.setItem('token', result.token);
-      localStorage.setItem('user', JSON.stringify(result.user));
-
-      toast({
-        title: '로그인 성공',
-        description: `${result.user.role === 'ADMIN' ? '관리자' : '사용자'}로 로그인되었습니다.`,
-      });
-
-      // 관리자면 관리자 페이지로, 일반 사용자면 대시보드로 이동
-      if (result.user.role === 'ADMIN') {
-        setLocation('/admin');
-      } else {
-        setLocation('/dashboard');
-      }
-    } catch (error: any) {
-      console.error('Login error:', error);
+      setBusy(true);
+      await apiRequest('POST', '/api/auth/login', { email, password });
+      window.location.href = next;
+    } catch (err: any) {
       toast({
         title: '로그인 실패',
-        description: error.message || '로그인 중 오류가 발생했습니다.',
-        variant: 'destructive',
+        description: err?.message || '아이디 혹은 비밀번호를 확인해 주세요.',
+        variant: 'destructive'
       });
     } finally {
-      setIsLoading(false);
+      setBusy(false);
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-  };
-
   return (
-    <>
-      <SEO title="로그인 | 뷰리드AI" />
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4 relative overflow-hidden">
-        {/* Background decorative elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl"></div>
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500/20 rounded-full blur-3xl"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-indigo-500/10 rounded-full blur-3xl"></div>
-        </div>
+    <div className="min-h-screen relative overflow-hidden">
+      {/* 배경 연출 */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#1a1330] via-[#101628] to-[#0b1020]" />
+      <div className="pointer-events-none absolute -top-40 -left-40 h-[380px] w-[380px] rounded-full blur-3xl bg-fuchsia-600/25" />
+      <div className="pointer-events-none absolute -bottom-40 -right-40 h-[420px] w-[420px] rounded-full blur-3xl bg-indigo-600/25" />
 
-        <Card className="w-full max-w-md bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl relative z-10">
-          <CardHeader className="text-center space-y-2 pb-6">
-            <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-            </div>
-            <h1 className="text-2xl font-bold text-white">관리자 로그인</h1>
-            <p className="text-white/70 text-sm">Admin Only Access</p>
+      <div className="relative z-10 mx-auto flex min-h-screen max-w-6xl items-center justify-center px-4">
+        <Card className="w-full max-w-md border-slate-800/60 bg-slate-900/70 backdrop-blur-xl shadow-xl">
+          <CardHeader className="space-y-2">
+            <BrandMark />
+            <CardTitle className="text-2xl mt-2">관리자 로그인</CardTitle>
+            <p className="text-sm text-slate-400">계정으로 로그인하여 관리자 대시보드에 접속합니다.</p>
           </CardHeader>
-
-          <CardContent className="space-y-6">
-            <form onSubmit={handleSubmit} className="space-y-4">
+          <CardContent>
+            <form onSubmit={submit} className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-white/90" htmlFor="email">
-                  이메일
-                </label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="text"
-                  placeholder="이메일을 입력하세요"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:bg-white/20 focus:border-white/40"
-                  required
-                  data-testid="input-email"
-                />
+                <Label htmlFor="email">이메일</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400"/>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="admin@beaulead.co.kr"
+                    value={email}
+                    onChange={e=>setEmail(e.target.value)}
+                    className="pl-9"
+                    autoFocus
+                    required
+                  />
+                </div>
               </div>
-
               <div className="space-y-2">
-                <label className="text-sm font-medium text-white/90" htmlFor="password">
-                  비밀번호
-                </label>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  placeholder="비밀번호를 입력하세요"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:bg-white/20 focus:border-white/40"
-                  required
-                  data-testid="input-password"
-                />
+                <Label htmlFor="password">비밀번호</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400"/>
+                  <Input
+                    id="password"
+                    type={showPw ? 'text' : 'password'}
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={e=>setPassword(e.target.value)}
+                    className="pl-9 pr-10"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={()=>setShowPw(v=>!v)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-slate-200"
+                    aria-label="비밀번호 표시 전환"
+                  >
+                    {showPw ? <EyeOff className="h-4 w-4"/> : <Eye className="h-4 w-4"/>}
+                  </button>
+                </div>
               </div>
 
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="rememberMe"
-                  name="rememberMe"
-                  checked={formData.rememberMe}
-                  onCheckedChange={(checked) => 
-                    setFormData(prev => ({ ...prev, rememberMe: !!checked }))
-                  }
-                  className="border-white/30 text-white data-[state=checked]:bg-purple-500 data-[state=checked]:border-purple-500"
-                  data-testid="checkbox-remember"
-                />
-                <label htmlFor="rememberMe" className="text-sm text-white/80 cursor-pointer">
-                  로그인 상태 유지
-                </label>
-              </div>
-
-              <Button
-                type="submit"
-                disabled={isLoading}
-                className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-semibold py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50"
-                data-testid="button-submit"
-              >
-                {isLoading ? (
-                  <div className="flex items-center space-x-2">
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    <span>로그인 중...</span>
-                  </div>
-                ) : (
-                  '로그인'
-                )}
+              <Button type="submit" className="w-full mt-2" disabled={busy}>
+                {busy ? '로그인 중…' : '로그인'}
               </Button>
+
+              <div className="text-xs text-slate-400 text-center">
+                보안 안내: 공용 PC에서는 로그아웃을 반드시 실행하세요.
+              </div>
+
+              <Separator className="my-4" />
+              <div className="flex items-center justify-between text-xs text-slate-400">
+                <a href="/forgot" className="hover:text-slate-200">비밀번호 찾기</a>
+                <a href="/" className="hover:text-slate-200">홈으로</a>
+              </div>
             </form>
-
-            <div className="text-center">
-              <p className="text-xs text-white/60">
-                관리자 권한이 필요한 페이지입니다
-              </p>
-            </div>
-
           </CardContent>
         </Card>
       </div>
-    </>
+    </div>
   );
 }
