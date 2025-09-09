@@ -87,6 +87,7 @@ export default function PortfolioItem() {
   const images = portfolio.images as string[] || [];
   const metrics = portfolio.metrics as any || {};
 
+  const toAbs = (u?: string) => !u ? u : (/^https?:\/\//i.test(u) ? u : `${location.protocol}//${location.host}${u.startsWith('/')?u:'/'+u}`);
   return (
     <div className="min-h-screen bg-slate-900">
       <SEO 
@@ -145,9 +146,10 @@ export default function PortfolioItem() {
             {portfolio.thumbUrl && (
               <div className="relative h-64 lg:h-96">
                 <img 
-                  src={portfolio.thumbUrl}
+                  src={toAbs(portfolio.thumbUrl)||"/og/placeholder-1200x675.jpg"}
                   alt={content.title}
                   className="w-full h-full object-cover"
+                  onError={(e)=>{ (e.currentTarget as HTMLImageElement).src="/og/placeholder-1200x675.jpg"; }}
                   data-testid="img-portfolio-featured"
                 />
               </div>

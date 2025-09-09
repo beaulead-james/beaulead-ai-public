@@ -83,12 +83,13 @@ export default function ThumbnailUploader({ value, onChange }: ThumbnailUploader
       }
       
       const data = await res.json();
-      
-      // 업로드 응답에서 publicUrl이 오면 그걸 우선 사용, 없으면 기존 url 폴백
-      const url = data.publicUrl ?? data.url;
-      
-      // 업로드 성공시 바로 적용 (검증은 백그라운드에서)
-      onChange(url);
+      // publicUrl 우선, 없으면 상대경로를 절대경로로 보정
+      let url = data?.publicUrl ?? data?.url;
+      if (url && !/^https?:\/\//i.test(url)) {
+        const origin = `${location.protocol}//${location.host}`;
+        url = origin + (url.startsWith('/') ? url : '/'+url);
+      }
+      onChange(url); // DB에는 절대경로(또는 publicUrl)를 저장
       
       // 운영환경 최적화: 검증 생략으로 즉시 표시
       console.log(`이미지 업로드 완료: ${data.url}`);

@@ -1,0 +1,148 @@
+# 0) 현재 상태(선택)
+bash -lc 'git rev-parse --abbrev-ref HEAD; git status -s || true'
+
+# 1) 업로더 응답 우선순위: publicUrl → 없으면 절대경로 보정 (이미 적용돼도 재적용 안전)
+apply_patch <<'PATCH'
+*** Begin Patch
+*** Update File: client/src/components/ThumbnailUploader.tsx
+@@
+-      const data = await res.json();
+-      // publicUrl 우선, 없으면 상대경로를 절대경로로 보정
+-      let url = data.publicUrl ?? data.url;
+-      if (url && !/^https?:\/\//i.test(url)) {
+-        const origin = `${location.protocol}//${location.host}`;
+-        url = origin + url;
+-      }
++      const data = await res.json();
++      // publicUrl 우선, 없으면 상대경로를 절대경로로 보정
++      let url = data?.publicUrl ?? data?.url;
++      if (url && !/^https?:\/\//i.test(url)) {
++        const origin = `${location.protocol}//${location.host}`;
++        url = origin + (url.startsWith('/') ? url : '/'+url);
++      }
+       onChange(url); // DB에는 절대경로(또는 publicUrl)를 저장
+*** End Patch
+PATCH
+
+# 2) 포트폴리오 폼 저장 시 썸네일/갤러리 절대경로로 정규화 (이미 있더라도 보강)
+apply_patch <<'PATCH'
+*** Begin Patch
+*** Update File: client/src/components/PortfolioForm.tsx
+@@
+-  const toAbs = (u?: string) => {
++  const toAbs = (u?: string) => {
+     if (!u) return u;
+     if (/^https?:\/\//i.test(u)) return u;
+-    return `${location.protocol}//${location.host}${u.startsWith('/')?u:'/'+u}`;
++    return `${location.protocol}//${location.host}${u.startsWith('/') ? u : '/'+u}`;
+   };
+*** End Patch
+PATCH
+
+# 3) 렌더러에서 방어: 리스트/상세 모두 상대경로면 절대경로로 보정 + onError 플레이스홀더
+apply_patch <<'PATCH'
+*** Begin Patch
+*** Update File: client/src/pages/Portfolio/PortfolioList.tsx
+@@
+-            <div className={`thumb-16x9 ${item.thumbUrl ? '' : 'placeholder'}`}>
+-              <img
+-                src={item.thumbUrl || "/og/placeholder-1200x675.jpg"}
++            <div className={`thumb-16x9 ${item.thumbUrl ? '' : 'placeholder'}`}>
++              <img
++                src={/^https?:\/\//i.test(item.thumbUrl||'') ? item.thumbUrl : (item.thumbUrl ? `${location.protocol}//${location.host}${item.thumbUrl.startsWith('/')?item.thumbUrl:'/'+item.thumbUrl}` : "/og/placeholder-1200x675.jpg")}
+                 alt={(item.titleKo || item.titleEn || "portfolio thumbnail")}
+                 loading="lazy"
++                onError={(e)=>{ (e.currentTarget as HTMLImageElement).src="/og/placeholder-1200x675.jpg"; }}
+               />
+             </div>
+*** End Patch
+PATCH
+
+apply_patch <<'PATCH'
+*** Begin Patch
+*** Update File: client/src/pages/Portfolio/PortfolioItem.tsx
+@@
+-  return (
++  const toAbs = (u?: string) => !u ? u : (/^https?:\/\//i.test(u) ? u : `${location.protocol}//${location.host}${u.startsWith('/')?u:'/’+u}`);
++  return (
+     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+@@
+-        {data?.thumbUrl && (
+-          <img src={data.thumbUrl} alt="cover" className="w-full h-full object-cover"/>
+-        )}
++        {data?.thumbUrl && (
++          <img
++            src={toAbs(data.thumbUrl)||"/og/placeholder-1200x675.jpg"}
++            alt="cover"
++            className="w-full h-full object-cover"
++            onError={(e)=>{ (e.currentTarget as HTMLImageElement).src="/og/placeholder-1200x675.jpg"; }}
++          />
++        )}
+*** End Patch
+PATCH
+
+# 4) 서버: 기존 포트폴리오 thumbUrl을 절대경로/GCS publicUrl로 일괄 치환하는 관리자 엔드포인트 추가
+apply_patch <<'PATCH'
+*** Begin Patch
+*** Update File: server/routes.ts
+@@
+   // ============================
+   // Project Inquiries
+   // ============================
+@@
+   });
+ 
++  // ============================
++  // Admin: 포트폴리오 이미지 URL 일괄 보정
++  // - /uploads/로 시작하거나 http 없음 → 절대경로로 보정
++  // - 옵션: GCS 버킷이 있으면 해당 파일명을 GCS public URL로 매핑 시도
++  // ============================
++  app.post('/api/admin/portfolio-rewrite-urls', requireAuth, async (req: any, res) => {
++    const role = req.user?.claims?.role || 'USER';
++    if (role !== 'ADMIN') return res.status(403).json({ ok:false, message:"Admin access required" });
++    try {
++      const base = `${req.protocol}://${req.get('host')}`;
++      const bucket = process.env.REPLIT_OBJSTORE_BUCKET;
++      const useGcs = !!bucket;
++      const rows:any = await db.execute(sql`SELECT id, thumb_url FROM portfolios`);
++      let rew = 0;
++      for (const r of (rows.rows||[])) {
++        const u = r.thumb_url as string | null;
++        if (!u) continue;
++        let next = u;
++        if (!/^https?:\/\//i.test(u)) {
++          // 상대경로 절대화
++          next = `${base}${u.startsWith('/')?u:'/'+u}`;
++        }
++        // /uploads/<file> 형태면 GCS public URL로 승격 시도
++        const m = u.match?.(/\/uploads\/([^\/\s]+)$/);
++        if (useGcs && m) {
++          next = `https://storage.googleapis.com/${bucket}/uploads/${m[1]}`;
++        }
++        if (next !== u) {
++          await db.execute(sql`UPDATE portfolios SET thumb_url=${next}, updated_at=now() WHERE id=${r.id}`);
++          rew++;
++        }
++      }
++      res.json({ ok:true, rewritten: rew, bucket: bucket||null });
++    } catch (e:any) {
++      console.error('[portfolio-rewrite-urls] error', e);
++      res.status(500).json({ ok:false, message:String(e?.message||e) });
++    }
++  });
+*** End Patch
+PATCH
+
+# 5) 빌드 & 재시작
+bash -lc 'npm run build --silent || true'
+bash -lc 'pkill -f "node" || true; npm start --silent & sleep 2'
+
+# 6) 일괄 치환 실행 (상대경로 → 절대/GCS URL로 보정)
+bash -lc 'curl -sS -X POST http://localhost:$PORT/api/admin/portfolio-rewrite-urls | sed -e "s/},{/},\n{/g"'
+
+# 7) 최종 검증: /portfolio 목록에서 이미지 HEAD 체크(최대 5건)
+bash -lc '
+curl -sS http://localhost:$PORT/portfolio | grep -oE "https?://[^\"'\'' ]+\\.(jpg|jpeg|png|webp|gif)" | sort -u | head -5 | while read -r U; do
+  echo "==> $U"; curl -sI "$U" | head -n 1;
+done || true
+'

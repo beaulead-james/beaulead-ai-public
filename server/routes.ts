@@ -669,6 +669,45 @@ ${formData.message}
     }
   });
 
+  // ============================
+  // Admin: 포트폴리오 이미지 URL 일괄 보정
+  // - /uploads/로 시작하거나 http 없음 → 절대경로로 보정
+  // - 옵션: GCS 버킷이 있으면 해당 파일명을 GCS public URL로 매핑 시도
+  // ============================
+  app.post('/api/admin/portfolio-rewrite-urls', requireAuth, async (req: any, res) => {
+    const role = req.user?.claims?.role || 'USER';
+    if (role !== 'ADMIN') return res.status(403).json({ ok:false, message:"Admin access required" });
+    try {
+      const base = `${req.protocol}://${req.get('host')}`;
+      const bucket = process.env.REPLIT_OBJSTORE_BUCKET;
+      const useGcs = !!bucket;
+      const rows:any = await db.execute(sql`SELECT id, thumb_url FROM portfolios`);
+      let rew = 0;
+      for (const r of (rows.rows||[])) {
+        const u = r.thumb_url as string | null;
+        if (!u) continue;
+        let next = u;
+        if (!/^https?:\/\//i.test(u)) {
+          // 상대경로 절대화
+          next = `${base}${u.startsWith('/')?u:'/'+u}`;
+        }
+        // /uploads/<file> 형태면 GCS public URL로 승격 시도
+        const m = u.match?.(/\/uploads\/([^\/\s]+)$/);
+        if (useGcs && m) {
+          next = `https://storage.googleapis.com/${bucket}/uploads/${m[1]}`;
+        }
+        if (next !== u) {
+          await db.execute(sql`UPDATE portfolios SET thumb_url=${next}, updated_at=now() WHERE id=${r.id}`);
+          rew++;
+        }
+      }
+      res.json({ ok:true, rewritten: rew, bucket: bucket||null });
+    } catch (e:any) {
+      console.error('[portfolio-rewrite-urls] error', e);
+      res.status(500).json({ ok:false, message:String(e?.message||e) });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
