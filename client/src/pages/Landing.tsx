@@ -68,7 +68,7 @@ function BlogPosts() {
             {blog.excerptKo || blog.contentKo.substring(0, 120) + '...'}
           </p>
           <div className="text-sm text-white/50">
-            {new Date(blog.createdAt).toLocaleDateString('ko-KR')}
+            {blog.createdAt ? new Date(blog.createdAt).toLocaleDateString('ko-KR') : '날짜 없음'}
           </div>
         </Link>
       ))}
@@ -174,35 +174,37 @@ export default function Landing() {
               </div>
             </div>
             <div className="relative">
-              {/* 탭 네비게이션 */}
+              {/* 탭 네비게이션 - 모바일 최적화 */}
               <div className="flex mb-6 bg-white/5 backdrop-blur-sm rounded-xl p-1">
                 <button
                   onClick={() => setActiveTab('dashboard')}
-                  className={`flex-1 px-4 py-3 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 ${
+                  className={`flex-1 px-2 sm:px-4 py-3 rounded-lg font-semibold text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-1 sm:gap-2 ${
                     activeTab === 'dashboard' 
                       ? 'bg-white/20 text-white shadow-lg' 
                       : 'text-white/60 hover:text-white hover:bg-white/10'
                   }`}
                   data-testid="tab-dashboard"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                   </svg>
-                  대시보드
+                  <span className="hidden sm:inline">대시보드</span>
+                  <span className="sm:hidden">대시보드</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('video')}
-                  className={`flex-1 px-4 py-3 rounded-lg font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 ${
+                  className={`flex-1 px-2 sm:px-4 py-3 rounded-lg font-semibold text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-1 sm:gap-2 ${
                     activeTab === 'video' 
                       ? 'bg-white/20 text-white shadow-lg' 
                       : 'text-white/60 hover:text-white hover:bg-white/10'
                   }`}
                   data-testid="tab-video"
                 >
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M8 5v14l11-7z"/>
                   </svg>
-                  영상 소개
+                  <span className="hidden sm:inline">영상 소개</span>
+                  <span className="sm:hidden">영상</span>
                 </button>
               </div>
 
@@ -219,7 +221,7 @@ export default function Landing() {
                       <div className="w-4 h-4 bg-gradient-to-r from-green-400 to-green-500 rounded-full shadow-lg"></div>
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-6 mb-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-8">
                     <div className="bg-gradient-to-br from-blue-500/20 to-purple-600/20 p-5 rounded-2xl border border-blue-400/30">
                       <div className="text-sm text-blue-300 font-semibold mb-2" data-testid="text-metric-revenue-label">
                         월 매출액
