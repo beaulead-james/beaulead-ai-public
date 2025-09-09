@@ -374,6 +374,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ✅ Get single portfolio by ID (for editor)
+  app.get('/api/portfolios/by-id/:id', async (req, res) => {
+    try {
+      const p = await storage.getPortfolioById(req.params.id);
+      if (!p) return res.status(404).json({ message: "Portfolio not found" });
+      res.json(p);
+    } catch (error) {
+      console.error("Error fetching portfolio by id:", error);
+      res.status(500).json({ message: "Failed to fetch portfolio" });
+    }
+  });
+
   app.get('/api/portfolios/:slug', async (req, res) => {
     try {
       const portfolio = await storage.getPortfolio(req.params.slug);

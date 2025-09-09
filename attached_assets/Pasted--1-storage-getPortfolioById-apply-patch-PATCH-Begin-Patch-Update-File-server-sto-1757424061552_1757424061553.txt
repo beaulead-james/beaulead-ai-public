@@ -1,0 +1,93 @@
+# 1) storage: getPortfolioById 추가
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: server/storage.ts
+@@
+   async getBlogBySlug(slug: string): Promise<BlogWithAuthor | undefined> {
+     // ... (기존 블로그 코드)
+   }
++
++  // ===== Portfolio: fetch by ID =====
++  async getPortfolioById(id: string) {
++    const [row] = await db.select().from(portfolios).where(eq(portfolios.id, id));
++    return row;
++  }
+*** End Patch
+PATCH
+
+# 2) routes: /api/portfolios/by-id/:id 추가 (ADMIN/USER 모두 조회 가능)
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: server/routes.ts
+@@
+   // Portfolio routes
+   app.get('/api/portfolios', async (req, res) => {
+     try {
+       const published = req.query.published === 'true' ? true : req.query.published === 'false' ? false : undefined;
+       const portfolios = await storage.getPortfolios(published);
+       res.json(portfolios);
+     } catch (error) {
+       console.error("Error fetching portfolios:", error);
+       res.status(500).json({ message: "Failed to fetch portfolios" });
+     }
+   });
+ 
++  // ✅ Get single portfolio by ID (for editor)
++  app.get('/api/portfolios/by-id/:id', async (req, res) => {
++    try {
++      const p = await storage.getPortfolioById(req.params.id);
++      if (!p) return res.status(404).json({ message: "Portfolio not found" });
++      res.json(p);
++    } catch (error) {
++      console.error("Error fetching portfolio by id:", error);
++      res.status(500).json({ message: "Failed to fetch portfolio" });
++    }
++  });
++
+   app.get('/api/portfolios/:slug', async (req, res) => {
+     try {
+       const portfolio = await storage.getPortfolio(req.params.slug);
+       if (!portfolio) {
+         return res.status(404).json({ message: "Portfolio not found" });
+       }
+       res.json(portfolio);
+     } catch (error) {
+       console.error("Error fetching portfolio:", error);
+       res.status(500).json({ message: "Failed to fetch portfolio" });
+     }
+   });
+*** End Patch
+PATCH
+
+# 3) 클라이언트 폼: 편집 시 ID 기반 조회로 교체
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: client/src/components/PortfolioForm.tsx
+@@
+-  const { data: detail, isFetching } = useQuery({
+-    queryKey: ['/api/portfolios', id],
+-    queryFn: async () => {
+-      if (!id) return null;
+-      const res = await fetch(`/api/portfolios/${id}`);
++  const { data: detail, isFetching } = useQuery({
++    queryKey: ['/api/portfolios/by-id', id],
++    queryFn: async () => {
++      if (!id) return null;
++      const res = await fetch(`/api/portfolios/by-id/${id}`);
+       if (!res.ok) throw new Error('Failed to fetch portfolio');
+       return res.json();
+     },
+     enabled: !!id,
+   });
+*** End Patch
+PATCH
+
+# 4) 빌드 & 재시작
+bash -lc 'npm run build --silent || true'
+bash -lc 'pkill -f "node" || true; npm start --silent & sleep 2'
+
+# 5) 빠른 확인: 에디터용 조회/목록 확인
+bash -lc '
+echo "[by-id]"; curl -sS http://localhost:$PORT/api/portfolios | head -c 200; echo;
+# 위 목록에서 하나 id 확인 후 브라우저에서 /api/portfolios/by-id/<id> 열어보면 JSON 나와야 정상
+'
