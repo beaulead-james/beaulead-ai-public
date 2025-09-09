@@ -65,6 +65,24 @@ const staticUploads = express.static(UPLOAD_DIR, {
 app.use("/uploads", staticUploads);
 app.use("/api/uploads", staticUploads);
 
+// 🔁 업로드 파일 폴백: server/uploads 에 없으면 dist/public/uploads 에서도 찾아본다.
+app.get("/uploads/:fname", (req, res, next) => {
+  const fname = req.params.fname;
+  const primary = path.join(process.cwd(), "server", "uploads", fname);
+  const fallback = path.join(process.cwd(), "dist", "public", "uploads", fname);
+  const send = (p: string) => {
+    res.setHeader("Cache-Control", "public, max-age=604800, immutable"); // 7d
+    return res.sendFile(p);
+  };
+  try {
+    if (fs.existsSync(primary)) return send(primary);
+    if (fs.existsSync(fallback)) return send(fallback);
+    return next();
+  } catch {
+    return next();
+  }
+});
+
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
