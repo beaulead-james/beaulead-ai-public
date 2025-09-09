@@ -5,6 +5,33 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===== BeauLead brand utilities ===== */
+@layer components {
+  .btn-brand {
+    @apply inline-flex items-center justify-center rounded-xl px-5 py-3
+      bg-brand-500 text-white font-medium shadow-md
+      hover:bg-brand-600 active:bg-brand-700
+      focus:outline-none focus:ring-2 focus:ring-brand-500/40 transition;
+  }
+  .link-brand {
+    @apply text-brand-600 hover:text-brand-700 underline-offset-2 hover:underline;
+  }
+  .badge-brand {
+    @apply inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium
+      bg-brand-50 text-brand-700;
+  }
+}
+
+@layer utilities {
+  .bg-hero-gradient {
+    @apply bg-gradient-to-tr from-brand-500 via-brand-600 to-brand-700;
+  }
+  .orb-brand {
+    background: radial-gradient(ellipse at center, rgba(99,102,241,0.28), transparent 60%);
+    filter: blur(32px);
+  }
+}
+
 :root {
   --background: #0f172a;
   --foreground: #ffffff;
