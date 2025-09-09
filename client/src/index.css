@@ -76,19 +76,6 @@
   --sidebar-ring: #0A84FF;
 }
 
-/* === Admin sidebar collapse === */
-:root.admin-sidebar-collapsed .admin-sidebar,
-.admin-sidebar-collapsed .admin-sidebar {
-  width: 64px !important; /* 접힘 폭 */
-}
-.admin-sidebar-collapsed .admin-sidebar .sidebar-label,
-.admin-sidebar-collapsed .admin-sidebar [data-item-label]{
-  display: none !important; /* 텍스트 숨김 (아이콘만) */
-}
-.admin-sidebar-collapsed .admin-main {
-  margin-left: 64px !important; /* 본문 여백 보정 (필요 시 조정) */
-}
-
 @layer base {
   * {
     @apply border-border;
