@@ -114,7 +114,7 @@ export default function InquiriesPage() {
                       </Badge>
                       <span className="text-sm text-muted-foreground flex items-center gap-1">
                         <Calendar className="w-4 h-4" />
-                        {formatDate(inquiry.createdAt)}
+                        {formatDate(inquiry.createdAt?.toString() || null)}
                       </span>
                     </div>
 
@@ -181,7 +181,7 @@ export default function InquiriesPage() {
 
                   <div className="flex flex-col gap-2">
                     <Select
-                      value={inquiry.status}
+                      value={inquiry.status || "NEW"}
                       onValueChange={(status) => 
                         updateStatusMutation.mutate({ id: inquiry.id, status })
                       }
@@ -275,9 +275,9 @@ export default function InquiriesPage() {
                             )}
 
                             <div className="pt-4 border-t text-xs text-muted-foreground">
-                              <p>접수일시: {formatDate(selectedInquiry.createdAt)}</p>
+                              <p>접수일시: {formatDate(selectedInquiry.createdAt?.toString() || null)}</p>
                               {selectedInquiry.updatedAt && selectedInquiry.updatedAt !== selectedInquiry.createdAt && (
-                                <p>수정일시: {formatDate(selectedInquiry.updatedAt)}</p>
+                                <p>수정일시: {formatDate(selectedInquiry.updatedAt?.toString())}</p>
                               )}
                             </div>
                           </div>
