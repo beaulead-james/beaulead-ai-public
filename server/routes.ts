@@ -566,18 +566,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // 선택: Slack 알림도 보낼 수 있음
       try {
         await sendContactFormToSlack({
-          type: "PROJECT_INQUIRY",
           name: body.name,
           email: body.email,
-          company: body.company,
           phone: body.phone,
-          details: {
-            goals: body.goals,
-            campaigns: body.campaigns,
-            budget: body.budget || body.budgetCustom,
-            domain: body.domain,
-            etc: body.etc
-          }
+          budget: body.budget || body.budgetCustom || "",
+          message: `프로젝트 문의\n회사: ${body.company}\n목표: ${JSON.stringify(body.goals)}\n캠페인: ${JSON.stringify(body.campaigns)}\n도메인: ${body.domain || ""}\n기타: ${body.etc || ""}`
         });
       } catch (slackError) {
         console.warn("Slack notification failed:", slackError);
