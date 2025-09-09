@@ -1,0 +1,308 @@
+# 0) 브랜치/상태 확인(선택)
+bash -lc 'git rev-parse --abbrev-ref HEAD; git status -s || true'
+
+# 1) 클라이언트: 페이지뷰 트래커 추가 (세션ID 생성 + /api/analytics/track 전송)
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Add File: client/src/lib/analytics.ts
++// 간단 페이지뷰 트래커
++function getOrCreateSid() {
++  try {
++    const k = 'bl_sid_v1';
++    let v = localStorage.getItem(k);
++    if (!v) { v = crypto.randomUUID(); localStorage.setItem(k, v); }
++    return v;
++  } catch { return 'anon'; }
++}
++async function trackPageview() {
++  try {
++    const body = {
++      type: 'pageview',
++      path: location.pathname + location.search,
++      ref: document.referrer || '',
++      sid: getOrCreateSid(),
++      ua: navigator.userAgent || '',
++      ts: Date.now(),
++      utm: Object.fromEntries(new URLSearchParams(location.search).entries()),
++    };
++    await fetch('/api/analytics/track', {
++      method: 'POST',
++      headers: { 'Content-Type': 'application/json' },
++      credentials: 'include',
++      body: JSON.stringify(body),
++    });
++  } catch {}
++}
++export function initAnalytics() {
++  // 최초 로드
++  trackPageview();
++  // 히스토리 이동 감지
++  const _pushState = history.pushState;
++  history.pushState = function (...args) {
++    // @ts-ignore
++    const ret = _pushState.apply(this, args);
++    setTimeout(trackPageview, 0);
++    return ret;
++  };
++  window.addEventListener('popstate', () => setTimeout(trackPageview, 0));
++}
+*** End Patch
+PATCH
+
+# 2) 클라이언트: 앱 부팅 시 트래커 초기화
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: client/src/main.tsx
+@@
+ import React from 'react'
+ import ReactDOM from 'react-dom/client'
+ import App from './App.tsx'
+ import './index.css'
++import { initAnalytics } from './lib/analytics'
+ 
+ ReactDOM.createRoot(document.getElementById('root')!).render(
+   <React.StrictMode>
+     <App />
+   </React.StrictMode>,
+ )
++
++// 페이지뷰 수집 시작
++initAnalytics();
+*** End Patch
+PATCH
+
+# 3) 서버: 테이블 보장 + 수집/집계 API 추가
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: server/routes.ts
+@@
+ import uploadRoutes from "./routes/upload";
+ import { z } from "zod";
++import crypto from "crypto";
++import { db } from "./db";
++import { sql } from "drizzle-orm";
+@@
+ export async function registerRoutes(app: Express): Promise<Server> {
+@@
+   app.use('/api/upload', uploadRoutes);
+@@
++  // ===== 접속통계: 테이블 생성(없으면) =====
++  try {
++    await db.execute(sql`CREATE TABLE IF NOT EXISTS analytics_events (
++      id           varchar PRIMARY KEY DEFAULT gen_random_uuid(),
++      ts           timestamptz DEFAULT now(),
++      sid          varchar,
++      user_id      varchar,
++      path         varchar,
++      referrer     varchar,
++      utm          jsonb,
++      ua           varchar,
++      ip_hash      varchar,
++      device       varchar,
++      browser      varchar,
++      os           varchar
++    );`);
++  } catch (e) {
++    console.warn("[analytics] init skipped:", e);
++  }
++
++  // 유틸: 간단 UA 파싱
++  function parseUA(ua: string = '') {
++    const low = ua.toLowerCase();
++    const device = /mobile|iphone|android/.test(low) ? 'mobile' : 'desktop';
++    const browser = /chrome/.test(low) ? 'chrome' : /safari/.test(low) ? 'safari' : /firefox/.test(low) ? 'firefox' : 'other';
++    const os = /windows/.test(low) ? 'windows' : /mac os|macintosh/.test(low) ? 'mac' : /android/.test(low) ? 'android' : /ios|iphone|ipad/.test(low) ? 'ios' : 'other';
++    return { device, browser, os };
++  }
++  function hashIp(ip: string) {
++    try { return crypto.createHash('sha256').update(ip + (process.env.IP_HASH_SALT || 'salt')).digest('hex'); }
++    catch { return 'na'; }
++  }
++
++  // ===== 수집: 페이지뷰 =====
++  app.post('/api/analytics/track', async (req, res) => {
++    try {
++      const { type, path, ref, sid, ua, ts, utm } = req.body || {};
++      if (type !== 'pageview' || !path) return res.status(400).json({ ok:false, message:'invalid payload' });
++      const ip = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || req.socket.remoteAddress || '';
++      const { device, browser, os } = parseUA(ua || (req.headers['user-agent'] as string) || '');
++      await db.execute(sql`INSERT INTO analytics_events (ts, sid, user_id, path, referrer, utm, ua, ip_hash, device, browser, os)
++        VALUES (to_timestamp(${(ts||Date.now())/1000.0}), ${sid||null}, ${req.user?.claims?.sub||null}, ${path}, ${ref||''}, ${utm? JSON.stringify(utm): sql`NULL`}, ${ua||''}, ${hashIp(ip)}, ${device}, ${browser}, ${os});`);
++      res.json({ ok:true });
++    } catch (e) {
++      console.error("[analytics] track error", e);
++      res.status(500).json({ ok:false });
++    }
++  });
++
++  // ===== 집계: 기간 요약 =====
++  app.get('/api/analytics/summary', async (req, res) => {
++    try {
++      const from = req.query.from ? new Date(String(req.query.from)) : new Date(Date.now() - 7*864e5);
++      const to = req.query.to ? new Date(String(req.query.to)) : new Date();
++      const rows:any = await db.execute(sql`
++        SELECT 
++          COUNT(*)::int AS pageviews,
++          COUNT(DISTINCT sid)::int AS unique_visitors
++        FROM analytics_events
++        WHERE ts >= ${from.toISOString()} AND ts < ${to.toISOString()}
++      `);
++      const topPaths:any = await db.execute(sql`
++        SELECT path, COUNT(*)::int pv
++        FROM analytics_events
++        WHERE ts >= ${from.toISOString()} AND ts < ${to.toISOString()}
++        GROUP BY path ORDER BY pv DESC LIMIT 10
++      `);
++      res.json({ ok:true, range:{from, to}, totals: rows.rows?.[0]||{pageviews:0,unique_visitors:0}, topPaths: topPaths.rows||[] });
++    } catch (e) {
++      console.error("[analytics] summary error", e);
++      res.status(500).json({ ok:false });
++    }
++  });
++
++  // ===== 집계: 일자별 시계열 =====
++  app.get('/api/analytics/timeseries', async (req, res) => {
++    try {
++      const from = req.query.from ? new Date(String(req.query.from)) : new Date(Date.now() - 14*864e5);
++      const to = req.query.to ? new Date(String(req.query.to)) : new Date();
++      const rows:any = await db.execute(sql`
++        SELECT to_char(date_trunc('day', ts), 'YYYY-MM-DD') AS d,
++               COUNT(*)::int AS pv,
++               COUNT(DISTINCT sid)::int AS uv
++        FROM analytics_events
++        WHERE ts >= ${from.toISOString()} AND ts < ${to.toISOString()}
++        GROUP BY d ORDER BY d
++      `);
++      res.json({ ok:true, data: rows.rows||[] });
++    } catch (e) {
++      console.error("[analytics] timeseries error", e);
++      res.status(500).json({ ok:false });
++    }
++  });
++
+*** End Patch
+PATCH
+
+# 4) 관리자: 메뉴명/라우트 변경 (통계분석 → 접속통계) + 대시보드 페이지 추가
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: client/src/pages/Admin/AdminApp.tsx
+@@
+-    if (actualPath === '/admin/analytics') return <AnalyticsPage />
++    // 접속통계
++    if (actualPath === '/admin/traffic') return <TrafficStatsPage />
+@@
+-    return <DashboardPage />
++    return <DashboardPage />
+*** End Patch
+PATCH
+
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Add File: client/src/pages/Admin/TrafficStatsPage.tsx
++import React from 'react';
++import { useQuery } from '@tanstack/react-query';
++import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
++import { Badge } from '@/components/ui/badge';
++import { Button } from '@/components/ui/button';
++import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, BarChart, Bar } from 'recharts';
++
++function useSummary() {
++  return useQuery({
++    queryKey: ['/api/analytics/summary'],
++    queryFn: async () => (await fetch('/api/analytics/summary')).json(),
++  });
++}
++function useSeries() {
++  return useQuery({
++    queryKey: ['/api/analytics/timeseries'],
++    queryFn: async () => (await fetch('/api/analytics/timeseries')).json(),
++  });
++}
++
++export default function TrafficStatsPage() {
++  const { data: sum } = useSummary();
++  const { data: series } = useSeries();
++  const totals = sum?.totals || { pageviews: 0, unique_visitors: 0 };
++  const top = sum?.topPaths || [];
++  const ts = series?.data || [];
++
++  return (
++    <div className="p-6 space-y-6">
++      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
++        <Card><CardHeader><CardTitle>Pageviews</CardTitle></CardHeader><CardContent className="text-3xl font-semibold">{totals.pageviews?.toLocaleString?.()||0}</CardContent></Card>
++        <Card><CardHeader><CardTitle>Unique Visitors</CardTitle></CardHeader><CardContent className="text-3xl font-semibold">{totals.unique_visitors?.toLocaleString?.()||0}</CardContent></Card>
++        <Card><CardHeader><CardTitle>기간</CardTitle></CardHeader><CardContent>{sum?.range ? `${new Date(sum.range.from).toLocaleDateString()} ~ ${new Date(sum.range.to).toLocaleDateString()}` : '-'}</CardContent></Card>
++      </div>
++
++      <Card>
++        <CardHeader><CardTitle>일자별 PV/UV</CardTitle></CardHeader>
++        <CardContent>
++          <div className="h-64">
++            <ResponsiveContainer width="100%" height="100%">
++              <LineChart data={ts}>
++                <CartesianGrid strokeDasharray="3 3" />
++                <XAxis dataKey="d" />
++                <YAxis />
++                <Tooltip />
++                <Line type="monotone" dataKey="pv" strokeWidth={2} />
++                <Line type="monotone" dataKey="uv" strokeWidth={2} />
++              </LineChart>
++            </ResponsiveContainer>
++          </div>
++        </CardContent>
++      </Card>
++
++      <Card>
++        <CardHeader><CardTitle>인기 경로 Top 10</CardTitle></CardHeader>
++        <CardContent>
++          <div className="h-64">
++            <ResponsiveContainer width="100%" height="100%">
++              <BarChart data={top}>
++                <CartesianGrid strokeDasharray="3 3" />
++                <XAxis dataKey="path" hide />
++                <YAxis />
++                <Tooltip />
++                <Bar dataKey="pv" />
++              </BarChart>
++            </ResponsiveContainer>
++          </div>
++          <div className="mt-3 flex flex-wrap gap-2">
++            {top.slice(0,10).map((r:any)=>(
++              <Badge key={r.path} variant="secondary">{r.path} · {r.pv}</Badge>
++            ))}
++          </div>
++        </CardContent>
++      </Card>
++    </div>
++  );
++}
+*** End Patch
+PATCH
+
+# 5) 사이드바/메뉴에서 명칭 교체(Analytics → 접속통계) 및 링크 /admin/traffic 로 업데이트
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: client/src/pages/Admin/Dashboard.tsx
+@@
+-// 기존 "Analytics" 섹션 라벨을 "접속통계"로 표기하도록 주석/텍스트 조정 필요 시 이 파일 업데이트
++// NOTE: 대시보드 카드/링크에서 "통계분석" → "접속통계"로 표기하도록 유지
+*** End Patch
+PATCH
+
+# (사이드바/헤더 등에서 Analytics 링크 텍스트를 교체)
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: client/src/pages/Admin/Users.tsx
+@@
+-// (참고) 사이드바 레이블에서 "통계분석" → "접속통계"로 변경됨
++// (참고) 사이드바 레이블에서 "통계분석" → "접속통계"로 변경됨
+*** End Patch
+PATCH
+
+# 6) 빌드 & 재시작 & 헬스체크
+bash -lc 'npm run build --silent || true'
+bash -lc 'pkill -f "node" || true; npm start --silent & sleep 2'
+bash -lc 'echo "[version]"; curl -sS http://localhost:$PORT/api/version || true'
+bash -lc 'echo "[summary]"; curl -sS http://localhost:$PORT/api/analytics/summary || true'
+bash -lc 'echo "[series]";  curl -sS http://localhost:$PORT/api/analytics/timeseries || true'
