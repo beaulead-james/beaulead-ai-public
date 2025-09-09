@@ -39,7 +39,7 @@ args = "npm run dev"
 waitForPort = 5000
 
 [agent]
-integrations = ["javascript_object_storage==1.0.0"]
+integrations = ["javascript_object_storage:1.0.0", "javascript_slack:1.0.0"]
 
 [objectStorage]
 defaultBucketID = "replit-objstore-3aba42c6-1c49-4234-a8b4-e37749ec48fc"
