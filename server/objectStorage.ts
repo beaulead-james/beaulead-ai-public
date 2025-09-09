@@ -35,6 +35,10 @@ export class ObjectNotFoundError extends Error {
 export class ObjectStorageService {
   constructor() {}
 
+  get client() {
+    return objectStorageClient;
+  }
+
   // Gets the public object search paths.
   getPublicObjectSearchPaths(): Array<string> {
     const pathsStr = process.env.PUBLIC_OBJECT_SEARCH_PATHS || "";
@@ -143,43 +147,21 @@ export class ObjectStorageService {
     });
   }
 
-  // Upload a public object directly
-  async uploadPublicObject(key: string, buffer: Buffer, contentType: string): Promise<void> {
-    const publicPaths = this.getPublicObjectSearchPaths();
-    if (publicPaths.length === 0) {
-      throw new Error("No public object search paths configured");
-    }
-    
-    // Use the first public path for uploads
-    const fullPath = `${publicPaths[0]}/${key}`;
-    const { bucketName, objectName } = parseObjectPath(fullPath);
-    
-    const bucket = objectStorageClient.bucket(bucketName);
-    const file = bucket.file(objectName);
-    
-    // Upload the buffer directly
+  async uploadPublicObject(key: string, buffer: Buffer, mime: string) {
+    const bucketName = process.env.REPLIT_OBJSTORE_BUCKET || "replit-objstore-3aba42c6-1c49-4234-a8b4-e37749ec48fc";
+    const bucket = this.client.bucket(bucketName);
+    const file = bucket.file(key);
     await file.save(buffer, {
-      metadata: {
-        contentType: contentType,
-      },
-      // Remove public: true due to public access prevention policy
+      resumable: false,
+      contentType: mime,
+      predefinedAcl: 'publicRead', // 👈 퍼블릭 권한 보장
     });
+    return key;
   }
 
-  // Get public URL for an object
-  async getPublicObjectUrl(key: string): Promise<string> {
-    const publicPaths = this.getPublicObjectSearchPaths();
-    if (publicPaths.length === 0) {
-      throw new Error("No public object search paths configured");
-    }
-    
-    // Use the first public path 
-    const fullPath = `${publicPaths[0]}/${key}`;
-    const { bucketName, objectName } = parseObjectPath(fullPath);
-    
-    // Return a direct GCS URL - may not work with access prevention but we'll try
-    // If this fails, we'll need to serve files through our own endpoint
-    return `https://storage.googleapis.com/${bucketName}/${objectName}`;
+  async getPublicObjectUrl(key: string) {
+    const bucketName = process.env.REPLIT_OBJSTORE_BUCKET || "replit-objstore-3aba42c6-1c49-4234-a8b4-e37749ec48fc";
+    return `https://storage.googleapis.com/${bucketName}/${key}`;
   }
 }
 
