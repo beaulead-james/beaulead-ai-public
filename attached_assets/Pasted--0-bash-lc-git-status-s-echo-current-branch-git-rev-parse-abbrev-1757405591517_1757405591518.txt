@@ -1,0 +1,250 @@
+# 0) 안전 저장소 상태 표시(선택)
+bash -lc 'git status -s; echo "--- current branch ---"; git rev-parse --abbrev-ref HEAD'
+
+# 1) Admin 라우팅 연결: 없는 컴포넌트들을 실제 파일로 추가하고, AdminApp에 임포트/사용
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: client/src/pages/Admin/AdminApp.tsx
+@@
+-import React from 'react'
++import React from 'react'
+@@
+-    if (actualPath === '/admin/portfolio') return <PortfolioPage />
+-    if (actualPath === '/admin/portfolio/new') return <NewPortfolioPage />
++    // 포트폴리오 라우팅
++    if (actualPath === '/admin/portfolio') return <PortfolioPage />
++    if (actualPath === '/admin/portfolio/new') return <NewPortfolioPage />
+@@
+-    if (actualPath.startsWith('/admin/portfolio/edit/')) {
+-      const portfolioId = actualPath.split('/admin/portfolio/edit/')[1]
+-      return <PortfolioEditorPage portfolioId={portfolioId} />
+-    }
++    if (actualPath.startsWith('/admin/portfolio/edit/')) {
++      const portfolioId = actualPath.split('/admin/portfolio/edit/')[1]
++      return <PortfolioEditorPage portfolioId={portfolioId} />
++    }
+*** End Patch
+PATCH
+
+# 2) 포트폴리오 페이지/폼 파일 추가: 목록은 기존 PortfolioManagement 재사용, 작성/수정 페이지 신설
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Add File: client/src/components/PortfolioForm.tsx
++import { useState, useEffect } from 'react';
++import { useMutation, useQuery } from '@tanstack/react-query';
++import { Input } from '@/components/ui/input';
++import { Textarea } from '@/components/ui/textarea';
++import { Button } from '@/components/ui/button';
++import { Switch } from '@/components/ui/switch';
++import { Label } from '@/components/ui/label';
++import { useToast } from '@/hooks/use-toast';
++import { apiRequest, queryClient } from '@/lib/queryClient';
++import ThumbnailUploader from '@/components/ThumbnailUploader';
++
++export type PortfolioPayload = {
++  titleKo: string; titleEn: string;
++  summaryKo: string; summaryEn: string;
++  slug?: string;
++  thumbUrl?: string;
++  images?: string[];
++  published?: boolean;
++}
++
++function slugify(s: string) {
++  return (s || '')
++    .toLowerCase()
++    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
++    .replace(/[^a-z0-9]+/g, '-')
++    .replace(/(^-|-$)+/g, '')
++}
++
++export default function PortfolioForm({ id }: { id?: string }) {
++  const { toast } = useToast();
++  const [payload, setPayload] = useState<PortfolioPayload>({
++    titleKo: '', titleEn: '',
++    summaryKo: '', summaryEn: '',
++    slug: '', thumbUrl: '', images: [],
++    published: false,
++  });
++
++  // 편집 모드: 기존 데이터 불러오기
++  const { data: detail, isFetching } = useQuery({
++    queryKey: ['/api/portfolios', id],
++    queryFn: async () => {
++      if (!id) return null;
++      const res = await fetch(`/api/portfolios/${id}`);
++      if (!res.ok) throw new Error('Failed to fetch portfolio');
++      return res.json();
++    },
++    enabled: !!id,
++  });
++
++  useEffect(() => {
++    if (detail?.id) {
++      setPayload({
++        titleKo: detail.titleKo ?? '',
++        titleEn: detail.titleEn ?? '',
++        summaryKo: detail.summaryKo ?? '',
++        summaryEn: detail.summaryEn ?? '',
++        slug: detail.slug ?? '',
++        thumbUrl: detail.thumbUrl ?? '',
++        images: detail.images ?? [],
++        published: !!detail.published,
++      });
++    }
++  }, [detail]);
++
++  const saveMutation = useMutation({
++    mutationFn: async (body: PortfolioPayload) => {
++      const method = id ? 'PUT' : 'POST';
++      const url = id ? `/api/portfolios/${id}` : '/api/portfolios';
++      const res = await apiRequest(method as any, url, body);
++      return res;
++    },
++    onSuccess: () => {
++      queryClient.invalidateQueries({ queryKey: ['/api/portfolios'] });
++      toast({ title: '저장 완료', description: id ? '수정되었습니다.' : '작성되었습니다.' });
++      if (!id) window.location.href = '/admin/portfolio';
++    },
++    onError: (e: any) => {
++      toast({ title: '오류', description: e?.message ?? '저장 실패', variant: 'destructive' });
++    }
++  });
++
++  const onSubmit = (e: React.FormEvent) => {
++    e.preventDefault();
++    const body = { ...payload };
++    if (!body.slug) body.slug = slugify(body.titleKo || body.titleEn);
++    if (!body.titleKo || !body.titleEn) {
++      return toast({ title: '필수값 누락', description: '국문/영문 제목을 입력하세요.', variant: 'destructive' });
++    }
++    saveMutation.mutate(body);
++  }
++
++  return (
++    <form onSubmit={onSubmit} className="space-y-6">
++      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
++        <div>
++          <Label>제목(국문)</Label>
++          <Input value={payload.titleKo} onChange={e=>setPayload(p=>({...p,titleKo:e.target.value}))}/>
++        </div>
++        <div>
++          <Label>제목(영문)</Label>
++          <Input value={payload.titleEn} onChange={e=>setPayload(p=>({...p,titleEn:e.target.value}))}/>
++        </div>
++      </div>
++      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
++        <div>
++          <Label>요약(국문)</Label>
++          <Textarea rows={4} value={payload.summaryKo} onChange={e=>setPayload(p=>({...p,summaryKo:e.target.value}))}/>
++        </div>
++        <div>
++          <Label>요약(영문)</Label>
++          <Textarea rows={4} value={payload.summaryEn} onChange={e=>setPayload(p=>({...p,summaryEn:e.target.value}))}/>
++        </div>
++      </div>
++      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
++        <div className="md:col-span-2">
++          <Label>슬러그</Label>
++          <Input placeholder="auto-from-title" value={payload.slug} onChange={e=>setPayload(p=>({...p,slug:e.target.value}))}/>
++        </div>
++        <div className="flex items-end gap-3">
++          <Switch checked={!!payload.published} onCheckedChange={(v:boolean)=>setPayload(p=>({...p,published:v}))}/>
++          <Label>공개</Label>
++        </div>
++      </div>
++      <div>
++        <Label>썸네일</Label>
++        <div className="mt-2">
++          <ThumbnailUploader value={payload.thumbUrl} onChange={(url)=>setPayload(p=>({...p, thumbUrl:url}))}/>
++        </div>
++      </div>
++      <div className="pt-4">
++        <Button type="submit" disabled={saveMutation.isPending}>
++          {saveMutation.isPending ? '저장 중...' : (id ? '수정 저장' : '작성 저장')}
++        </Button>
++      </div>
++    </form>
++  )
++}
+*** End Patch
+PATCH
+
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Add File: client/src/pages/Admin/NewPortfolioPage.tsx
++import React from 'react';
++import PortfolioForm from '@/components/PortfolioForm';
++import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
++
++export default function NewPortfolioPage() {
++  return (
++    <div className="p-6">
++      <Card>
++        <CardHeader><CardTitle>새 포트폴리오 작성</CardTitle></CardHeader>
++        <CardContent>
++          <PortfolioForm />
++        </CardContent>
++      </Card>
++    </div>
++  )
++}
+*** End Patch
+PATCH
+
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Add File: client/src/pages/Admin/PortfolioEditorPage.tsx
++import React from 'react';
++import PortfolioForm from '@/components/PortfolioForm';
++import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
++
++export default function PortfolioEditorPage({ portfolioId }: { portfolioId: string }) {
++  return (
++    <div className="p-6">
++      <Card>
++        <CardHeader><CardTitle>포트폴리오 수정</CardTitle></CardHeader>
++        <CardContent>
++          <PortfolioForm id={portfolioId}/>
++        </CardContent>
++      </Card>
++    </div>
++  )
++}
+*** End Patch
+PATCH
+
+apply_patch << 'PATCH'
+*** Begin Patch
+*** Update File: client/src/pages/Admin/PortfolioManagement.tsx
+@@
+-import type { Portfolio } from '@shared/schema';
++import type { Portfolio } from '@shared/schema';
++// 목록에서 "새 포트폴리오 작성" 버튼 라우팅 보장
+@@
+-        <div className="flex justify-between items-center mb-6">
++        <div className="flex justify-between items-center mb-6">
+           <h1 className="text-2xl font-semibold">포트폴리오 관리</h1>
+-          <Link href="/admin/portfolio/new">
++          <Link href="/admin/portfolio/new">
+             <Button>새 포트폴리오 작성</Button>
+           </Link>
+         </div>
+*** End Patch
+PATCH
+
+# 3) 서버 라우트는 이미 구현되어 있음(/api/portfolios). 간단 API 통신 테스트
+bash -lc '
+echo "[GET portfolios]"; curl -sS http://localhost:$PORT/api/portfolios | head -c 300 || true
+'
+
+# 4) 빌드 & 재시작
+bash -lc 'npm run build --silent || true'
+bash -lc 'pkill -f "node" || true; npm start --silent & sleep 2'
+
+# 5) 동작 확인용 HEADLESS 체크
+bash -lc '
+echo "[admin new page]"; curl -sS -I http://localhost:$PORT/admin/portfolio/new | head -n 1 || true
+echo "[admin list page]"; curl -sS -I http://localhost:$PORT/admin/portfolio | head -n 1 || true
+'
+
