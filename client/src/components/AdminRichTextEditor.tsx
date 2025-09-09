@@ -75,7 +75,7 @@ export default function AdminRichTextEditor({
   };
 
   return (
-    <div className={`rounded-lg overflow-hidden bg-white ${className}`}>
+    <div className={`rounded-lg overflow-hidden relative ${className}`} style={{ zIndex: 1 }}>
       <ReactQuill
         theme="snow"
         value={html}
@@ -84,12 +84,34 @@ export default function AdminRichTextEditor({
         placeholder={placeholder}
         modules={modules}
         formats={formats}
-        // 한글 IME 끊김 방지: react-quill가 내부에서 contentEditable을 직접 관리하도록 둔다(완전 컨트롤드 X)
-        preserveWhitespace
+        style={{
+          backgroundColor: 'white',
+          color: '#000',
+        }}
       />
       <style>{`
-        .ql-container { min-height: 320px; font-size: 16px; }
-        .ql-editor { min-height: 280px; line-height: 1.6; }
+        .ql-container { 
+          min-height: 320px; 
+          font-size: 16px; 
+          background-color: white !important;
+          color: #000 !important;
+          z-index: 1;
+          position: relative;
+        }
+        .ql-editor { 
+          min-height: 280px; 
+          line-height: 1.6; 
+          background-color: white !important;
+          color: #000 !important;
+          z-index: 1;
+          position: relative;
+        }
+        .ql-toolbar {
+          z-index: 2;
+          position: relative;
+          background-color: #f8f9fa !important;
+          border-bottom: 1px solid #dee2e6 !important;
+        }
       `}</style>
     </div>
   );

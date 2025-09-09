@@ -210,17 +210,25 @@ export default function PortfolioForm({ id }: { id?: string }) {
       </div>
 
       {/* 4. 본문(국문/영문) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="space-y-6">
         <div>
           <Label>본문(국문)</Label>
-          <div className="mt-2 bg-white rounded">
-            <AdminRichTextEditor value={payload.contentKo||''} onChange={(html)=>setPayload(p=>({...p, contentKo:html}))}/>
+          <div className="mt-2">
+            <AdminRichTextEditor 
+              value={payload.contentKo||''} 
+              onChange={(html)=>setPayload(p=>({...p, contentKo:html}))}
+              placeholder="한국어 본문을 입력하세요..."
+            />
           </div>
         </div>
         <div>
           <Label>본문(영문)</Label>
-          <div className="mt-2 bg-white rounded">
-            <AdminRichTextEditor value={payload.contentEn||''} onChange={(html)=>setPayload(p=>({...p, contentEn:html}))}/>
+          <div className="mt-2">
+            <AdminRichTextEditor 
+              value={payload.contentEn||''} 
+              onChange={(html)=>setPayload(p=>({...p, contentEn:html}))}
+              placeholder="Enter English content..."
+            />
           </div>
         </div>
       </div>
