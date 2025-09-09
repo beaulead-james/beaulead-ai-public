@@ -123,17 +123,31 @@ app.use((req, res, next) => {
 
   app.use('/attached_assets', express.static('attached_assets'));
   
-  // -------------------- SPA 정적 서빙 (항상 마지막) --------------------
-  if (process.env.NODE_ENV === "development") {
-    await setupVite(app, server);
-  } else {
-    // 운영환경에서 직접 SPA 정적 서빙 (HTML 캐시 방지)
-    const clientDist = path.join(process.cwd(), "client", "dist");
-    app.use(express.static(clientDist, { fallthrough: true, maxAge: "1h" }));
-    app.get("*", (_req, res) => {
-      res.setHeader("Cache-Control", "no-store"); // 🔒 HTML 캐시 방지
-      res.sendFile(path.join(clientDist, "index.html"));
+  // -------------------- SPA 정적 서빙 & 캐치올 --------------------
+  // Vite 미들웨어/serveStatic 유무와 무관하게, 빌드 산출물(dist)을 직접 서빙
+  const CLIENT_DIST = path.join(process.cwd(), "dist", "public");
+  const CLIENT_INDEX_HTML = path.join(CLIENT_DIST, "index.html");
+
+  if (fs.existsSync(CLIENT_DIST)) {
+    // 정적 파일 먼저
+    app.use(express.static(CLIENT_DIST, { fallthrough: true, maxAge: "1h" }));
+
+    // 업로드/API가 아닌 모든 경로는 SPA index.html 반환
+    app.get("*", (req: Request, res: Response, next: NextFunction) => {
+      if (req.path.startsWith("/api") || req.path.startsWith("/uploads")) return next();
+      if (fs.existsSync(CLIENT_INDEX_HTML)) {
+        res.setHeader("Cache-Control", "no-store");
+        return res.sendFile(CLIENT_INDEX_HTML);
+      }
+      return next();
     });
+  } else {
+    console.warn("[WARN] client/dist 가 없습니다. 빌드 후에 접근해주세요.");
+    
+    // 빌드 산출물이 없을 때는 기존 방식 유지
+    if (process.env.NODE_ENV === "development") {
+      await setupVite(app, server);
+    }
   }
 
   // ALWAYS serve the app on the port specified in the environment variable PORT
