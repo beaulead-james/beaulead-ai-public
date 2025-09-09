@@ -1,7 +1,12 @@
 name: Mirror to Public
 on:
   push:
-    branches: [ beaulaed ]
+    # main, replit-agent 포함, 그 외 브랜치도 허용
+    branches:
+      - main
+      - replit-agent
+      - '**'
+  workflow_dispatch: {}
 jobs:
   mirror:
     runs-on: ubuntu-latest
@@ -17,5 +22,11 @@ jobs:
         run: |
           git config user.name "Mirror Bot"
           git config user.email "bot@beaulead.co.kr"
+          # 기존에 mirror가 있으면 교체
+          git remote remove mirror 2>/dev/null || true
           git remote add mirror https://$GH_PAT@${MIRROR_URL#https://}
-          git push --force --prune mirror beaulaed:main
+          # 원본의 main이 없을 수도 있으므로, 현재 체크아웃된 브랜치명을 감지
+          SRC_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+          echo "Source branch: $SRC_BRANCH"
+          # public 저장소는 main으로 고정
+          git push --force --prune mirror "$SRC_BRANCH:main"
