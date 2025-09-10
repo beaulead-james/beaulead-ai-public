@@ -219,7 +219,28 @@ app.use((req, res, next) => {
       const vite = await createViteServer({
         server: { middlewareMode: true },
         appType: "custom",
-        root: CLIENT_ROOT
+        root: CLIENT_ROOT,
+        /**
+         * Host 보호 해제/허용 목록 지정
+         * - Replit 프리뷰 도메인은 매 실행마다 바뀔 수 있으므로
+         *   와일드카드로 replit 도메인을 전부 허용
+         * - WebSocket(HMR)이 프록시 뒤에서도 안전하게 연결되도록 wss + 443 지정
+         */
+        // vite v5 기준: server.allowedHosts 는 string[] | boolean
+        server: {
+          middlewareMode: true,
+          allowedHosts: [
+            ".replit.dev",
+            ".janeway.replit.dev",
+            "localhost",
+            "127.0.0.1"
+          ],
+          cors: true,
+          hmr: {
+            protocol: "wss",
+            clientPort: 443
+          }
+        }
       });
       app.use((req, _res, next) => { req.url = req.url.replace(/^\/client\//, "/"); next(); });
       app.use(vite.middlewares);
