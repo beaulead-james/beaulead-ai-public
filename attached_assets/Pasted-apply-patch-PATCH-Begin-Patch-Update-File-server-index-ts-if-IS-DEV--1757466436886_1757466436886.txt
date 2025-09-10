@@ -1,0 +1,50 @@
+apply_patch <<'PATCH'
+*** Begin Patch
+*** Update File: server/index.ts
+@@
+   if (IS_DEV) {
+     // ✅ DEV: Vite 미들웨어(HMR) 활성화 → 즉시 반영
+     try {
+       const { createServer: createViteServer } = await import("vite");
+       const vite = await createViteServer({
+-        server: { middlewareMode: true },
++        server: { middlewareMode: true },
+         appType: "custom",
+         root: CLIENT_ROOT,
+@@
+       app.use((req, _res, next) => { req.url = req.url.replace(/^\/client\//, "/"); next(); });
+       app.use(vite.middlewares);
+ 
+-      // HTML 캐치올 (API/업로드 제외) - transformIndexHtml로 항상 최신 적용
++      // HTML 캐치올 (API/업로드/정적 파일/모듈 제외) - transformIndexHtml로 최신 적용
+       app.get("*", async (req: Request, res: Response, next: NextFunction) => {
+-        if (req.path.startsWith("/api") || req.path.startsWith("/uploads")) return next();
++        // 1) API/업로드는 제외
++        if (req.path.startsWith("/api") || req.path.startsWith("/uploads")) return next();
++        // 2) 파일 확장자가 있는 요청(예: /src/App.tsx, /assets/main.css 등)은 Vite에 맡기기
++        const hasExt = /\.[a-z0-9]+$/i.test(req.path);
++        if (hasExt) return next();
++        // 3) HTML이 아닌 Accept 헤더 요청은 제외
++        const accept = req.headers["accept"] || "";
++        if (typeof accept === "string" && !accept.includes("text/html")) return next();
+         try {
+           let html = fs.readFileSync(CLIENT_INDEX_DEV, "utf-8");
+           html = await vite.transformIndexHtml(req.originalUrl, html);
+           res.setHeader("Cache-Control", "no-store, max-age=0, must-revalidate");
+           res.setHeader("Pragma", "no-cache");
+           res.setHeader("Expires", "0");
+           res.setHeader("X-Build-Id", readBuildId());
+           return res.status(200).setHeader("Content-Type", "text/html; charset=utf-8").end(html);
+         } catch (e) {
+           console.error("[vite dev] transformIndexHtml error", e);
+           return next(e);
+         }
+       });
+       console.log("[DEV] Vite middleware enabled (HMR active)");
+*** End Patch
+PATCH
+
+# 개발 서버 재시작
+pkill -f node || true
+npm run dev --silent & sleep 3
+echo "[DEV health]"; curl -sS http://localhost:$PORT/api/healthz || true

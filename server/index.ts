@@ -217,7 +217,6 @@ app.use((req, res, next) => {
     try {
       const { createServer: createViteServer } = await import("vite");
       const vite = await createViteServer({
-        server: { middlewareMode: true },
         appType: "custom",
         root: CLIENT_ROOT,
         /**
@@ -265,9 +264,16 @@ app.use((req, res, next) => {
       app.get("/project-inquiry", serveDevIndex);
       app.get("/inquiry", serveDevIndex);
 
-      // HTML 캐치올 (API/업로드 제외) - transformIndexHtml로 항상 최신 적용
+      // HTML 캐치올 (API/업로드/정적 파일/모듈 제외) - transformIndexHtml로 최신 적용
       app.get("*", async (req: Request, res: Response, next: NextFunction) => {
+        // 1) API/업로드는 제외
         if (req.path.startsWith("/api") || req.path.startsWith("/uploads")) return next();
+        // 2) 파일 확장자가 있는 요청(예: /src/App.tsx, /assets/main.css 등)은 Vite에 맡기기
+        const hasExt = /\.[a-z0-9]+$/i.test(req.path);
+        if (hasExt) return next();
+        // 3) HTML이 아닌 Accept 헤더 요청은 제외
+        const accept = req.headers["accept"] || "";
+        if (typeof accept === "string" && !accept.includes("text/html")) return next();
         return serveDevIndex(req, res);
       });
       console.log("[DEV] Vite middleware enabled (HMR active)");
