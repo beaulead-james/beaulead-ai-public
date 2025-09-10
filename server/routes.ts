@@ -367,24 +367,74 @@ ${formData.message}
     }
   });
 
+  // 업데이트 입력 검증 스키마
+  const blogUpdateSchema = z.object({
+    titleKo: z.string().optional(),
+    titleEn: z.string().optional(),
+    excerptKo: z.string().optional().nullable(),
+    excerptEn: z.string().optional().nullable(),
+    contentKo: z.string().optional().nullable(),
+    contentEn: z.string().optional().nullable(),
+    categoryId: z.string().optional().nullable(),
+    isDraft: z.boolean().optional(),
+    thumbnailUrl: z.string().optional().nullable(),
+    coverUrl: z.string().optional().nullable(),
+    featuredImageUrl: z.string().optional().nullable(),
+    galleryImages: z.union([
+      z.array(z.string()),
+      z.string().transform((s) => {
+        try { const arr = JSON.parse(s); return Array.isArray(arr) ? arr : []; } catch { return []; }
+      })
+    ]).optional().nullable(),
+    tags: z.array(z.string()).optional().nullable(),
+    metaTitle: z.string().optional().nullable(),
+    metaDescription: z.string().optional().nullable(),
+    metaKeywords: z.string().optional().nullable(),
+  }).strict();
+
   app.put('/api/blogs/:id', mixedAuth, async (req: any, res) => {
+    const started = Date.now();
     try {
       const userRole = req.user.claims.role || 'USER';
       if (userRole !== 'ADMIN' && userRole !== 'CONTENT_MANAGER') {
         return res.status(403).json({ message: "Content management access required" });
       }
+      // 1) 정규화 + 스키마 검증
+      const payloadRaw: any = { ...req.body };
+      // 문자열로 온 galleryImages를 JSON으로
+      if (typeof payloadRaw.galleryImages === 'string') {
+        try { payloadRaw.galleryImages = JSON.parse(payloadRaw.galleryImages); } catch { payloadRaw.galleryImages = []; }
+      }
+      // 널/undefined 정리
+      const sanitize = (v:any)=> (v === '' ? null : v);
+      ['excerptKo','excerptEn','contentKo','contentEn','categoryId','metaTitle','metaDescription','metaKeywords','thumbnailUrl','coverUrl','featuredImageUrl']
+        .forEach(k => { if (k in payloadRaw) payloadRaw[k] = sanitize(payloadRaw[k]); });
+      // 유효성 검사
+      const parsed = blogUpdateSchema.safeParse(payloadRaw);
+      if (!parsed.success) {
+        console.warn('[blog update] validation error', parsed.error.issues);
+        return res.status(400).json({ message: 'Invalid payload', issues: parsed.error.issues });
+      }
+      const updateData:any = parsed.data;
 
-      const updateData: any = { ...req.body };
-      updateData.coverUrl = req.body.thumbnailUrl || req.body.coverUrl;
-      updateData.featuredImageUrl = toAbsUrl(req, updateData.featuredImageUrl);
+      // 2) URL 절대화
+      updateData.coverUrl = updateData.thumbnailUrl || updateData.coverUrl || null;
+      updateData.featuredImageUrl = toAbsUrl(req, updateData.featuredImageUrl || null);
       if (Array.isArray(updateData.galleryImages)) {
         updateData.galleryImages = updateData.galleryImages.map((x: string) => toAbsUrl(req, x));
       }
+
+      // 3) 저장
       const blog = await storage.updateBlog(req.params.id, updateData);
       res.json(blog);
-    } catch (error) {
-      console.error("Error updating blog:", error);
+    } catch (error:any) {
+      // 상세 로깅
+      console.error("[blog update] id=", req.params?.id, "body=", req.body);
+      console.error("[blog update] error:", error?.stack || error);
       res.status(500).json({ message: "Failed to update blog" });
+    } finally {
+      const ms = Date.now() - started;
+      if (ms > 1000) console.log(`[blog update] took ${ms}ms`);
     }
   });
 
