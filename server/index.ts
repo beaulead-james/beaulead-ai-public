@@ -118,14 +118,24 @@ function parseObjectPath(path: string): { bucketName: string; objectName: string
 }
 
 // === Build version helpers ===
-function readBuildId() {
+let __BUILD_ID_CACHE: string | null = null;
+function readBuildId(): string {
+  if (__BUILD_ID_CACHE) return __BUILD_ID_CACHE;
+  const p1 = path.join(process.cwd(), "dist", "public", "build-id.txt");
+  const p2 = path.join(process.cwd(), "client", "dist", "build-id.txt");
   try {
-    const p1 = path.join(process.cwd(), "dist", "public", "build-id.txt");
-    const p2 = path.join(process.cwd(), "client", "dist", "build-id.txt");
-    if (fs.existsSync(p1)) return fs.readFileSync(p1, "utf8").trim();
-    if (fs.existsSync(p2)) return fs.readFileSync(p2, "utf8").trim();
+    if (fs.existsSync(p1)) return (__BUILD_ID_CACHE = fs.readFileSync(p1, "utf8").trim());
+    if (fs.existsSync(p2)) return (__BUILD_ID_CACHE = fs.readFileSync(p2, "utf8").trim());
   } catch {}
-  return "unknown";
+  // Fallback: ENV → git short sha → timestamp
+  const envId = process.env.BUILD_ID;
+  if (envId && envId !== "unknown") return (__BUILD_ID_CACHE = envId);
+  try {
+    const { execSync } = require("child_process");
+    const sha = String(execSync("git rev-parse --short HEAD")).trim();
+    if (sha) return (__BUILD_ID_CACHE = `dev-${sha}`);
+  } catch {}
+  return (__BUILD_ID_CACHE = `dev-${Date.now()}`);
 }
 
 
