@@ -67,7 +67,7 @@ export default function Leadership() {
                         <img
                           src="/attached_assets/james_1756284144938.png"
                           alt="박현구 대표이사"
-                          className="rounded-lg w-64 h-64 object-contain mx-auto"
+                          className="rounded-lg w-80 h-80 lg:w-96 lg:h-96 object-contain mx-auto"
                           data-testid="img-ceo-profile"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
@@ -143,7 +143,7 @@ export default function Leadership() {
                         <img
                           src="/attached_assets/chals_1756284209106.png"
                           alt="김수진 부사장"
-                          className="rounded-lg w-64 h-64 object-contain mx-auto"
+                          className="rounded-lg w-80 h-80 lg:w-96 lg:h-96 object-contain mx-auto"
                           data-testid="img-vp-profile"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
@@ -172,7 +172,7 @@ export default function Leadership() {
                         <img
                           src="/attached_assets/robert2_1756284716423.png"
                           alt="권현수 CTO"
-                          className="rounded-lg w-64 h-64 object-contain mx-auto"
+                          className="rounded-lg w-80 h-80 lg:w-96 lg:h-96 object-contain mx-auto"
                           data-testid="img-cto-profile"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
