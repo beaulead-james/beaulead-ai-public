@@ -149,7 +149,7 @@ export default function BlogList() {
                       )}
                       <Link 
                         href={`/blog/${blog.slug}`}
-                        className="text-white font-medium hover:text-white/80 transition-colors inline-flex items-center"
+                        className="btn-brand inline-flex items-center"
                         data-testid={`link-blog-read-${index}`}
                       >
                         {t.blog.readMore} 
@@ -182,7 +182,7 @@ export default function BlogList() {
                     data-testid="input-newsletter-email"
                   />
                   <button 
-                    className="modern-btn whitespace-nowrap"
+                    className="btn-brand whitespace-nowrap"
                     data-testid="button-newsletter-subscribe"
                   >
                     구독하기

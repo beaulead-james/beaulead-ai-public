@@ -243,7 +243,7 @@ export default function PortfolioItem() {
                           <span className="text-white/60">태그</span>
                           <div className="flex gap-1 flex-wrap justify-end">
                             {(portfolio.tags as string[] || []).map((tag: string) => (
-                              <span key={tag} className="px-2 py-1 bg-white/10 text-white/80 text-xs rounded border border-white/20">
+                              <span key={tag} className="badge-brand">
                                 {tag}
                               </span>
                             ))}
@@ -273,7 +273,7 @@ export default function PortfolioItem() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link 
                   href="/inquiry"
-                  className="modern-btn"
+                  className="btn-brand"
                   data-testid="button-contact-cta"
                 >
                   프로젝트 문의하기
