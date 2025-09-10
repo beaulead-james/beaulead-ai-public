@@ -64,10 +64,10 @@ export default function Leadership() {
                   <div className="lg:col-span-2 p-8 lg:p-12">
                     <div className="text-center h-full flex flex-col justify-center">
                       <div className="relative inline-block mb-6">
-                        <img 
+                        <img
                           src="/attached_assets/james_1756284144938.png"
                           alt="박현구 대표이사"
-                          className="w-56 h-56 lg:w-64 lg:h-64 rounded-2xl object-cover mx-auto shadow-2xl ring-4 ring-white dark:ring-gray-600"
+                          className="rounded-lg w-48 h-48 object-contain mx-auto"
                           data-testid="img-ceo-profile"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
@@ -140,10 +140,10 @@ export default function Leadership() {
                   <div className="lg:col-span-2 p-8 lg:p-12">
                     <div className="text-center h-full flex flex-col justify-center">
                       <div className="relative inline-block mb-6">
-                        <img 
+                        <img
                           src="/attached_assets/chals_1756284209106.png"
                           alt="김수진 부사장"
-                          className="w-56 h-56 lg:w-64 lg:h-64 rounded-2xl object-cover mx-auto shadow-2xl ring-4 ring-white dark:ring-gray-600"
+                          className="rounded-lg w-48 h-48 object-contain mx-auto"
                           data-testid="img-vp-profile"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
@@ -169,10 +169,10 @@ export default function Leadership() {
                   <div className="lg:col-span-2 p-8 lg:p-12">
                     <div className="text-center h-full flex flex-col justify-center">
                       <div className="relative inline-block mb-6">
-                        <img 
+                        <img
                           src="/attached_assets/robert2_1756284716423.png"
                           alt="권현수 CTO"
-                          className="w-56 h-56 lg:w-64 lg:h-64 rounded-2xl object-cover mx-auto shadow-2xl ring-4 ring-white dark:ring-gray-600"
+                          className="rounded-lg w-48 h-48 object-contain mx-auto"
                           data-testid="img-cto-profile"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
