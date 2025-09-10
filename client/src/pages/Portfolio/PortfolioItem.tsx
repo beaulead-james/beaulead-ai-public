@@ -88,6 +88,7 @@ export default function PortfolioItem() {
   const metrics = portfolio.metrics as any || {};
 
   const toAbs = (u?: string) => !u ? u : (/^https?:\/\//i.test(u) ? u : `${location.protocol}//${location.host}${u.startsWith('/')?u:'/'+u}`);
+  const PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 675'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='#6366F1'/><stop offset='100%' stop-color='#4F46E5'/></linearGradient></defs><rect width='1200' height='675' fill='url(#g)'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='42' font-family='ui-sans-serif,system-ui'>No Image</text></svg>`);
   return (
     <div className="min-h-screen bg-slate-900">
       <SEO 
@@ -145,11 +146,11 @@ export default function PortfolioItem() {
             {/* Featured Image */}
             {portfolio.thumbUrl && (
               <div className="relative h-64 lg:h-96">
-                <img 
-                  src={toAbs(portfolio.thumbUrl)||"/og/placeholder-1200x675.jpg"}
+                <img
+                  src={toAbs(portfolio.thumbUrl)||PLACEHOLDER}
                   alt={content.title}
                   className="w-full h-full object-cover"
-                  onError={(e)=>{ (e.currentTarget as HTMLImageElement).src="/og/placeholder-1200x675.jpg"; }}
+                  onError={(e)=>{ (e.currentTarget as HTMLImageElement).src=PLACEHOLDER; }}
                   data-testid="img-portfolio-featured"
                 />
               </div>
