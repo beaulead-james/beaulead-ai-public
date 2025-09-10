@@ -1,8 +1,17 @@
 import { Link } from 'wouter';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useEffect, useState } from "react";
 
 export default function Footer() {
   const { t } = useLanguage();
+  const [buildId, setBuildId] = useState<string>("");
+
+  useEffect(() => {
+    fetch("/api/version")
+      .then((r) => r.json())
+      .then((j) => setBuildId(j.buildId || ""))
+      .catch(() => {});
+  }, []);
 
   return (
     <footer className="bg-gray-900 text-white py-16">
@@ -129,6 +138,9 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm mb-4 md:mb-0" data-testid="text-footer-copyright">
               {t.footer.copyright}
+              {buildId && (
+                <span className="ml-2 opacity-70">Build: {buildId}</span>
+              )}
             </p>
             <div className="flex space-x-6 text-sm">
               <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors" data-testid="link-footer-privacy">
