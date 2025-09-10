@@ -339,6 +339,13 @@ ${formData.message}
     return isAuthenticated(req, res, next);
   };
 
+  function toAbsUrl(req: any, u?: string | null) {
+    if (!u) return u;
+    if (/^https?:\/\//i.test(u)) return u;
+    const base = `${req.protocol}://${req.get('host')}`;
+    return `${base}${u.startsWith('/') ? u : '/'+u}`;
+  }
+
   app.post('/api/blogs', mixedAuth, async (req: any, res) => {
     try {
       const userRole = req.user.claims.role || 'USER';
@@ -347,18 +354,12 @@ ${formData.message}
         return res.status(403).json({ message: "Content management access required" });
       }
 
-      // 작성자 ID를 추가
-      const blogData = {
-        ...req.body,
-        authorId: req.user.claims.sub,
-        published: req.body.status === 'PUBLISHED',
-        // 빈 문자열 categoryId를 null로 변환
-        categoryId: req.body.categoryId === '' ? null : req.body.categoryId,
-        // 썸네일을 커버 이미지로도 설정
-        coverUrl: req.body.thumbnailUrl || req.body.coverUrl,
-      };
-
-      const blog = await storage.createBlog(blogData);
+      const body = { ...req.body };
+      body.featuredImageUrl = toAbsUrl(req, body.featuredImageUrl);
+      if (Array.isArray(body.galleryImages)) {
+        body.galleryImages = body.galleryImages.map((x: string) => toAbsUrl(req, x));
+      }
+      const blog = await storage.createBlog({ ...body, authorId: req.user.claims.sub });
       res.status(201).json(blog);
     } catch (error) {
       console.error("Error creating blog:", error);
@@ -373,17 +374,12 @@ ${formData.message}
         return res.status(403).json({ message: "Content management access required" });
       }
 
-      // 발행 상태 업데이트
-      const updateData = {
-        ...req.body,
-        published: req.body.status === 'PUBLISHED',
-        publishedAt: req.body.status === 'PUBLISHED' ? new Date() : null,
-        // 빈 문자열 categoryId를 null로 변환
-        categoryId: req.body.categoryId === '' ? null : req.body.categoryId,
-        // 썸네일을 커버 이미지로도 설정
-        coverUrl: req.body.thumbnailUrl || req.body.coverUrl,
-      };
-
+      const updateData: any = { ...req.body };
+      updateData.coverUrl = req.body.thumbnailUrl || req.body.coverUrl;
+      updateData.featuredImageUrl = toAbsUrl(req, updateData.featuredImageUrl);
+      if (Array.isArray(updateData.galleryImages)) {
+        updateData.galleryImages = updateData.galleryImages.map((x: string) => toAbsUrl(req, x));
+      }
       const blog = await storage.updateBlog(req.params.id, updateData);
       res.json(blog);
     } catch (error) {
@@ -666,6 +662,43 @@ ${formData.message}
     } catch (error) {
       console.error("[inquiries] status update error", error);
       res.status(500).json({ ok: false, message: "Failed to update status" });
+    }
+  });
+
+  // ===== Admin: 블로그 이미지 URL 일괄 보정 (상대→절대/GCS) =====
+  app.post('/api/admin/blog-rewrite-urls', requireAuth, async (req: any, res) => {
+    const role = req.user?.claims?.role || 'USER';
+    if (role !== 'ADMIN') return res.status(403).json({ ok:false, message:"Admin access required" });
+    try {
+      const base = `${req.protocol}://${req.get('host')}`;
+      const bucket = process.env.REPLIT_OBJSTORE_BUCKET;
+      const useGcs = !!bucket;
+      const rows:any = await db.execute(sql`SELECT id, featured_image_url, gallery_images FROM blogs`);
+      let rew = 0;
+      for (const r of (rows.rows||[])) {
+        const patch: any = {};
+        const feat = r.featured_image_url as string | null;
+        const arr = r.gallery_images as string[] | null;
+        const toAbs = (u?: string | null) => {
+          if (!u) return u;
+          if (/^https?:\/\//i.test(u)) return u;
+          return `${base}${u.startsWith('/')?u:'/'+u}`;
+        };
+        const toGcs = (u?: string | null) => {
+          const m = (u||'').match(/\/uploads\/([^\/\s]+)$/);
+          return m && useGcs ? `https://storage.googleapis.com/${bucket}/uploads/${m[1]}` : u;
+        };
+        let nextFeat = feat ? toGcs(toAbs(feat)) : feat;
+        let nextArr = arr ? arr.map(x => toGcs(toAbs(x))) : arr;
+        if (nextFeat !== feat || JSON.stringify(nextArr) !== JSON.stringify(arr)) {
+          await db.execute(sql`UPDATE blogs SET featured_image_url=${nextFeat}, gallery_images=${JSON.stringify(nextArr)}, updated_at=now() WHERE id=${r.id}`);
+          rew++;
+        }
+      }
+      res.json({ ok:true, rewritten: rew, bucket: bucket||null });
+    } catch (e:any) {
+      console.error('[blog-rewrite-urls] error', e);
+      res.status(500).json({ ok:false, message:String(e?.message||e) });
     }
   });
 
