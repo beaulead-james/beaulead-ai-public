@@ -198,7 +198,7 @@ export default function PortfolioList() {
                       <div className="flex items-center justify-between">
                         <Link 
                           href={`/portfolio/${portfolio.slug}`}
-                          className="text-white font-medium hover:text-white/80 transition-colors inline-flex items-center"
+                          className="btn-brand inline-flex items-center"
                           data-testid={`link-portfolio-view-${index}`}
                         >
                           {t.portfolio.viewCase} 
@@ -231,7 +231,7 @@ export default function PortfolioList() {
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Link 
                     href="/inquiry"
-                    className="modern-btn"
+                    className="btn-brand"
                     data-testid="button-contact-cta"
                   >
                     프로젝트 문의하기
