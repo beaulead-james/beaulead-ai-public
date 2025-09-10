@@ -86,13 +86,9 @@ export function BlogEditor({ mode, blogId, initialData }: BlogEditorProps) {
       // 캐시 무효화
       queryClient.invalidateQueries({ queryKey: ['/api/blogs'] })
       setLocation('/admin/blog')
-    } catch (error) {
-      console.error('Error saving blog:', error)
-      toast({
-        title: "오류 발생",
-        description: "블로그 포스트 저장 중 오류가 발생했습니다.",
-        variant: "destructive"
-      })
+    } catch (e:any) {
+      const msg = e?.response?.message || e?.message || '잠시 후 다시 시도해주세요.';
+      toast({ title: '저장 실패', description: msg, variant: 'destructive' });
     } finally {
       setIsSubmitting(false)
     }

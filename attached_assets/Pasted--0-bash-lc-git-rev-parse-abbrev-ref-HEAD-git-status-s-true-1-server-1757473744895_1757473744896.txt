@@ -1,0 +1,127 @@
+# 0) 현재 브랜치/변경 확인(선택)
+bash -lc 'git rev-parse --abbrev-ref HEAD; git status -s || true'
+
+# 1) server/routes.ts: 업데이트 스키마 + 정규화 + 상세 로깅 추가
+apply_patch <<'PATCH'
+*** Begin Patch
+*** Update File: server/routes.ts
+@@
+-  app.put('/api/blogs/:id', mixedAuth, async (req: any, res) => {
+-    try {
+-      const userRole = req.user.claims.role || 'USER';
+-      if (userRole !== 'ADMIN' && userRole !== 'CONTENT_MANAGER') {
+-        return res.status(403).json({ message: "Content management access required" });
+-      }
+-
+-      const updateData: any = { ...req.body };
+-      updateData.coverUrl = req.body.thumbnailUrl || req.body.coverUrl;
+-      updateData.featuredImageUrl = toAbsUrl(req, updateData.featuredImageUrl);
+-      if (Array.isArray(updateData.galleryImages)) {
+-        updateData.galleryImages = updateData.galleryImages.map((x: string) => toAbsUrl(req, x));
+-      }
+-      const blog = await storage.updateBlog(req.params.id, updateData);
+-      res.json(blog);
+-    } catch (error) {
+-      console.error("Error updating blog:", error);
+-      res.status(500).json({ message: "Failed to update blog" });
+-    }
+-  });
++  // 업데이트 입력 검증 스키마
++  const blogUpdateSchema = z.object({
++    titleKo: z.string().optional(),
++    titleEn: z.string().optional(),
++    excerptKo: z.string().optional().nullable(),
++    excerptEn: z.string().optional().nullable(),
++    contentKo: z.string().optional().nullable(),
++    contentEn: z.string().optional().nullable(),
++    categoryId: z.string().optional().nullable(),
++    isDraft: z.boolean().optional(),
++    thumbnailUrl: z.string().optional().nullable(),
++    coverUrl: z.string().optional().nullable(),
++    featuredImageUrl: z.string().optional().nullable(),
++    galleryImages: z.union([
++      z.array(z.string()),
++      z.string().transform((s) => {
++        try { const arr = JSON.parse(s); return Array.isArray(arr) ? arr : []; } catch { return []; }
++      })
++    ]).optional().nullable(),
++    tags: z.array(z.string()).optional().nullable(),
++    metaTitle: z.string().optional().nullable(),
++    metaDescription: z.string().optional().nullable(),
++    metaKeywords: z.string().optional().nullable(),
++  }).strict();
++
++  app.put('/api/blogs/:id', mixedAuth, async (req: any, res) => {
++    const started = Date.now();
++    try {
++      const userRole = req.user.claims.role || 'USER';
++      if (userRole !== 'ADMIN' && userRole !== 'CONTENT_MANAGER') {
++        return res.status(403).json({ message: "Content management access required" });
++      }
++      // 1) 정규화 + 스키마 검증
++      const payloadRaw: any = { ...req.body };
++      // 문자열로 온 galleryImages를 JSON으로
++      if (typeof payloadRaw.galleryImages === 'string') {
++        try { payloadRaw.galleryImages = JSON.parse(payloadRaw.galleryImages); } catch { payloadRaw.galleryImages = []; }
++      }
++      // 널/undefined 정리
++      const sanitize = (v:any)=> (v === '' ? null : v);
++      ['excerptKo','excerptEn','contentKo','contentEn','categoryId','metaTitle','metaDescription','metaKeywords','thumbnailUrl','coverUrl','featuredImageUrl']
++        .forEach(k => { if (k in payloadRaw) payloadRaw[k] = sanitize(payloadRaw[k]); });
++      // 유효성 검사
++      const parsed = blogUpdateSchema.safeParse(payloadRaw);
++      if (!parsed.success) {
++        console.warn('[blog update] validation error', parsed.error.issues);
++        return res.status(400).json({ message: 'Invalid payload', issues: parsed.error.issues });
++      }
++      const updateData:any = parsed.data;
++
++      // 2) URL 절대화
++      updateData.coverUrl = updateData.thumbnailUrl || updateData.coverUrl || null;
++      updateData.featuredImageUrl = toAbsUrl(req, updateData.featuredImageUrl || null);
++      if (Array.isArray(updateData.galleryImages)) {
++        updateData.galleryImages = updateData.galleryImages.map((x: string) => toAbsUrl(req, x));
++      }
++
++      // 3) 저장
++      const blog = await storage.updateBlog(req.params.id, updateData);
++      res.json(blog);
++    } catch (error:any) {
++      // 상세 로깅
++      console.error("[blog update] id=", req.params?.id, "body=", req.body);
++      console.error("[blog update] error:", error?.stack || error);
++      res.status(500).json({ message: "Failed to update blog" });
++    } finally {
++      const ms = Date.now() - started;
++      if (ms > 1000) console.log(`[blog update] took ${ms}ms`);
++    }
++  });
+*** End Patch
+PATCH
+
+# 2) (선택) 클라이언트 저장 구문에서 서버 에러 메시지를 더 자세히 보이게
+apply_patch <<'PATCH'
+*** Begin Patch
+*** Update File: client/src/components/BlogEditor.tsx
+@@
+-      const res = await apiRequest('PUT', `/api/blogs/${id}`, payload);
+-      if (!res) throw new Error('Update failed');
++      const res = await apiRequest('PUT', `/api/blogs/${id}`, payload);
++      if (!res) throw new Error('Update failed');
+@@
+-    } catch (e:any) {
+-      toast({ title: '저장 실패', description: e?.message || '잠시 후 다시 시도해주세요.', variant: 'destructive' });
++    } catch (e:any) {
++      const msg = e?.response?.message || e?.message || '잠시 후 다시 시도해주세요.';
++      toast({ title: '저장 실패', description: msg, variant: 'destructive' });
+       setSaving(false);
+     }
+*** End Patch
+PATCH
+
+# 3) 재빌드/재시작
+bash -lc 'npm run build --silent || true'
+bash -lc 'pkill -f node || true; npm start --silent & sleep 2'
+
+# 4) 서버 로그에서 블로그 업데이트 라인만 모니터링(테스트 중 잠깐 사용)
+bash -lc 'echo "[tail blog update logs]"; (grep -n "blog update" -R . -n 2>/dev/null || true) ; echo "---- ready. Try the update action in UI, then check server logs (Run -> Console) for [blog update] lines."'
