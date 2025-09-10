@@ -121,8 +121,9 @@ export default function Landing() {
         <div className="container max-w-7xl mx-auto relative">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="space-y-8">
-              <div className="inline-flex items-center bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full border border-white/20">
-                <span className="text-sm font-semibold text-white">✨ AI 기반 퍼포먼스 마케팅</span>
+              <div className="inline-flex items-center bg-brand-500/10 backdrop-blur-sm px-6 py-3 rounded-full border border-brand-500/30 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-brand-500/5 via-brand-400/10 to-brand-600/5"></div>
+                <span className="text-sm font-semibold text-white relative z-10">✨ AI 기반 퍼포먼스 마케팅</span>
               </div>
               <h1 className="hero-title" data-testid="text-hero-title">
                 {t.hero.title.split('\n').map((line, index) => (
@@ -170,15 +171,20 @@ export default function Landing() {
                 videoId="ekS18FZU-GE"
                 title="뷰리드AI 퍼포먼스 마케팅 소개"
               />
-              {/* YouTube 스타일 플로팅 아이콘들 */}
-              <div className="absolute -top-6 -right-6 w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 flex items-center justify-center">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {/* Modern 인디고 플로팅 아이콘들 */}
+              <div className="absolute -top-6 -right-6 w-14 h-14 bg-gradient-to-br from-brand-500/20 to-brand-600/30 backdrop-blur-sm rounded-2xl border border-brand-400/30 flex items-center justify-center shadow-lg shadow-brand-500/20">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
                 </svg>
               </div>
-              <div className="absolute -bottom-6 -left-6 w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 flex items-center justify-center">
-                <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <div className="absolute -bottom-6 -left-6 w-14 h-14 bg-gradient-to-br from-brand-600/20 to-purple-600/30 backdrop-blur-sm rounded-2xl border border-brand-400/30 flex items-center justify-center shadow-lg shadow-brand-500/20">
+                <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M8 5v14l11-7z"/>
+                </svg>
+              </div>
+              <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 w-12 h-12 bg-gradient-to-br from-purple-500/20 to-brand-500/30 backdrop-blur-sm rounded-xl border border-purple-400/30 flex items-center justify-center shadow-lg shadow-purple-500/20">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
             </div>
