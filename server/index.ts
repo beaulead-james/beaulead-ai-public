@@ -205,135 +205,65 @@ app.use((req, res, next) => {
 
   app.use('/attached_assets', express.static('attached_assets'));
   
-  // -------------------- Dev vs Prod 서빙 전략 --------------------
-  const IS_DEV = process.env.NODE_ENV === "development" || process.env.FORCE_DEV === "1";
+  // -------------------- SPA 정적 서빙 & 캐치올 --------------------
+  // Vite 미들웨어/serveStatic 유무와 무관하게, 빌드 산출물(dist)을 직접 서빙
   const CLIENT_DIST = path.join(process.cwd(), "dist", "public");
   const CLIENT_INDEX_HTML = path.join(CLIENT_DIST, "index.html");
-  const CLIENT_ROOT = path.join(process.cwd(), "client");
-  const CLIENT_INDEX_DEV = path.join(CLIENT_ROOT, "index.html");
 
-  if (IS_DEV && fs.existsSync(CLIENT_INDEX_DEV)) {
-    // ✅ DEV: Vite 미들웨어(HMR) 활성화 → 즉시 반영
-    try {
-      const { createServer: createViteServer } = await import("vite");
-      const vite = await createViteServer({
-        appType: "custom",
-        root: CLIENT_ROOT,
-        /**
-         * Host 보호 해제/허용 목록 지정
-         * - Replit 프리뷰 도메인은 매 실행마다 바뀔 수 있으므로
-         *   와일드카드로 replit 도메인을 전부 허용
-         * - WebSocket(HMR)이 프록시 뒤에서도 안전하게 연결되도록 wss + 443 지정
-         */
-        // vite v5 기준: server.allowedHosts 는 string[] | boolean
-        server: {
-          middlewareMode: true,
-          allowedHosts: [
-            ".replit.dev",
-            ".janeway.replit.dev",
-            "localhost",
-            "127.0.0.1"
-          ],
-          cors: true,
-          hmr: {
-            protocol: "wss",
-            clientPort: 443
-          }
-        }
-      });
-      app.use((req, _res, next) => { req.url = req.url.replace(/^\/client\//, "/"); next(); });
-      app.use(vite.middlewares);
+  if (fs.existsSync(CLIENT_DIST)) {
+    // 정적 파일 먼저
+    app.use((req, res, next) => { 
+      res.setHeader("X-Build-Id", readBuildId()); 
+      // 개발 환경에서는 모든 캐시 헤더 비활성화
+      if (process.env.NODE_ENV === "development") {
+        res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+        res.setHeader("Pragma", "no-cache");
+        res.setHeader("Expires", "0");
+        res.removeHeader("ETag");
+        res.removeHeader("Last-Modified");
+      }
+      next(); 
+    });
+    // 개발 환경에서는 캐시 비활성화, 프로덕션에서는 1시간 캐시
+    const staticMaxAge = process.env.NODE_ENV === "development" ? "0" : "1h";
+    const staticOptions = process.env.NODE_ENV === "development" 
+      ? { fallthrough: true, maxAge: staticMaxAge, etag: false, lastModified: false }
+      : { fallthrough: true, maxAge: staticMaxAge };
+    app.use(express.static(CLIENT_DIST, staticOptions));
 
-      // 특정 라우트 우선 처리
-      const serveDevIndex = async (req: Request, res: Response) => {
-        try {
-          let html = fs.readFileSync(CLIENT_INDEX_DEV, "utf-8");
-          html = await vite.transformIndexHtml(req.originalUrl, html);
-          res.setHeader("Cache-Control", "no-store, max-age=0, must-revalidate");
-          res.setHeader("Pragma", "no-cache");
-          res.setHeader("Expires", "0");
-          res.setHeader("X-Build-Id", readBuildId());
-          return res.status(200).setHeader("Content-Type", "text/html; charset=utf-8").end(html);
-        } catch (e) {
-          console.error("[vite dev] transformIndexHtml error", e);
-          return res.status(500).end("Dev server error");
-        }
-      };
+    // 👉 SPA의 특정 클라이언트 라우트를 "우선" index.html로 직접 서빙
+    const serveIndex = (_req: Request, res: Response) => {
+      if (fs.existsSync(CLIENT_INDEX_HTML)) {
+        res.setHeader("Cache-Control", "no-store");
+        res.setHeader("X-Build-Id", readBuildId());
+        return res.sendFile(CLIENT_INDEX_HTML);
+      }
+      return res.status(404).end();
+    };
 
-      // 특정 경로 우선 처리
-      app.get("/project-inquiry", serveDevIndex);
-      app.get("/inquiry", serveDevIndex);
+    // 두 경로 모두 확실하게 index.html 반환
+    app.get("/project-inquiry", serveIndex);
+    app.get("/inquiry", serveIndex);
 
-      // HTML 캐치올 (API/업로드/정적 파일/모듈 제외) - transformIndexHtml로 최신 적용
-      app.get("*", async (req: Request, res: Response, next: NextFunction) => {
-        // 1) API/업로드는 제외
-        if (req.path.startsWith("/api") || req.path.startsWith("/uploads")) return next();
-        // 2) 파일 확장자가 있는 요청(예: /src/App.tsx, /assets/main.css 등)은 Vite에 맡기기
-        const hasExt = /\.[a-z0-9]+$/i.test(req.path);
-        if (hasExt) return next();
-        // 3) HTML이 아닌 Accept 헤더 요청은 제외
-        const accept = req.headers["accept"] || "";
-        if (typeof accept === "string" && !accept.includes("text/html")) return next();
-        return serveDevIndex(req, res);
-      });
-      console.log("[DEV] Vite middleware enabled (HMR active)");
-    } catch (e) {
-      console.warn("[DEV] Vite middleware failed; fallback to dist. Error:", e);
-      // Fallback to production mode if Vite fails
-    }
-  } 
-  
-  if (!IS_DEV || !fs.existsSync(CLIENT_INDEX_DEV)) {
-    // ✅ PROD: 빌드된 dist 정적 서빙
-    if (fs.existsSync(CLIENT_DIST)) {
-      app.use((req, res, next) => { 
-        res.setHeader("X-Build-Id", readBuildId()); 
-        // 개발 환경에서는 모든 캐시 헤더 비활성화
-        if (process.env.NODE_ENV === "development") {
-          res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
-          res.setHeader("Pragma", "no-cache");
-          res.setHeader("Expires", "0");
-          res.removeHeader("ETag");
-          res.removeHeader("Last-Modified");
-        }
-        next(); 
-      });
-      // 개발 환경에서는 캐시 비활성화, 프로덕션에서는 1시간 캐시
-      const staticMaxAge = process.env.NODE_ENV === "development" ? "0" : "1h";
-      const staticOptions = process.env.NODE_ENV === "development" 
-        ? { fallthrough: true, maxAge: staticMaxAge, etag: false, lastModified: false }
-        : { fallthrough: true, maxAge: staticMaxAge };
-      app.use(express.static(CLIENT_DIST, staticOptions));
-
-      // 👉 SPA의 특정 클라이언트 라우트를 "우선" index.html로 직접 서빙
-      const serveIndex = (_req: Request, res: Response) => {
-        if (fs.existsSync(CLIENT_INDEX_HTML)) {
-          res.setHeader("Cache-Control", "no-store");
-          res.setHeader("X-Build-Id", readBuildId());
-          return res.sendFile(CLIENT_INDEX_HTML);
-        }
-        return res.status(404).end();
-      };
-
-      // 두 경로 모두 확실하게 index.html 반환
-      app.get("/project-inquiry", serveIndex);
-      app.get("/inquiry", serveIndex);
-
-      // 업로드/API가 아닌 모든 경로는 SPA index.html 반환 (후순위 캐치올)
-      app.get("*", (req: Request, res: Response, next: NextFunction) => {
-        if (req.path.startsWith("/api") || req.path.startsWith("/uploads")) return next();
-        if (fs.existsSync(CLIENT_INDEX_HTML)) {
-          // HTML은 항상 최신으로 (캐시 방지)
-          res.setHeader("Cache-Control", "no-store, max-age=0, must-revalidate");
-          res.setHeader("Pragma", "no-cache");
-          res.setHeader("Expires", "0");
-          res.setHeader("X-Build-Id", readBuildId());
-          return res.sendFile(CLIENT_INDEX_HTML);
-        }
-        return next();
-      });
-    } else {
-      console.warn("[WARN] dist 가 없습니다. 빌드 후에 접근해주세요.");
+    // 업로드/API가 아닌 모든 경로는 SPA index.html 반환 (후순위 캐치올)
+    app.get("*", (req: Request, res: Response, next: NextFunction) => {
+      if (req.path.startsWith("/api") || req.path.startsWith("/uploads")) return next();
+      if (fs.existsSync(CLIENT_INDEX_HTML)) {
+        // HTML은 항상 최신으로 (캐시 방지)
+        res.setHeader("Cache-Control", "no-store, max-age=0, must-revalidate");
+        res.setHeader("Pragma", "no-cache");
+        res.setHeader("Expires", "0");
+        res.setHeader("X-Build-Id", readBuildId());
+        return res.sendFile(CLIENT_INDEX_HTML);
+      }
+      return next();
+    });
+  } else {
+    console.warn("[WARN] client/dist 가 없습니다. 빌드 후에 접근해주세요.");
+    
+    // 빌드 산출물이 없을 때는 기존 방식 유지
+    if (process.env.NODE_ENV === "development") {
+      await setupVite(app, server);
     }
   }
 
