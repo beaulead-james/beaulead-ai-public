@@ -53,59 +53,47 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
   next();
 });
 
-// -------------------- 업로드 정적 서빙 (항상 최우선) --------------------
+// -------------------- 업로드 경로 처리 --------------------
+// 1) 우선 라우트: 로컬에 없으면 Object Storage(GCS)로 302 리디렉션
+app.get("/uploads/:fname", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const fname = req.params.fname;
+    const localPath = path.join(process.cwd(), "server", "uploads", fname);
+    if (fs.existsSync(localPath)) {
+      res.setHeader("Cache-Control", "public, max-age=604800, immutable");
+      return res.sendFile(localPath);
+    }
+    // 로컬에 없으면 버킷으로 폴백
+    try {
+      const { ObjectStorageService } = await import("./objectStorage");
+      const oss = new ObjectStorageService();
+      const key = `uploads/${fname}`;
+      const url = await oss.getPublicObjectUrl(key);
+      if (url) {
+        res.setHeader("Cache-Control", "public, max-age=604800, immutable");
+        return res.redirect(302, url);
+      }
+    } catch (e) {
+      // 버킷 접근 실패 시 넘어가서 404
+    }
+    // JSON 본문 없이 404만
+    return res.sendStatus(404);
+  } catch (e) {
+    return next(e);
+  }
+});
+// 2) 정적 미들웨어(보조): 파일이 있으면 서빙, 없으면 next()로 우선 라우트가 처리하도록
 const staticUploads = express.static(UPLOAD_DIR, {
   index: false,
-  fallthrough: false,
+  fallthrough: true,
   maxAge: "7d",
   setHeaders(res) {
     res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+    res.setHeader("Cache-Control", "public, max-age=604800, immutable");
   },
 });
 app.use("/uploads", staticUploads);
 app.use("/api/uploads", staticUploads);
-
-// 🔁 /uploads/* 요청 시 로컬에 없으면 Object Storage로 폴백
-import { ObjectStorageService, objectStorageClient } from "./objectStorage";
-app.get("/uploads/:fname", async (req, res, next) => {
-  try {
-    const fname = req.params.fname;
-    const localPath = path.join(process.cwd(), "server", "uploads", fname);
-    if (fs.existsSync(localPath)) return res.sendFile(localPath);
-    
-    // Try to serve from Object Storage directly
-    const oss = new ObjectStorageService();
-    const publicPaths = oss.getPublicObjectSearchPaths();
-    if (publicPaths.length > 0) {
-      const fullPath = `${publicPaths[0]}/uploads/${fname}`;
-      const { bucketName, objectName } = parseObjectPath(fullPath);
-      const bucket = objectStorageClient.bucket(bucketName);
-      const file = bucket.file(objectName);
-      
-      try {
-        // Check if file exists
-        const [exists] = await file.exists();
-        if (exists) {
-          // Stream the file directly through our server
-          const [metadata] = await file.getMetadata();
-          res.set({
-            "Content-Type": metadata.contentType || "application/octet-stream",
-            "Cache-Control": "public, max-age=604800, immutable",
-          });
-          const stream = file.createReadStream();
-          stream.pipe(res);
-          return;
-        }
-      } catch (error) {
-        console.error('Object Storage fallback error:', error);
-      }
-    }
-    
-    return res.status(404).json({ message: "Not Found" });
-  } catch {
-    return next();
-  }
-});
 
 // Helper function for parsing object path
 function parseObjectPath(path: string): { bucketName: string; objectName: string } {

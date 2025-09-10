@@ -1,0 +1,131 @@
+# 1) server/index.ts: /uploads 우선 라우트 → 정적 미들웨어보다 먼저 등록
+apply_patch <<'PATCH'
+*** Begin Patch
+*** Update File: server/index.ts
+@@
+-// -------------------- 업로드 정적 서빙 (항상 최우선) --------------------
+-const staticUploads = express.static(UPLOAD_DIR, {
+-  index: false,
+-  fallthrough: false,
+-  maxAge: "7d",
+-  setHeaders(res) {
+-    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+-    res.setHeader("Cache-Control", "public, max-age=604800, immutable");
+-  },
+-});
+-app.use("/uploads", staticUploads);
+-app.use("/api/uploads", staticUploads);
++// -------------------- 업로드 경로 처리 --------------------
++// 1) 우선 라우트: 로컬에 없으면 Object Storage(GCS)로 302 리디렉션
++app.get("/uploads/:fname", async (req: Request, res: Response, next: NextFunction) => {
++  try {
++    const fname = req.params.fname;
++    const localPath = path.join(process.cwd(), "server", "uploads", fname);
++    if (fs.existsSync(localPath)) {
++      res.setHeader("Cache-Control", "public, max-age=604800, immutable");
++      return res.sendFile(localPath);
++    }
++    // 로컬에 없으면 버킷으로 폴백
++    try {
++      const { ObjectStorageService } = await import("./objectStorage");
++      const oss = new ObjectStorageService();
++      const key = `uploads/${fname}`;
++      const url = await oss.getPublicObjectUrl(key);
++      if (url) {
++        res.setHeader("Cache-Control", "public, max-age=604800, immutable");
++        return res.redirect(302, url);
++      }
++    } catch (e) {
++      // 버킷 접근 실패 시 넘어가서 404
++    }
++    // JSON 본문 없이 404만
++    return res.sendStatus(404);
++  } catch (e) {
++    return next(e);
++  }
++});
++// 2) 정적 미들웨어(보조): 파일이 있으면 서빙, 없으면 next()로 우선 라우트가 처리하도록
++const staticUploads = express.static(UPLOAD_DIR, {
++  index: false,
++  fallthrough: true,
++  maxAge: "7d",
++  setHeaders(res) {
++    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
++    res.setHeader("Cache-Control", "public, max-age=604800, immutable");
++  },
++});
++app.use("/uploads", staticUploads);
++app.use("/api/uploads", staticUploads);
+*** End Patch
+PATCH
+
+# 2) 포트폴리오 목록/상세: 파일 의존 없는 DataURI 플레이스홀더 사용 (파일 404 방지)
+apply_patch <<'PATCH'
+*** Begin Patch
+*** Update File: client/src/pages/Portfolio/PortfolioList.tsx
+@@
+-            {(() => {
+-              const toAbs = (u?: string) => !u ? "" : (/^https?:\/\//i.test(u) ? u : `${location.protocol}//${location.host}${u.startsWith('/')?u:'/'+u}`);
+-              const PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 675'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='#6366F1'/><stop offset='100%' stop-color='#4F46E5'/></linearGradient></defs><rect width='1200' height='675' fill='url(#g)'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='42' font-family='ui-sans-serif,system-ui'>No Image</text></svg>`);
+-              const src = item.thumbUrl ? toAbs(item.thumbUrl) : PLACEHOLDER;
+-              return (
+-                <div className={`thumb-16x9`}>
+-                  <img
+-                    src={src || PLACEHOLDER}
+-                    alt={(item.titleKo || item.titleEn || "portfolio thumbnail")}
+-                    loading="lazy"
+-                    onError={(e)=>{ (e.currentTarget as HTMLImageElement).src=PLACEHOLDER; }}
+-                  />
+-                </div>
+-              );
+-            })()}
++            {(() => {
++              const toAbs = (u?: string) => !u ? "" : (/^https?:\/\//i.test(u) ? u : `${location.protocol}//${location.host}${u.startsWith('/')?u:'/'+u}`);
++              const PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 675'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='#6366F1'/><stop offset='100%' stop-color='#4F46E5'/></linearGradient></defs><rect width='1200' height='675' fill='url(#g)'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='42' font-family='ui-sans-serif,system-ui'>No Image</text></svg>`);
++              const src = item.thumbUrl ? toAbs(item.thumbUrl) : PLACEHOLDER;
++              return (
++                <div className="thumb-16x9">
++                  <img
++                    src={src || PLACEHOLDER}
++                    alt={(item.titleKo || item.titleEn || "portfolio thumbnail")}
++                    loading="lazy"
++                    onError={(e)=>{ (e.currentTarget as HTMLImageElement).src=PLACEHOLDER; }}
++                  />
++                </div>
++              );
++            })()}
+*** End Patch
+PATCH
+
+apply_patch <<'PATCH'
+*** Begin Patch
+*** Update File: client/src/pages/Portfolio/PortfolioItem.tsx
+@@
+-  const toAbs = (u?: string) => !u ? u : (/^https?:\/\//i.test(u) ? u : `${location.protocol}//${location.host}${u.startsWith('/')?u:'/'+u}`);
+-  const PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 675'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='#6366F1'/><stop offset='100%' stop-color='#4F46E5'/></linearGradient></defs><rect width='1200' height='675' fill='url(#g)'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='42' font-family='ui-sans-serif,system-ui'>No Image</text></svg>`);
++  const toAbs = (u?: string) => !u ? u : (/^https?:\/\//i.test(u) ? u : `${location.protocol}//${location.host}${u.startsWith('/')?u:'/'+u}`);
++  const PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 675'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='#6366F1'/><stop offset='100%' stop-color='#4F46E5'/></linearGradient></defs><rect width='1200' height='675' fill='url(#g)'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='42' font-family='ui-sans-serif,system-ui'>No Image</text></svg>`);
+@@
+-        <img
+-          src={toAbs(data?.thumbUrl)||PLACEHOLDER}
+-          alt="cover"
+-          className="w-full h-full object-cover"
+-          onError={(e)=>{ (e.currentTarget as HTMLImageElement).src=PLACEHOLDER; }}
+-        />
++        <img
++          src={toAbs(data?.thumbUrl)||PLACEHOLDER}
++          alt="cover"
++          className="w-full h-full object-cover"
++          onError={(e)=>{ (e.currentTarget as HTMLImageElement).src=PLACEHOLDER; }}
++        />
+*** End Patch
+PATCH
+
+# 3) 재빌드 & 재시작
+bash -lc 'npm run build --silent || true'
+bash -lc 'pkill -f node || true; npm start --silent & sleep 2'
+
+# 4) 동작 확인(운영 도메인 역시 동일 구조라면 HEAD로 302/404/200 확인)
+bash -lc '
+echo "[uploads fallback check - local]"; curl -sI "http://localhost:$PORT/uploads/test-not-exist.jpg" | head -n 3 || true
+'

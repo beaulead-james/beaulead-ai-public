@@ -133,15 +133,22 @@ export default function PortfolioList() {
                   <article key={portfolio.id} className="service-card overflow-hidden hover:bg-white/10 transition-all duration-300">
                     {/* Thumbnail (항상 16:9) */}
                     <div className="relative">
-                      <div className={`thumb-16x9 ${portfolio.thumbUrl ? '' : 'placeholder'}`}>
-                        <img
-                          src={/^https?:\/\//i.test(portfolio.thumbUrl||'') ? (portfolio.thumbUrl || "/og/placeholder-1200x675.jpg") : (portfolio.thumbUrl ? `${location.protocol}//${location.host}${portfolio.thumbUrl.startsWith('/')?portfolio.thumbUrl:'/'+portfolio.thumbUrl}` : "/og/placeholder-1200x675.jpg")}
-                          alt={content.title || "portfolio thumbnail"}
-                          loading="lazy"
-                          onError={(e)=>{ (e.currentTarget as HTMLImageElement).src="/og/placeholder-1200x675.jpg"; }}
-                          data-testid={`img-portfolio-thumb-${index}`}
-                        />
-                      </div>
+                      {(() => {
+                        const toAbs = (u?: string) => !u ? "" : (/^https?:\/\//i.test(u) ? u : `${location.protocol}//${location.host}${u.startsWith('/')?u:'/'+u}`);
+                        const PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 675'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='#6366F1'/><stop offset='100%' stop-color='#4F46E5'/></linearGradient></defs><rect width='1200' height='675' fill='url(#g)'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='42' font-family='ui-sans-serif,system-ui'>No Image</text></svg>`);
+                        const src = portfolio.thumbUrl ? toAbs(portfolio.thumbUrl) : PLACEHOLDER;
+                        return (
+                          <div className="thumb-16x9">
+                            <img
+                              src={src || PLACEHOLDER}
+                              alt={(content.title || "portfolio thumbnail")}
+                              loading="lazy"
+                              onError={(e)=>{ (e.currentTarget as HTMLImageElement).src=PLACEHOLDER; }}
+                              data-testid={`img-portfolio-thumb-${index}`}
+                            />
+                          </div>
+                        );
+                      })()}
                       
                       {/* Category Badge */}
                       <div className="absolute top-4 left-4">
