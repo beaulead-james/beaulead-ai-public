@@ -212,8 +212,24 @@ app.use((req, res, next) => {
 
   if (fs.existsSync(CLIENT_DIST)) {
     // 정적 파일 먼저
-    app.use((req, res, next) => { res.setHeader("X-Build-Id", readBuildId()); next(); });
-    app.use(express.static(CLIENT_DIST, { fallthrough: true, maxAge: "1h" }));
+    app.use((req, res, next) => { 
+      res.setHeader("X-Build-Id", readBuildId()); 
+      // 개발 환경에서는 모든 캐시 헤더 비활성화
+      if (process.env.NODE_ENV === "development") {
+        res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+        res.setHeader("Pragma", "no-cache");
+        res.setHeader("Expires", "0");
+        res.removeHeader("ETag");
+        res.removeHeader("Last-Modified");
+      }
+      next(); 
+    });
+    // 개발 환경에서는 캐시 비활성화, 프로덕션에서는 1시간 캐시
+    const staticMaxAge = process.env.NODE_ENV === "development" ? "0" : "1h";
+    const staticOptions = process.env.NODE_ENV === "development" 
+      ? { fallthrough: true, maxAge: staticMaxAge, etag: false, lastModified: false }
+      : { fallthrough: true, maxAge: staticMaxAge };
+    app.use(express.static(CLIENT_DIST, staticOptions));
 
     // 👉 SPA의 특정 클라이언트 라우트를 "우선" index.html로 직접 서빙
     const serveIndex = (_req: Request, res: Response) => {
