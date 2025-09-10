@@ -220,13 +220,13 @@ export default function Location() {
                       {/* Quick Navigation Buttons */}
                       <div className="mt-8 space-y-3">
                         <button 
-                          className="w-full px-4 py-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-white/20 rounded-lg text-white/80 hover:text-white transition-all duration-300 hover:bg-gradient-to-r hover:from-blue-500/30 hover:to-purple-500/30"
+                          className="w-full px-4 py-3 bg-gradient-to-r from-brand-500/20 to-purple-500/20 border border-white/20 rounded-lg text-white/80 hover:text-white transition-all duration-300 hover:bg-gradient-to-r hover:from-brand-500/30 hover:to-purple-500/30"
                           data-testid="button-google-maps"
                         >
                           Google Maps에서 보기
                         </button>
                         <button 
-                          className="w-full px-4 py-3 bg-gradient-to-r from-green-500/20 to-blue-500/20 border border-white/20 rounded-lg text-white/80 hover:text-white transition-all duration-300 hover:bg-gradient-to-r hover:from-green-500/30 hover:to-blue-500/30"
+                          className="w-full px-4 py-3 bg-gradient-to-r from-green-500/20 to-brand-500/20 border border-white/20 rounded-lg text-white/80 hover:text-white transition-all duration-300 hover:bg-gradient-to-r hover:from-green-500/30 hover:to-brand-500/30"
                           data-testid="button-naver-maps"
                         >
                           네이버 지도에서 보기
@@ -267,7 +267,7 @@ export default function Location() {
                         className="flex items-start text-white/80 text-lg leading-relaxed"
                         data-testid={`text-transport-detail-${index}-${detailIndex}`}
                       >
-                        <div className="w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full mr-4 mt-3 flex-shrink-0"></div>
+                        <div className="w-2 h-2 bg-gradient-to-r from-brand-400 to-purple-400 rounded-full mr-4 mt-3 flex-shrink-0"></div>
                         <span>{detail}</span>
                       </div>
                     ))}

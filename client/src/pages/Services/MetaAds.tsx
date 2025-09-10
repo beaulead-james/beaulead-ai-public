@@ -87,7 +87,7 @@ export default function MetaAds() {
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               <div>
                 <div className="flex items-center mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg">
+                  <div className="w-16 h-16 bg-gradient-to-r from-brand-600 to-purple-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg">
                     <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                     </svg>
@@ -121,7 +121,7 @@ export default function MetaAds() {
                 <div className="floating-card">
                   <div className="flex items-center mb-6">
                     <h3 className="text-xl font-bold text-white flex-1">{t.services.metaAds.dashboard}</h3>
-                    <div className="w-14 h-14 bg-gradient-to-r from-blue-500/20 to-purple-600/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                    <div className="w-14 h-14 bg-gradient-to-r from-brand-500/20 to-purple-600/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
                       <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                       </svg>
@@ -169,7 +169,7 @@ export default function MetaAds() {
                   <div className="space-y-3">
                     {service.features.map((feature, featureIndex) => (
                       <div key={featureIndex} className="flex items-center text-sm text-white/80">
-                        <div className="w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full mr-3"></div>
+                        <div className="w-2 h-2 bg-gradient-to-r from-brand-400 to-purple-500 rounded-full mr-3"></div>
                         <span data-testid={`text-service-feature-${index}-${featureIndex}`}>{feature}</span>
                       </div>
                     ))}

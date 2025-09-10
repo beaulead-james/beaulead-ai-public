@@ -74,7 +74,7 @@ export default function Leadership() {
                             target.src = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400&q=80";
                           }}
                         />
-                        <div className="absolute -bottom-4 -right-4 w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-xl">
+                        <div className="absolute -bottom-4 -right-4 w-16 h-16 bg-gradient-to-r from-brand-500 to-brand-600 rounded-full flex items-center justify-center shadow-xl">
                           <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 14l9-5-9-5-9 5 9 5z"/>
                             <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
@@ -88,10 +88,10 @@ export default function Leadership() {
                       <h3 className="text-4xl lg:text-5xl font-bold text-white mb-3" data-testid="text-ceo-name">
                         박현구
                       </h3>
-                      <p className="text-xl lg:text-2xl text-blue-400 font-semibold mb-6" data-testid="text-ceo-title">
+                      <p className="text-xl lg:text-2xl text-brand-400 font-semibold mb-6" data-testid="text-ceo-title">
                         대표이사 · CEO
                       </p>
-                      <div className="w-20 h-1.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
+                      <div className="w-20 h-1.5 bg-gradient-to-r from-brand-500 to-purple-500 rounded-full"></div>
                     </div>
                     
                     <div className="space-y-5 text-white/80 leading-relaxed">
@@ -229,7 +229,7 @@ export default function Leadership() {
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="contact-card">
-              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+              <div className="w-16 h-16 bg-gradient-to-r from-brand-500 to-brand-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
                 <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
                 </svg>

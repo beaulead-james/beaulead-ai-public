@@ -108,11 +108,11 @@ export default function PortfolioItem() {
         <div className="container max-w-6xl mx-auto">
           {/* Breadcrumb */}
           <nav className="flex items-center space-x-2 text-sm text-white/60 mb-8">
-            <Link href="/" className="hover:text-blue-400 transition-colors" data-testid="link-breadcrumb-home">
+            <Link href="/" className="hover:text-brand-400 transition-colors" data-testid="link-breadcrumb-home">
               홈
             </Link>
             <i className="fas fa-chevron-right text-xs"></i>
-            <Link href="/portfolio" className="hover:text-blue-400 transition-colors" data-testid="link-breadcrumb-portfolio">
+            <Link href="/portfolio" className="hover:text-brand-400 transition-colors" data-testid="link-breadcrumb-portfolio">
               포트폴리오
             </Link>
             <i className="fas fa-chevron-right text-xs"></i>
@@ -125,7 +125,7 @@ export default function PortfolioItem() {
             {/* Header */}
             <div className="p-8 lg:p-12 border-b border-white/10">
               <div className="flex items-center mb-6">
-                <span className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-3 py-1 rounded-full text-sm font-medium mr-4">
+                <span className="bg-gradient-to-r from-brand-500 to-purple-600 text-white px-3 py-1 rounded-full text-sm font-medium mr-4">
                   성공사례
                 </span>
                 <time className="text-white/60" data-testid="text-portfolio-date">
@@ -203,7 +203,7 @@ export default function PortfolioItem() {
                       {/* Key Metrics */}
                       {Object.entries(metrics).map(([key, value], index) => (
                         <div key={key} className="text-center">
-                          <div className="text-3xl font-bold text-blue-400 mb-1" data-testid={`text-metric-value-${index}`}>
+                          <div className="text-3xl font-bold text-brand-400 mb-1" data-testid={`text-metric-value-${index}`}>
                             {value as string}
                           </div>
                           <div className="text-sm text-white/60 uppercase tracking-wide" data-testid={`text-metric-label-${index}`}>
@@ -220,7 +220,7 @@ export default function PortfolioItem() {
                             <div className="text-sm text-white/60 uppercase tracking-wide">ROAS</div>
                           </div>
                           <div className="text-center">
-                            <div className="text-3xl font-bold text-blue-400 mb-1">3.2%</div>
+                            <div className="text-3xl font-bold text-brand-400 mb-1">3.2%</div>
                             <div className="text-sm text-white/60 uppercase tracking-wide">전환율</div>
                           </div>
                           <div className="text-center">

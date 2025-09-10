@@ -132,7 +132,7 @@ function ProjectInquiry() {
                 <div className="flex gap-4 justify-center">
                   <Button 
                     onClick={() => window.location.href = "/"}
-                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                    className="bg-gradient-to-r from-brand-600 to-purple-600 hover:from-brand-700 hover:to-purple-700"
                   >
                     홈으로
                   </Button>
@@ -372,7 +372,7 @@ function ProjectInquiry() {
                   <Button 
                     type="submit" 
                     disabled={loading || !agree}
-                    className="w-full max-w-md bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 px-8 rounded-xl shadow-lg transition-all"
+                    className="w-full max-w-md bg-gradient-to-r from-brand-600 to-purple-600 hover:from-brand-700 hover:to-purple-700 text-white font-semibold py-3 px-8 rounded-xl shadow-lg transition-all"
                   >
                     {loading ? "제출 중..." : "프로젝트 제안 요청하기"}
                   </Button>

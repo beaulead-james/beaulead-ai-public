@@ -67,7 +67,7 @@ export default function AdminDashboard() {
       description: '블로그 포스트 작성 및 관리',
       icon: 'fas fa-blog',
       href: '/admin/blog',
-      color: 'bg-blue-500'
+      color: 'bg-brand-500'
     },
     {
       title: '포트폴리오 관리',
@@ -132,8 +132,8 @@ export default function AdminDashboard() {
                           {stats?.blogs || 0}
                         </p>
                       </div>
-                      <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <i className="fas fa-blog text-blue-600"></i>
+                      <div className="w-12 h-12 bg-brand-100 rounded-lg flex items-center justify-center">
+                        <i className="fas fa-blog text-brand-600"></i>
                       </div>
                     </div>
                   </CardContent>
@@ -227,8 +227,8 @@ export default function AdminDashboard() {
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                      <i className="fas fa-plus text-blue-600 text-xs"></i>
+                    <div className="w-8 h-8 bg-brand-100 rounded-full flex items-center justify-center">
+                      <i className="fas fa-plus text-brand-600 text-xs"></i>
                     </div>
                     <div>
                       <p className="text-sm font-medium text-gray-900">새 블로그 포스트 작성</p>
@@ -275,9 +275,9 @@ export default function AdminDashboard() {
                       <p className="text-xs text-gray-500">2개의 포트폴리오가 승인 대기중입니다</p>
                     </div>
                   </div>
-                  <div className="flex items-start space-x-3 p-3 bg-blue-50 rounded-lg border-l-4 border-blue-400">
-                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <i className="fas fa-chart-line text-blue-600 text-xs"></i>
+                  <div className="flex items-start space-x-3 p-3 bg-brand-50 rounded-lg border-l-4 border-brand-400">
+                    <div className="w-8 h-8 bg-brand-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <i className="fas fa-chart-line text-brand-600 text-xs"></i>
                     </div>
                     <div>
                       <p className="text-sm font-medium text-gray-900">월간 리포트 작성</p>

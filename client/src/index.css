@@ -39,7 +39,7 @@
   --card-foreground: #ffffff;
   --popover: rgba(255, 255, 255, 0.05);
   --popover-foreground: #ffffff;
-  --primary: #0A84FF;
+  --primary: #6366F1;
   --primary-foreground: #ffffff;
   --secondary: #581c87;
   --secondary-foreground: #ffffff;
@@ -51,20 +51,20 @@
   --destructive-foreground: #ffffff;
   --border: rgba(255, 255, 255, 0.1);
   --input: rgba(255, 255, 255, 0.05);
-  --ring: #0A84FF;
-  --chart-1: #0A84FF;
+  --ring: #6366F1;
+  --chart-1: #6366F1;
   --chart-2: #00B894;
   --chart-3: #FF9F43;
   --chart-4: #581c87;
   --chart-5: #8b5cf6;
   --sidebar: rgba(255, 255, 255, 0.05);
   --sidebar-foreground: #ffffff;
-  --sidebar-primary: #0A84FF;
+  --sidebar-primary: #6366F1;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: rgba(255, 255, 255, 0.1);
   --sidebar-accent-foreground: #ffffff;
   --sidebar-border: rgba(255, 255, 255, 0.1);
-  --sidebar-ring: #0A84FF;
+  --sidebar-ring: #6366F1;
   --radius: 0.5rem;
 }
 
@@ -75,7 +75,7 @@
   --card-foreground: #ffffff;
   --popover: rgba(255, 255, 255, 0.05);
   --popover-foreground: #ffffff;
-  --primary: #0A84FF;
+  --primary: #6366F1;
   --primary-foreground: #ffffff;
   --secondary: #581c87;
   --secondary-foreground: #ffffff;
@@ -87,20 +87,20 @@
   --destructive-foreground: #ffffff;
   --border: rgba(255, 255, 255, 0.1);
   --input: rgba(255, 255, 255, 0.05);
-  --ring: #0A84FF;
-  --chart-1: #0A84FF;
+  --ring: #6366F1;
+  --chart-1: #6366F1;
   --chart-2: #00B894;
   --chart-3: #FF9F43;
   --chart-4: #581c87;
   --chart-5: #8b5cf6;
   --sidebar: rgba(255, 255, 255, 0.05);
   --sidebar-foreground: #ffffff;
-  --sidebar-primary: #0A84FF;
+  --sidebar-primary: #6366F1;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: rgba(255, 255, 255, 0.1);
   --sidebar-accent-foreground: #ffffff;
   --sidebar-border: rgba(255, 255, 255, 0.1);
-  --sidebar-ring: #0A84FF;
+  --sidebar-ring: #6366F1;
 }
 
 @layer base {
@@ -120,7 +120,7 @@
 
 /* Premium design enhancements */
 .premium-gradient {
-  background: linear-gradient(135deg, #0A84FF 0%, #00B894 100%);
+  background: linear-gradient(135deg, #6366F1 0%, #00B894 100%);
 }
 
 .premium-card {

@@ -163,9 +163,9 @@ export default function ThumbnailUploader({ value, onChange }: ThumbnailUploader
             <>
               {(isValidating || !imageLoaded) && (
                 <div className="absolute inset-0 flex items-center justify-center bg-slate-800">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-500"></div>
                   {isValidating && (
-                    <span className="absolute bottom-2 text-xs text-blue-400">검증 중...</span>
+                    <span className="absolute bottom-2 text-xs text-brand-400">검증 중...</span>
                   )}
                 </div>
               )}
@@ -188,7 +188,7 @@ export default function ThumbnailUploader({ value, onChange }: ThumbnailUploader
               <p className='text-red-400 text-xs mb-2'>이미지 로딩 실패</p>
               <button 
                 onClick={retryLoadImage}
-                className='text-xs text-blue-400 hover:text-blue-300 underline'
+                className='text-xs text-brand-400 hover:text-brand-300 underline'
                 type="button"
               >
                 다시 시도
@@ -220,7 +220,7 @@ export default function ThumbnailUploader({ value, onChange }: ThumbnailUploader
               type='button' 
               onClick={pick} 
               disabled={busy}
-              className='px-4 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-200 flex items-center gap-2'
+              className='px-4 py-2.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-medium disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-200 flex items-center gap-2'
               data-testid="button-upload-image"
             >
               {busy ? (

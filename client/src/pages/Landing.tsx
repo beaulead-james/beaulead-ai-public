@@ -46,7 +46,7 @@ function BlogPosts() {
           data-testid={`blog-card-${index}`}
         >
           {blog.coverUrl && (
-            <div className="h-48 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg mb-6 overflow-hidden">
+            <div className="h-48 bg-gradient-to-br from-brand-500/20 to-purple-500/20 rounded-lg mb-6 overflow-hidden">
               <img 
                 src={blog.coverUrl} 
                 alt={blog.titleKo}
@@ -55,13 +55,13 @@ function BlogPosts() {
             </div>
           )}
           {!blog.coverUrl && (
-            <div className="h-48 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg mb-6 flex items-center justify-center">
+            <div className="h-48 bg-gradient-to-br from-brand-500/20 to-purple-500/20 rounded-lg mb-6 flex items-center justify-center">
               <svg className="w-16 h-16 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
           )}
-          <h3 className="text-xl font-bold text-white mb-3 group-hover:text-blue-300 transition-colors" data-testid={`blog-title-${index}`}>
+          <h3 className="text-xl font-bold text-white mb-3 group-hover:text-brand-300 transition-colors" data-testid={`blog-title-${index}`}>
             {blog.titleKo}
           </h3>
           <p className="text-white/70 mb-4 line-clamp-3" data-testid={`blog-excerpt-${index}`}>
@@ -81,8 +81,8 @@ function YouTubeEmbed({ videoId, title }: { videoId: string; title: string }) {
   return (
     <div className="relative w-full h-[400px] lg:h-[500px]">
       {/* 외곽 글로우 효과 */}
-      <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/30 via-purple-500/30 to-cyan-500/30 rounded-3xl blur-xl"></div>
-      <div className="absolute -inset-2 bg-gradient-to-r from-blue-400/20 via-purple-400/20 to-cyan-400/20 rounded-2xl blur-lg"></div>
+      <div className="absolute -inset-4 bg-gradient-to-r from-brand-500/30 via-purple-500/30 to-cyan-500/30 rounded-3xl blur-xl"></div>
+      <div className="absolute -inset-2 bg-gradient-to-r from-brand-400/20 via-purple-400/20 to-cyan-400/20 rounded-2xl blur-lg"></div>
       
       {/* 영상 컨테이너 - 단순 구조 */}
       <div className="relative w-full h-full bg-black rounded-2xl overflow-hidden border-2 border-white/30 shadow-2xl">
@@ -195,7 +195,7 @@ export default function Landing() {
             </div>
             <h2 className="text-3xl lg:text-5xl font-headline font-bold text-white mb-6 leading-tight" data-testid="text-portfolio-title">
               {t.portfolio.clients.title}<br />
-              <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">{t.portfolio.clients.subtitle}</span>
+              <span className="bg-gradient-to-r from-brand-400 to-purple-500 bg-clip-text text-transparent">{t.portfolio.clients.subtitle}</span>
             </h2>
             <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed" data-testid="text-portfolio-subtitle">
               {t.portfolio.clients.description}
@@ -384,7 +384,7 @@ export default function Landing() {
             </div>
 
             <div className="service-card group animate-fade-in-up animate-delay-200">
-              <div className="modern-icon bg-gradient-to-r from-blue-500 to-blue-600">
+              <div className="modern-icon bg-gradient-to-r from-brand-500 to-brand-600">
                 <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                 </svg>
@@ -441,7 +441,7 @@ export default function Landing() {
             </div>
             <h2 className="text-3xl lg:text-5xl font-headline font-bold text-white mb-6 leading-tight" data-testid="text-stats-title">
               우리는 광고를 하지 않습니다<br />
-              <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">뷰리드는 성과를 설계합니다</span>
+              <span className="bg-gradient-to-r from-brand-400 to-purple-500 bg-clip-text text-transparent">뷰리드는 성과를 설계합니다</span>
             </h2>
             <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed" data-testid="text-stats-subtitle">
               {t.stats.subtitle}
@@ -450,7 +450,7 @@ export default function Landing() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="service-card text-center group">
-              <div className="modern-icon bg-gradient-to-r from-blue-500 to-blue-600 mb-6">
+              <div className="modern-icon bg-gradient-to-r from-brand-500 to-brand-600 mb-6">
                 <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
@@ -517,7 +517,7 @@ export default function Landing() {
             </div>
             <h2 className="text-3xl lg:text-5xl font-headline font-bold text-white mb-6 leading-tight" data-testid="text-blog-title">
               {t.blog.insights?.title || t.blog.title}<br />
-              <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">{t.blog.insights?.subtitle || t.blog.subtitle}</span>
+              <span className="bg-gradient-to-r from-brand-400 to-purple-500 bg-clip-text text-transparent">{t.blog.insights?.subtitle || t.blog.subtitle}</span>
             </h2>
             <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed" data-testid="text-blog-subtitle">
               {t.blog.insights?.description || t.blog.subtitle}

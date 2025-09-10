@@ -1,0 +1,71 @@
+# 0) 브랜치/변경 확인
+bash -lc 'git rev-parse --abbrev-ref HEAD; git status -s || true'
+
+# 1) shadcn/ui 스타일 변수에 brand 적용 (없어도 안전)
+apply_patch <<'PATCH'
+*** Begin Patch
+*** Update File: client/src/index.css
+@@
+ @tailwind base;
+ @tailwind components;
+ @tailwind utilities;
+ 
++/* === Brand primary variables (for shadcn/ui + CSS var based components) === */
++@layer base {
++  :root {
++    --primary: #6366F1;               /* brand-500 */
++    --primary-foreground: #ffffff;
++    --ring: 99 102 241;               /* rgb of brand-500 for ring */
++  }
++  .dark {
++    --primary: #4F46E5;               /* brand-600 in dark */
++    --primary-foreground: #ffffff;
++  }
++}
+*** End Patch
+PATCH
+
+# 2) 사전 스캔(드라이런): 어디를 바꿀지 미리 본다
+bash -lc '
+echo "=== scan tailwind blue/indigo classes ==="
+grep -RIn --line-number -E "(bg|text|border|ring|from|via|to)-(blue|indigo)-[0-9]{2,3}" client/src 2>/dev/null | head -n 50 || echo "(none)"
+echo
+echo "=== scan hardcoded HEX likely blue ==="
+grep -RIn --line-number -E "#0A84FF|#0a84ff|#3B82F6|#2563EB|#1D4ED8|#60A5FA|#818CF8|#6366F1" client/src 2>/dev/null | head -n 50 || echo "(none)"
+'
+
+# 3) 일괄 치환(안전한 정규식): blue*/indigo* → brand* 클래스로 변경
+#    - bg-*, text-*, border-*, ring-* 전환
+#    - 그라디언트 from-/via-/to- 전환
+bash -lc '
+set -e
+FILES=$(grep -RIl --exclude-dir=dist --exclude-dir=node_modules -E "(bg|text|border|ring|from|via|to)-(blue|indigo)-[0-9]{2,3}" client/src 2>/dev/null || true)
+for f in $FILES; do
+  sed -i -E "s/\b(bg|text|border|ring)-(blue|indigo)-([0-9]{2,3})/\1-brand-\3/g" "$f"
+  sed -i -E "s/\b(from|via|to)-(blue|indigo)-([0-9]{2,3})/\1-brand-\3/g" "$f"
+done
+echo "[patched classes]"; echo "$FILES" | sed -n "1,50p" || true
+'
+
+# 4) 직접 기입된 HEX → brand-500 (#6366F1)로 통일
+bash -lc '
+set -e
+HEX_FILES=$(grep -RIl --exclude-dir=dist --exclude-dir=node_modules -E "#0A84FF|#0a84ff|#3B82F6|#2563EB|#1D4ED8|#60A5FA|#818CF8" client/src 2>/dev/null || true)
+for f in $HEX_FILES; do
+  sed -i -E "s/#0A84FF|#0a84ff|#3B82F6|#2563EB|#1D4ED8|#60A5FA|#818CF8/#6366F1/g" "$f"
+done
+echo "[patched hex]"; echo "$HEX_FILES" | sed -n "1,50p" || true
+'
+
+# 5) 빌드 & 재시작
+bash -lc 'rm -rf node_modules/.vite dist client/dist || true; npm run build --silent || true'
+bash -lc 'pkill -f "node" || true; npm start --silent & sleep 3'
+
+# 6) 검증: 여전히 blue/indigo/HEX가 남았는지 재스캔
+bash -lc '
+echo "=== re-scan classes(after) ==="
+grep -RIn --line-number -E "(bg|text|border|ring|from|via|to)-(blue|indigo)-[0-9]{2,3}" client/src 2>/dev/null | head -n 20 || echo "(no matches)"
+echo
+echo "=== re-scan hex(after) ==="
+grep -RIn --line-number -E "#0A84FF|#0a84ff|#3B82F6|#2563EB|#1D4ED8|#60A5FA|#818CF8" client/src 2>/dev/null | head -n 20 || echo "(no matches)"
+'

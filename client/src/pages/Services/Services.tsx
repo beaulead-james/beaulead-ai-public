@@ -12,9 +12,9 @@ export default function Services() {
     {
       id: 'google-ads',
       icon: 'fab fa-google',
-      iconColor: 'text-blue-600',
-      bgColor: 'bg-blue-100',
-      hoverBg: 'group-hover:bg-blue-200',
+      iconColor: 'text-brand-600',
+      bgColor: 'bg-brand-100',
+      hoverBg: 'group-hover:bg-brand-200',
       title: t.services.googleAds.title,
       description: t.services.googleAds.description,
       features: [
@@ -56,9 +56,9 @@ export default function Services() {
     {
       id: 'meta-ads',
       icon: 'fab fa-facebook',
-      iconColor: 'text-blue-600',
-      bgColor: 'bg-blue-100',
-      hoverBg: 'group-hover:bg-blue-200',
+      iconColor: 'text-brand-600',
+      bgColor: 'bg-brand-100',
+      hoverBg: 'group-hover:bg-brand-200',
       title: t.services.metaAds.title,
       description: t.services.metaAds.description,
       features: [
@@ -128,7 +128,7 @@ export default function Services() {
             {/* Key Stats */}
             <div className="grid md:grid-cols-4 gap-6 mb-16">
               <div className="stats-card animate-fade-in-up">
-                <div className="text-5xl lg:text-6xl font-black bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent mb-4">4+</div>
+                <div className="text-5xl lg:text-6xl font-black bg-gradient-to-r from-brand-400 via-purple-400 to-brand-400 bg-clip-text text-transparent mb-4">4+</div>
                 <div className="text-white/90 font-semibold text-lg">주요 플랫폼</div>
               </div>
               <div className="stats-card animate-fade-in-up animate-delay-100">
@@ -181,7 +181,7 @@ export default function Services() {
                     <div className="grid grid-cols-2 gap-2">
                       {service.features.map((feature, featureIndex) => (
                         <div key={featureIndex} className="flex items-center text-sm text-white/70">
-                          <div className="w-1.5 h-1.5 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full mr-2"></div>
+                          <div className="w-1.5 h-1.5 bg-gradient-to-r from-brand-400 to-purple-400 rounded-full mr-2"></div>
                           <span data-testid={`text-service-feature-${index}-${featureIndex}`}>{feature}</span>
                         </div>
                       ))}
@@ -209,7 +209,7 @@ export default function Services() {
         <section className="py-20 lg:py-32 relative overflow-hidden">
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900"></div>
-            <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+            <div className="absolute top-20 left-10 w-72 h-72 bg-brand-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
             <div className="absolute top-40 right-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
             <div className="absolute bottom-20 left-20 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
           </div>
@@ -262,8 +262,8 @@ export default function Services() {
         {/* CTA Section */}
         <section className="py-20 lg:py-32 relative overflow-hidden">
           <div className="absolute inset-0">
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900"></div>
-            <div className="absolute top-10 right-10 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-xl opacity-60 animate-blob"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-brand-900 to-slate-900"></div>
+            <div className="absolute top-10 right-10 w-96 h-96 bg-brand-600 rounded-full mix-blend-multiply filter blur-xl opacity-60 animate-blob"></div>
             <div className="absolute bottom-10 left-10 w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-xl opacity-60 animate-blob animation-delay-2000"></div>
           </div>
           <div className="container max-w-4xl mx-auto text-center relative z-10">

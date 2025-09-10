@@ -77,7 +77,7 @@ export default function InquiriesPage() {
     return (
       <div className="container mx-auto p-6">
         <div className="text-center py-12">
-          <div className="animate-spin w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full mx-auto"></div>
+          <div className="animate-spin w-8 h-8 border-2 border-brand-600 border-t-transparent rounded-full mx-auto"></div>
           <p className="mt-4 text-muted-foreground">로딩 중...</p>
         </div>
       </div>
@@ -171,7 +171,7 @@ export default function InquiriesPage() {
                           href={inquiry.domain} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-sm text-blue-600 hover:underline"
+                          className="text-sm text-brand-600 hover:underline"
                         >
                           {inquiry.domain}
                         </a>

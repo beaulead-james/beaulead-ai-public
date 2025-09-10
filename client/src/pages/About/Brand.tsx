@@ -17,7 +17,7 @@ export default function Brand() {
       
       {/* Background */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-brand-900 to-slate-900"></div>
         <div className="bg-orb"></div>
       </div>
       
@@ -67,7 +67,7 @@ export default function Brand() {
           <div className="grid md:grid-cols-3 gap-8">
             {/* Primary Blue */}
             <div className="stats-card">
-              <div className="w-full h-32 bg-blue-600 rounded-lg mb-6"></div>
+              <div className="w-full h-32 bg-brand-600 rounded-lg mb-6"></div>
               <h3 className="text-xl font-bold text-white mb-4">Primary Blue</h3>
               <p className="text-white/80 text-sm mb-4">
                 신뢰와 전문성을 상징하는 프라이머리 블루. 
@@ -80,7 +80,7 @@ export default function Brand() {
                 </div>
                 <div className="flex justify-between text-white/90">
                   <span>HEX</span>
-                  <span>#2563EB</span>
+                  <span>#6366F1</span>
                 </div>
               </div>
             </div>

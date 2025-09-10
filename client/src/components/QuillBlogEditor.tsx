@@ -144,7 +144,7 @@ export function QuillBlogEditor({ mode, blogId, initialData }: QuillBlogEditorPr
       <div className="max-w-4xl mx-auto p-6 space-y-6">
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600 mx-auto mb-4"></div>
             <p className="text-gray-600">블로그 데이터를 불러오는 중...</p>
           </div>
         </div>

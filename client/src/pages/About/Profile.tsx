@@ -13,7 +13,7 @@ export default function Profile() {
       title: '검색 마케팅',
       description: '구글과 네이버 검색 엔진에서의 유료 광고(SEM)와 자연 검색 최적화(SEO)를 통해 타겟 고객에게 정확히 도달합니다.',
       services: ['구글 애즈', '네이버 검색광고', 'SEO 최적화', '키워드 전략'],
-      bgColor: 'from-blue-500/20 to-purple-600/20'
+      bgColor: 'from-brand-500/20 to-purple-600/20'
     },
     {
       icon: 'fas fa-users',
@@ -27,14 +27,14 @@ export default function Profile() {
       title: '데이터 분석 및 최적화',
       description: 'Google Analytics, 광고 플랫폼 데이터를 종합 분석하여 마케팅 성과를 지속적으로 개선합니다.',
       services: ['성과 분석', 'A/B 테스팅', '전환율 최적화', '대시보드 구축'],
-      bgColor: 'from-green-500/20 to-blue-500/20'
+      bgColor: 'from-green-500/20 to-brand-500/20'
     },
     {
       icon: 'fas fa-robot',
       title: '마케팅 자동화',
       description: 'AI와 머신러닝 기술을 활용해 마케팅 프로세스를 자동화하고 효율성을 극대화합니다.',
       services: ['자동 입찰 시스템', '개인화 추천', '리타겟팅', '고객 세그멘테이션'],
-      bgColor: 'from-indigo-500/20 to-purple-500/20'
+      bgColor: 'from-brand-500/20 to-purple-500/20'
     }
   ];
 
