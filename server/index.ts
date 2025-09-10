@@ -223,8 +223,10 @@ app.use((req, res, next) => {
     app.get("*", (req: Request, res: Response, next: NextFunction) => {
       if (req.path.startsWith("/api") || req.path.startsWith("/uploads")) return next();
       if (fs.existsSync(CLIENT_INDEX_HTML)) {
-        // HTML은 항상 최신으로
-        res.setHeader("Cache-Control", "no-store");
+        // HTML은 항상 최신으로 (캐시 방지)
+        res.setHeader("Cache-Control", "no-store, max-age=0, must-revalidate");
+        res.setHeader("Pragma", "no-cache");
+        res.setHeader("Expires", "0");
         res.setHeader("X-Build-Id", readBuildId());
         return res.sendFile(CLIENT_INDEX_HTML);
       }
