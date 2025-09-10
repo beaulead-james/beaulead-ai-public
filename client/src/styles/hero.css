@@ -1,7 +1,8 @@
 /* 현대적인 히어로 스타일 */
 .hero-container {
-  background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(120, 119, 198, 0.3), transparent),
-              radial-gradient(ellipse 50% 80% at 80% 50%, rgba(255, 159, 67, 0.15), transparent);
+  background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.4), transparent),
+              radial-gradient(ellipse 60% 80% at 80% 50%, rgba(79, 70, 229, 0.25), transparent),
+              radial-gradient(ellipse 40% 60% at 20% 80%, rgba(139, 92, 246, 0.15), transparent);
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -13,16 +14,18 @@
   line-height: 1.1;
   z-index: 0;
   word-break: keep-all;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #6366F1 0%, #4F46E5 50%, #8B5CF6 100%);
+  background-size: 200% 200%;
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: shimmer 2s ease-in-out infinite alternate;
+  animation: shimmer 3s ease-in-out infinite alternate;
 }
 
 @keyframes shimmer {
   0% { background-position: 0% 50%; }
-  100% { background-position: 100% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .hero-title {
@@ -34,15 +37,18 @@
   font-weight: 700;
   background: linear-gradient(135deg, 
     #ffffff 0%, 
-    #e0e7ff 25%, 
-    #c7d2fe 50%, 
-    #a5b4fc 75%, 
-    #8b5cf6 100%);
+    #e0e7ff 20%, 
+    #c7d2fe 40%, 
+    #a5b4fc 60%, 
+    #6366F1 80%, 
+    #4F46E5 100%);
+  background-size: 200% 200%;
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   position: relative;
-  filter: drop-shadow(0 4px 8px rgba(139, 92, 246, 0.2));
+  filter: drop-shadow(0 4px 12px rgba(99, 102, 241, 0.3));
+  animation: gradientShift 4s ease-in-out infinite;
 }
 
 @keyframes gradientShift {
@@ -58,47 +64,82 @@
 }
 
 .modern-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #6366F1 0%, #4F46E5 50%, #8B5CF6 100%);
   border: none;
   border-radius: 16px;
-  padding: 1rem 2rem;
+  padding: 1.2rem 2.5rem;
   font-weight: 600;
   font-size: 1.1rem;
   color: white;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
 }
 
 .modern-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6);
-  scale: 1.02;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(99, 102, 241, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.2);
+  scale: 1.03;
+}
+
+.modern-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.6s;
+}
+
+.modern-btn:hover::before {
+  left: 100%;
 }
 
 .modern-btn-outline {
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: rgba(99, 102, 241, 0.1);
+  border: 2px solid rgba(99, 102, 241, 0.3);
   border-radius: 16px;
-  padding: 1rem 2rem;
+  padding: 1.2rem 2.5rem;
   font-weight: 600;
   font-size: 1.1rem;
   color: white;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
 }
 
 .modern-btn-outline:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.4);
-  transform: translateY(-2px);
+  background: rgba(99, 102, 241, 0.2);
+  border-color: rgba(99, 102, 241, 0.5);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+}
+
+.modern-btn-outline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+  transition: left 0.6s;
+}
+
+.modern-btn-outline:hover::before {
+  left: 100%;
 }
 
 .floating-card {
@@ -151,7 +192,7 @@
 .modern-icon {
   width: 3rem;
   height: 3rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #6366F1 0%, #4F46E5 50%, #8B5CF6 100%);
   border-radius: 16px;
   display: flex;
   align-items: center;
@@ -159,6 +200,7 @@
   margin-bottom: 1.5rem;
   font-size: 1.5rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
 }
 
 .modern-icon:hover {
