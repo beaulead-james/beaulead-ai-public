@@ -138,7 +138,7 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm mb-4 md:mb-0" data-testid="text-footer-copyright">
               {t.footer.copyright}
-              {buildId && (
+              {buildId && buildId !== "unknown" && (
                 <span className="ml-2 opacity-70">Build: {buildId}</span>
               )}
             </p>
