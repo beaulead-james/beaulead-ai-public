@@ -41,7 +41,7 @@ export default function LoginPage() {
       {/* 배경 연출 */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#1a1330] via-[#101628] to-[#0b1020]" />
       <div className="pointer-events-none absolute -top-40 -left-40 h-[380px] w-[380px] rounded-full blur-3xl bg-fuchsia-600/25" />
-      <div className="pointer-events-none absolute -bottom-40 -right-40 h-[420px] w-[420px] rounded-full blur-3xl bg-indigo-600/25" />
+      <div className="pointer-events-none absolute -bottom-40 -right-40 h-[420px] w-[420px] rounded-full blur-3xl bg-brand-600/25" />
 
       <div className="relative z-10 mx-auto flex min-h-screen max-w-6xl items-center justify-center px-4">
         <Card className="w-full max-w-md border-slate-800/60 bg-slate-900/70 backdrop-blur-xl shadow-xl">

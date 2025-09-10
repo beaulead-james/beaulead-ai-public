@@ -191,7 +191,7 @@ export default function Users() {
             <Card>
               <CardContent className="p-6">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600 mb-1" data-testid="text-client-users">
+                  <div className="text-2xl font-bold text-brand-600 mb-1" data-testid="text-client-users">
                     {users.filter(u => u.role === 'CLIENT').length}
                   </div>
                   <div className="text-sm text-gray-600">클라이언트</div>
@@ -322,13 +322,13 @@ export default function Users() {
 
           {/* Info Notice */}
           <div className="mt-8">
-            <Card className="border-blue-200 bg-blue-50">
+            <Card className="border-brand-200 bg-brand-50">
               <CardContent className="p-6">
                 <div className="flex items-start">
-                  <i className="fas fa-info-circle text-blue-600 text-xl mr-3 mt-0.5"></i>
+                  <i className="fas fa-info-circle text-brand-600 text-xl mr-3 mt-0.5"></i>
                   <div>
-                    <h4 className="font-semibold text-blue-900 mb-2">사용자 권한 안내</h4>
-                    <ul className="text-sm text-blue-800 space-y-1">
+                    <h4 className="font-semibold text-brand-900 mb-2">사용자 권한 안내</h4>
+                    <ul className="text-sm text-brand-800 space-y-1">
                       <li><strong>관리자:</strong> 모든 관리 기능에 접근 가능 (블로그, 포트폴리오, 사용자 관리)</li>
                       <li><strong>클라이언트:</strong> 전용 대시보드 접근 가능 (분석 데이터, 캠페인 성과)</li>
                       <li><strong>일반사용자:</strong> 공개 페이지만 접근 가능</li>

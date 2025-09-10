@@ -79,7 +79,7 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
-      <div className="absolute inset-0 opacity-20 bg-gradient-to-br from-blue-500/10 to-purple-500/10"></div>
+      <div className="absolute inset-0 opacity-20 bg-gradient-to-br from-brand-500/10 to-purple-500/10"></div>
       
       <Card className="w-full max-w-md bg-white/10 backdrop-blur-lg border-white/20 shadow-2xl">
         <CardHeader className="space-y-1 text-center">
@@ -105,7 +105,7 @@ export default function AdminLogin() {
                         {...field}
                         type="email"
                         placeholder="admin@beaulead.co.kr"
-                        className="bg-white/10 border-white/20 text-white placeholder-slate-400 focus:border-blue-400"
+                        className="bg-white/10 border-white/20 text-white placeholder-slate-400 focus:border-brand-400"
                       />
                     </FormControl>
                     <FormMessage />
@@ -124,7 +124,7 @@ export default function AdminLogin() {
                         {...field}
                         type="password"
                         placeholder="••••••••"
-                        className="bg-white/10 border-white/20 text-white placeholder-slate-400 focus:border-blue-400"
+                        className="bg-white/10 border-white/20 text-white placeholder-slate-400 focus:border-brand-400"
                       />
                     </FormControl>
                     <FormMessage />
@@ -134,7 +134,7 @@ export default function AdminLogin() {
               
               <Button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                className="w-full bg-brand-600 hover:bg-brand-700 text-white"
                 disabled={isLoading}
               >
                 {isLoading ? '로그인 중...' : '로그인'}
@@ -147,7 +147,7 @@ export default function AdminLogin() {
               또는{' '}
               <a
                 href="/api/login"
-                className="text-blue-400 hover:text-blue-300 underline"
+                className="text-brand-400 hover:text-brand-300 underline"
               >
                 Replit 계정으로 로그인
               </a>

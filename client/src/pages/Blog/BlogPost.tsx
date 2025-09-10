@@ -35,7 +35,7 @@ export default function BlogPost() {
     return (
       <div className="min-h-screen relative overflow-hidden" style={{backgroundColor: '#000000'}}>
         {/* Background orbs */}
-        <div className="fixed inset-0 bg-gradient-to-br from-purple-900/20 via-blue-900/10 to-black"></div>
+        <div className="fixed inset-0 bg-gradient-to-br from-purple-900/20 via-brand-900/10 to-black"></div>
         <div className="orb orb-a"></div>
         <div className="orb orb-b"></div>
         
@@ -64,7 +64,7 @@ export default function BlogPost() {
     return (
       <div className="min-h-screen relative overflow-hidden" style={{backgroundColor: '#000000'}}>
         {/* Background orbs */}
-        <div className="fixed inset-0 bg-gradient-to-br from-purple-900/20 via-blue-900/10 to-black"></div>
+        <div className="fixed inset-0 bg-gradient-to-br from-purple-900/20 via-brand-900/10 to-black"></div>
         <div className="orb orb-a"></div>
         <div className="orb orb-b"></div>
         
@@ -76,7 +76,7 @@ export default function BlogPost() {
               <i className="fas fa-exclamation-triangle text-red-400 text-4xl mb-4"></i>
               <h1 className="text-2xl font-bold text-white mb-2">포스트를 찾을 수 없습니다</h1>
               <p className="text-white/70 mb-6">요청하신 블로그 포스트가 존재하지 않거나 삭제되었습니다.</p>
-              <a href="/blog" className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl">
+              <a href="/blog" className="bg-gradient-to-r from-purple-500 to-brand-500 hover:from-purple-600 hover:to-brand-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl">
                 블로그 목록으로 돌아가기
               </a>
             </div>
@@ -92,7 +92,7 @@ export default function BlogPost() {
   return (
     <div className="min-h-screen relative overflow-hidden" style={{backgroundColor: '#000000'}}>
       {/* Background orbs */}
-      <div className="fixed inset-0 bg-gradient-to-br from-purple-900/20 via-blue-900/10 to-black"></div>
+      <div className="fixed inset-0 bg-gradient-to-br from-purple-900/20 via-brand-900/10 to-black"></div>
       <div className="orb orb-a"></div>
       <div className="orb orb-b"></div>
       
@@ -165,7 +165,7 @@ export default function BlogPost() {
                 <h3 className="text-lg font-semibold text-white mb-4">이 글을 공유하세요</h3>
                 <div className="flex flex-wrap gap-3">
                   <button 
-                    className="bg-blue-600/80 backdrop-blur-sm text-white px-4 py-2 rounded-lg hover:bg-blue-700/80 transition-all duration-200 flex items-center shadow-lg hover:shadow-xl"
+                    className="bg-brand-600/80 backdrop-blur-sm text-white px-4 py-2 rounded-lg hover:bg-brand-700/80 transition-all duration-200 flex items-center shadow-lg hover:shadow-xl"
                     onClick={() => {
                       const url = encodeURIComponent(window.location.href);
                       const text = encodeURIComponent(content.title);
@@ -177,7 +177,7 @@ export default function BlogPost() {
                     Facebook
                   </button>
                   <button 
-                    className="bg-blue-400/80 backdrop-blur-sm text-white px-4 py-2 rounded-lg hover:bg-blue-500/80 transition-all duration-200 flex items-center shadow-lg hover:shadow-xl"
+                    className="bg-brand-400/80 backdrop-blur-sm text-white px-4 py-2 rounded-lg hover:bg-brand-500/80 transition-all duration-200 flex items-center shadow-lg hover:shadow-xl"
                     onClick={() => {
                       const url = encodeURIComponent(window.location.href);
                       const text = encodeURIComponent(content.title);
@@ -208,7 +208,7 @@ export default function BlogPost() {
           <div className="mt-12 text-center">
             <a 
               href="/blog"
-              className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl inline-block"
+              className="bg-gradient-to-r from-purple-500 to-brand-500 hover:from-purple-600 hover:to-brand-600 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl inline-block"
               data-testid="link-back-to-blog"
             >
               다른 포스트 보기

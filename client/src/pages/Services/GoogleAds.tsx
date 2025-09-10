@@ -87,7 +87,7 @@ export default function GoogleAds() {
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               <div>
                 <div className="flex items-center mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg">
+                  <div className="w-16 h-16 bg-gradient-to-r from-brand-500 to-purple-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg">
                     <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                       <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -124,7 +124,7 @@ export default function GoogleAds() {
                 <div className="floating-card">
                   <div className="flex items-center mb-6">
                     <h3 className="text-xl font-bold text-white flex-1">{t.services.googleAds.dashboard}</h3>
-                    <div className="w-14 h-14 bg-gradient-to-r from-blue-500/20 to-purple-600/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                    <div className="w-14 h-14 bg-gradient-to-r from-brand-500/20 to-purple-600/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
                       <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                         <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -175,7 +175,7 @@ export default function GoogleAds() {
                   <div className="space-y-3">
                     {service.features.map((feature, featureIndex) => (
                       <div key={featureIndex} className="flex items-center text-sm text-white/80">
-                        <div className="w-2 h-2 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full mr-3"></div>
+                        <div className="w-2 h-2 bg-gradient-to-r from-brand-400 to-brand-600 rounded-full mr-3"></div>
                         <span data-testid={`text-service-feature-${index}-${featureIndex}`}>{feature}</span>
                       </div>
                     ))}

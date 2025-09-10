@@ -189,8 +189,8 @@ export default function ClientDashboard() {
                       +{calculateGrowth(performanceData.currentMonth.roas, performanceData.previousMonth.roas)}%
                     </p>
                   </div>
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <i className="fas fa-percentage text-blue-600"></i>
+                  <div className="w-12 h-12 bg-brand-100 rounded-lg flex items-center justify-center">
+                    <i className="fas fa-percentage text-brand-600"></i>
                   </div>
                 </div>
               </CardContent>
@@ -282,7 +282,7 @@ export default function ClientDashboard() {
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-gray-600">클릭률</span>
-                      <span className="font-semibold text-blue-600" data-testid="text-ctr">
+                      <span className="font-semibold text-brand-600" data-testid="text-ctr">
                         {performanceData.currentMonth.ctr}%
                       </span>
                     </div>

@@ -155,7 +155,7 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="h-9 w-9 p-0">
                   <Avatar className="h-8 w-8">
-                    <AvatarFallback className="bg-gradient-to-br from-purple-600 to-blue-600 text-white font-semibold">관리</AvatarFallback>
+                    <AvatarFallback className="bg-gradient-to-br from-purple-600 to-brand-600 text-white font-semibold">관리</AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
@@ -255,7 +255,7 @@ function Sidebar() {
       {/* Sidebar Footer - 실제 로그인 사용자 정보 표시 */}
       <div className="p-4 border-t">
         <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-          <div className="h-8 w-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
+          <div className="h-8 w-8 bg-gradient-to-br from-purple-600 to-brand-600 rounded-lg flex items-center justify-center">
             <span className="text-white font-bold text-xs">
               {userInfo.name.charAt(0).toUpperCase()}
             </span>
@@ -288,7 +288,7 @@ function NavItem({ to, icon: Icon, label }: { to: string; icon: any; label: stri
       className={clsx(
         'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200',
         active 
-          ? 'bg-gradient-to-r from-purple-600/10 to-blue-600/10 text-primary border-l-4 border-primary shadow-sm' 
+          ? 'bg-gradient-to-r from-purple-600/10 to-brand-600/10 text-primary border-l-4 border-primary shadow-sm' 
           : 'text-muted-foreground hover:bg-muted hover:text-foreground hover:translate-x-1'
       )}
     >
@@ -312,7 +312,7 @@ function DashboardPage() {
           <Button variant="outline" className="gap-2">
             <Calendar className="h-4 w-4"/>지난 30일
           </Button>
-          <Button className="gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
+          <Button className="gap-2 bg-gradient-to-r from-purple-600 to-brand-600 hover:from-purple-700 hover:to-brand-700">
             <BarChart3 className="h-4 w-4"/>리포트 생성
           </Button>
         </div>
@@ -400,7 +400,7 @@ function DashboardPage() {
         <Card className="col-span-1">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <MousePointer className="h-5 w-5 text-blue-500" />
+              <MousePointer className="h-5 w-5 text-brand-500" />
               전환율 추이
             </CardTitle>
           </CardHeader>
@@ -448,7 +448,7 @@ function DashboardPage() {
                   <div className={clsx(
                     'h-8 w-8 rounded-full flex items-center justify-center text-white text-xs font-semibold',
                     activity.type === 'lead' && 'bg-green-500',
-                    activity.type === 'blog' && 'bg-blue-500',
+                    activity.type === 'blog' && 'bg-brand-500',
                     activity.type === 'user' && 'bg-purple-500',
                     activity.type === 'portfolio' && 'bg-orange-500'
                   )}>

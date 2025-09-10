@@ -1,7 +1,7 @@
 export function BrandMark() {
   return (
     <div className="flex items-center gap-3">
-      <div className="relative h-9 w-9 rounded-xl bg-gradient-to-tr from-fuchsia-500 to-indigo-500 shadow-md flex items-center justify-center overflow-hidden">
+      <div className="relative h-9 w-9 rounded-xl bg-gradient-to-tr from-fuchsia-500 to-brand-500 shadow-md flex items-center justify-center overflow-hidden">
         {/* BL 텍스트 */}
         <span className="text-white font-bold text-sm tracking-tighter">BL</span>
         {/* 장식적 요소 */}

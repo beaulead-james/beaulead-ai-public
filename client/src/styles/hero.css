@@ -371,7 +371,7 @@
   top: 0;
   width: 3px;
   height: 100%;
-  background: linear-gradient(135deg, #0A84FF 0%, #00B894 100%);
+  background: linear-gradient(135deg, #6366F1 0%, #00B894 100%);
   transform: scaleY(0);
   transition: transform 0.25s ease;
 }

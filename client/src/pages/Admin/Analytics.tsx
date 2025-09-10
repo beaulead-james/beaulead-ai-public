@@ -100,7 +100,7 @@ export default function Analytics() {
             <Card>
               <CardContent className="p-6">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600 mb-1" data-testid="text-monthly-visitors">
+                  <div className="text-2xl font-bold text-brand-600 mb-1" data-testid="text-monthly-visitors">
                     {websiteStats.monthlyVisitors.toLocaleString()}
                   </div>
                   <div className="text-sm text-gray-600">월간 방문자</div>
@@ -240,8 +240,8 @@ export default function Analytics() {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i className="fab fa-google text-blue-600 text-2xl"></i>
+                  <div className="w-16 h-16 bg-brand-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i className="fab fa-google text-brand-600 text-2xl"></i>
                   </div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">Google Analytics 4</h3>
                   <p className="text-gray-600 mb-6">더 상세한 분석을 위해 GA4 대시보드를 확인하세요</p>
@@ -249,7 +249,7 @@ export default function Analytics() {
                     href="https://analytics.google.com" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors inline-block"
+                    className="bg-brand-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-brand-700 transition-colors inline-block"
                     data-testid="button-ga4-dashboard"
                   >
                     GA4 대시보드 열기

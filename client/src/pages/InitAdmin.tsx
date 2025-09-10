@@ -76,7 +76,7 @@ export default function InitAdmin() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
-      <div className="absolute inset-0 opacity-20 bg-gradient-to-br from-blue-500/10 to-purple-500/10"></div>
+      <div className="absolute inset-0 opacity-20 bg-gradient-to-br from-brand-500/10 to-purple-500/10"></div>
       
       <Card className="w-full max-w-md bg-white/10 backdrop-blur-lg border-white/20 shadow-2xl">
         <CardHeader className="space-y-1 text-center">
@@ -100,7 +100,7 @@ export default function InitAdmin() {
           <Button
             onClick={handleInitAdmin}
             disabled={isLoading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+            className="w-full bg-brand-600 hover:bg-brand-700 text-white"
             data-testid="button-init-admin"
           >
             {isLoading ? '생성 중...' : '관리자 계정 생성'}
@@ -119,7 +119,7 @@ export default function InitAdmin() {
           <div className="text-center">
             <a 
               href="/admin-login" 
-              className="text-blue-400 hover:text-blue-300 text-sm underline"
+              className="text-brand-400 hover:text-brand-300 text-sm underline"
               data-testid="link-admin-login"
             >
               관리자 로그인 페이지로 이동
